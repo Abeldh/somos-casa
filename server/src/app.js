@@ -3,6 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { corsOptions } from './config/cors.js';
+import { securityHeaders } from './middleware/security.middleware.js';
 import { errorHandler } from './middleware/errorHandler.middleware.js';
 import routes from './routes/index.js';
 
@@ -11,10 +12,16 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Security headers (before everything)
+app.use(securityHeaders);
+
+// Disable X-Powered-By
+app.disable('x-powered-by');
+
 // Global middleware
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // API routes
 app.use('/api', routes);

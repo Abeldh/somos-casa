@@ -1,12 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { availabilityService } from '../services/availability.service';
-import { useToast } from './useToast';
 
 export function useAvailability() {
   const [slots, setSlots] = useState([]);
   const [availableDates, setAvailableDates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { error: showError } = useToast();
+  const hasFetched = useRef(false);
 
   const fetchByDate = useCallback(async (date) => {
     setLoading(true);
@@ -14,11 +13,11 @@ export function useAvailability() {
       const data = await availabilityService.getByDate(date);
       setSlots(data.slots || []);
     } catch (err) {
-      showError(err.message);
+      console.error('Error fetching slots:', err.message);
     } finally {
       setLoading(false);
     }
-  }, [showError]);
+  }, []);
 
   const fetchByMonth = useCallback(async (year, month) => {
     setLoading(true);
@@ -26,11 +25,11 @@ export function useAvailability() {
       const data = await availabilityService.getByMonth(year, month);
       setAvailableDates(data.dates || []);
     } catch (err) {
-      showError(err.message);
+      console.error('Error fetching month:', err.message);
     } finally {
       setLoading(false);
     }
-  }, [showError]);
+  }, []);
 
   return { slots, availableDates, loading, fetchByDate, fetchByMonth };
 }

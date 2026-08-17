@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { mediaService } from '../services/media.service';
-import { useToast } from './useToast';
 
 export function useMedia(type, activeOnly = true) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { error: showError } = useToast();
 
   const fetchMedia = useCallback(async () => {
+    if (!type) return;
     setLoading(true);
     try {
       const data = activeOnly
@@ -15,15 +14,15 @@ export function useMedia(type, activeOnly = true) {
         : await mediaService.getAll(type);
       setItems(data.media || []);
     } catch (err) {
-      showError(err.message);
+      console.error('Error fetching media:', err.message);
     } finally {
       setLoading(false);
     }
-  }, [type, activeOnly, showError]);
+  }, [type, activeOnly]);
 
   useEffect(() => {
-    if (type) fetchMedia();
-  }, [type, fetchMedia]);
+    fetchMedia();
+  }, [fetchMedia]);
 
   return { items, loading, fetchMedia };
 }

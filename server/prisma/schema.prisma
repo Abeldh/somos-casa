@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum MediaType {
+  SPOTIFY
+  YOUTUBE
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  phone        String?
+  role         Role     @default(CLIENT)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  appointments Appointment[]
+
+  @@map("users")
+}
+
+model Appointment {
+  id             String            @id @default(uuid())
+  userId         String            @map("user_id")
+  date           DateTime
+  startTime      String            @map("start_time")
+  endTime        String            @map("end_time")
+  status         AppointmentStatus @default(PENDING)
+  partnerName    String            @map("partner_name")
+  reason         String
+  notes          String?
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("appointments")
+}
+
+model Availability {
+  id        String   @id @default(uuid())
+  date      DateTime
+  startTime String   @map("start_time")
+  endTime   String   @map("end_time")
+  isBooked  Boolean  @default(false) @map("is_booked")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("availability")
+}
+
+model Media {
+  id          String    @id @default(uuid())
+  type        MediaType
+  title       String
+  url         String
+  description String?
+  thumbnail   String?
+  category    String?
+  isActive    Boolean   @default(true) @map("is_active")
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("media")
+}

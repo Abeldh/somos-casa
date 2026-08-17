@@ -1,0 +1,51 @@
+name: somoscasa
+region: nyc
+services:
+  - name: backend
+    dockerfile_path: backend/Dockerfile.prod
+    source_dir: /
+    http_port: 8080
+    instance_size_slug: professional-xs
+    instance_count: 2
+    health_check:
+      http_path: /actuator/health
+      initial_delay_seconds: 30
+      period_seconds: 10
+    envs:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: DB_HOST
+        value: ${db.HOSTNAME}
+      - key: DB_PORT
+        value: ${db.PORT}
+      - key: DB_NAME
+        value: ${db.DATABASE}
+      - key: DB_USERNAME
+        value: ${db.USERNAME}
+      - key: DB_PASSWORD
+        value: ${db.PASSWORD}
+      - key: REDIS_HOST
+        value: ${redis.HOSTNAME}
+      - key: REDIS_PORT
+        value: ${redis.PORT}
+      - key: REDIS_PASSWORD
+        value: ${redis.PASSWORD}
+
+  - name: frontend
+    dockerfile_path: frontend/Dockerfile.prod
+    source_dir: /
+    http_port: 80
+    instance_size_slug: basic-xxs
+
+databases:
+  - engine: PG
+    name: db
+    num_nodes: 1
+    size: db-s-1vcpu-1gb
+    version: "16"
+
+  - engine: REDIS
+    name: redis
+    num_nodes: 1
+    size: db-s-1vcpu-1gb
+    version: "7"

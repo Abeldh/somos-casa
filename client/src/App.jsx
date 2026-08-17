@@ -13,6 +13,7 @@ import AdminMediaPage from './pages/AdminMediaPage';
 import AdminAvailabilityPage from './pages/AdminAvailabilityPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import Toast from './components/ui/Toast';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/booking" element={
             <ProtectedRoute>
               <BookingPage />

@@ -33,6 +33,11 @@ export default function BookingForm() {
   }, [selectedDate, fetchByDate]);
 
   const handleSubmit = async () => {
+    if (!selectedDate || !selectedSlot || !formData.partnerName) {
+      error('Faltan datos. Vuelve a intentar.');
+      setStep(1);
+      return;
+    }
     setSubmitting(true);
     try {
       await appointmentService.create({
@@ -102,13 +107,20 @@ export default function BookingForm() {
         />
       )}
 
-      {step === 3 && (
+      {step === 3 && selectedSlot && (
         <StepReason
           formData={{ ...formData, date: selectedDate, startTime: selectedSlot.startTime, endTime: selectedSlot.endTime }}
           onSubmit={handleSubmit}
           onBack={() => setStep(2)}
           loading={submitting}
         />
+      )}
+
+      {step === 3 && !selectedSlot && (
+        <div className="text-center py-8">
+          <p className="text-gray-500 mb-4">Se perdió la selección de horario. Por favor vuelve a elegir.</p>
+          <Button onClick={() => setStep(1)}>Volver al calendario</Button>
+        </div>
       )}
     </div>
   );

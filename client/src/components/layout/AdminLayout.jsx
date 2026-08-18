@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import { classNames } from '../../utils/helpers';
@@ -11,6 +11,7 @@ const navItems = [
   { to: '/admin/appointments', icon: Calendar, label: 'Citas' },
   { to: '/admin/availability', icon: Clock, label: 'Disponibilidad' },
   { to: '/admin/media', icon: Film, label: 'Multimedia' },
+  { to: '/admin/books', icon: BookOpen, label: 'Libros' },
 ];
 
 export default function AdminLayout() {

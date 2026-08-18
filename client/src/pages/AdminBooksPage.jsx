@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Plus, Trash2, Star, StarOff, Pencil, X, Save } from 'lucide-react';
+import { BookOpen, Plus, Trash2, Star, StarOff, Pencil, X, Save, Eye, EyeOff } from 'lucide-react';
 import { bookService } from '../services/book.service';
 import { useToast } from '../hooks/useToast';
 import Input from '../components/ui/Input';
@@ -82,7 +82,7 @@ export default function AdminBooksPage() {
     finally { setEditSaving(false); }
   };
 
-  const del = async (id) => { if (!confirm('¿Desactivar este libro?')) return; try { await bookService.remove(id); success('Desactivado'); fetchBooks(); } catch (e) { error(e.message); } };
+  const del = async (id) => { try { await bookService.toggleActive(id); fetchBooks(); } catch (e) { error(e.message); } };
   const feat = async (id) => { try { await bookService.toggleFeatured(id); fetchBooks(); } catch (e) { error(e.message); } };
 
   return (
@@ -139,8 +139,8 @@ export default function AdminBooksPage() {
                     <button onClick={() => feat(b.id)} className={`${b.isFeatured ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-500'} transition-colors`} title={b.isFeatured ? 'Quitar destacado' : 'Destacar'}>
                       {b.isFeatured ? <Star className="w-4 h-4 fill-yellow-400" /> : <StarOff className="w-4 h-4" />}
                     </button>
-                    <button onClick={() => del(b.id)} className="text-gray-400 hover:text-red-500 transition-colors" title="Desactivar">
-                      <Trash2 className="w-4 h-4" />
+                    <button onClick={() => del(b.id)} className={`${b.isActive ? 'text-green-500 hover:text-red-500' : 'text-red-400 hover:text-green-500'} transition-colors`} title={b.isActive ? 'Desactivar' : 'Activar'}>
+                      {b.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>

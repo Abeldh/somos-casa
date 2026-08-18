@@ -11,5 +11,6 @@ router.get('/:slug', bookController.getBySlug);
 router.post('/', authMiddleware, adminMiddleware, bookController.create);
 router.put('/:id', authMiddleware, adminMiddleware, bookController.update);
 router.delete('/:id', authMiddleware, adminMiddleware, bookController.remove);
+router.patch('/:id/active', authMiddleware, adminMiddleware, bookController.toggleActive);
 router.patch('/:id/featured', authMiddleware, adminMiddleware, bookController.toggleFeatured);
 export default router;

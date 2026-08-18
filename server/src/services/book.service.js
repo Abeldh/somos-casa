@@ -9,5 +9,6 @@ export const bookService = {
   async create(data){let slug=generateSlug(data.title);const ex=await prisma.book.findUnique({where:{slug}});if(ex)slug=`${slug}-${Date.now().toString(36)}`;const book=await prisma.book.create({data:{...data,slug}});return {book};},
   async update(id,data){if(data.title){let slug=generateSlug(data.title);const ex=await prisma.book.findFirst({where:{slug,id:{not:id}}});if(ex)slug=`${slug}-${Date.now().toString(36)}`;data.slug=slug;}const book=await prisma.book.update({where:{id},data});return {book};},
   async remove(id){await prisma.book.update({where:{id},data:{isActive:false}});return {message:'Libro desactivado'};},
+  async toggleActive(id){const b=await prisma.book.findUnique({where:{id}});if(!b){const e=new Error('No encontrado');e.statusCode=404;throw e;}const u=await prisma.book.update({where:{id},data:{isActive:!b.isActive}});return {book:u};},
   async toggleFeatured(id){const b=await prisma.book.findUnique({where:{id}});if(!b){const e=new Error('No encontrado');e.statusCode=404;throw e;}const u=await prisma.book.update({where:{id},data:{isFeatured:!b.isFeatured}});return {book:u};},
 };

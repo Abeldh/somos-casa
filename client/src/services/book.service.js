@@ -8,5 +8,6 @@ export const bookService = {
   create: (data) => api.post('/books', data),
   update: (id, data) => api.put(`/books/${id}`, data),
   remove: (id) => api.delete(`/books/${id}`),
+  toggleActive: (id) => api.patch(`/books/${id}/active`),
   toggleFeatured: (id) => api.patch(`/books/${id}/featured`),
 };

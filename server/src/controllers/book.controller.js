@@ -9,5 +9,6 @@ export const bookController = {
   async create(req,res,next){try{return createdResponse(res,await bookService.create(req.body),'Libro creado');}catch(e){next(e);}},
   async update(req,res,next){try{return successResponse(res,await bookService.update(req.params.id,req.body),'Actualizado');}catch(e){next(e);}},
   async remove(req,res,next){try{return successResponse(res,await bookService.remove(req.params.id));}catch(e){next(e);}},
+  async toggleActive(req,res,next){try{return successResponse(res,await bookService.toggleActive(req.params.id));}catch(e){next(e);}},
   async toggleFeatured(req,res,next){try{return successResponse(res,await bookService.toggleFeatured(req.params.id));}catch(e){next(e);}},
 };

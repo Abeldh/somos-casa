@@ -16,12 +16,22 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message = error.response?.data?.message || 'Error de conexión';
-    if (error.response?.status === 401) {
+    const data = error.response?.data;
+    const status = error.response?.status;
+
+    let message = data?.message || 'Error de conexión';
+
+    // Si hay errores de validación (422), construir mensaje detallado
+    if (status === 422 && data?.errors && Array.isArray(data.errors)) {
+      message = data.errors.map((e) => e.message).join(' • ');
+    }
+
+    if (status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
-    return Promise.reject({ message, status: error.response?.status });
+
+    return Promise.reject({ message, status, errors: data?.errors });
   }
 );
 

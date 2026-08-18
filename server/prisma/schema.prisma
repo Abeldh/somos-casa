@@ -37,6 +37,8 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   appointments Appointment[]
+  cartItems    CartItem[]
+  orders       Order[]
 
   @@map("users")
 }
@@ -84,4 +86,92 @@ model Media {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("media")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Book {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  author      String
+  description String?
+  price       Float
+  coverImage  String?  @map("cover_image")
+  category    String?
+  isbn        String?  @unique
+  stock       Int      @default(0)
+  pages       Int?
+  publisher   String?
+  language    String   @default("Español")
+  isActive    Boolean  @default(true) @map("is_active")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+
+  @@map("books")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  bookId    String   @map("book_id")
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@map("cart_items")
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String      @map("user_id")
+  orderNumber     String      @unique @map("order_number")
+  status          OrderStatus @default(PENDING)
+  subtotal        Float
+  shippingCost    Float       @default(0) @map("shipping_cost")
+  total           Float
+  shippingName    String?     @map("shipping_name")
+  shippingPhone   String?     @map("shipping_phone")
+  shippingAddress String?     @map("shipping_address")
+  shippingCity    String?     @map("shipping_city")
+  shippingState   String?     @map("shipping_state")
+  shippingZip     String?     @map("shipping_zip")
+  notes           String?
+  paidAt          DateTime?   @map("paid_at")
+  shippedAt       DateTime?   @map("shipped_at")
+  deliveredAt     DateTime?   @map("delivered_at")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id       String @id @default(uuid())
+  orderId  String @map("order_id")
+  bookId   String @map("book_id")
+  title    String
+  price    Float
+  quantity Int
+
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  book     Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
 }

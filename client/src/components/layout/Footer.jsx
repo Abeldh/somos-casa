@@ -1,4 +1,5 @@
 import { Heart, Mail, Phone, MapPin } from 'lucide-react';
+import Logo from '../ui/Logo';
 
 export default function Footer() {
   return (
@@ -6,7 +7,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-display text-xl font-semibold text-white mb-4">Somos Casa</h3>
+            <div className="flex items-center gap-3 mb-4">
+              <Logo size={44} />
+              <h3 className="font-display text-xl font-semibold text-white">Somos Casa</h3>
+            </div>
             <p className="text-sm leading-relaxed text-gray-400">
               Fortalecemos matrimonios a través de asesoría profesional, contenido educativo y acompañamiento integral.
             </p>

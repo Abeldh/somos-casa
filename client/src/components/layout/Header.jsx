@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, Home, Calendar, LayoutDashboard, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../ui/Button';
+import Logo from '../ui/Logo';
 import { getInitials } from '../../utils/helpers';
 
 export default function Header() {
@@ -20,9 +21,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center">
-              <Home className="w-5 h-5 text-white" />
-            </div>
+            <Logo size={38} />
             <span className="font-display text-xl font-semibold text-gray-900">Somos Casa</span>
           </Link>
 

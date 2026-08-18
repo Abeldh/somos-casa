@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import Logo from '../components/ui/Logo';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -37,8 +38,8 @@ export default function LoginPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Heart className="w-6 h-6 text-primary-600" />
+          <div className="flex justify-center mb-4">
+            <Logo size={64} />
           </div>
           <h1 className="text-2xl font-display font-bold text-gray-900">Bienvenido de vuelta</h1>
           <p className="text-gray-500 mt-2">Ingresa a tu cuenta de Somos Casa</p>

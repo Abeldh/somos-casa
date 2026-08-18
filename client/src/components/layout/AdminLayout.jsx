@@ -4,6 +4,7 @@ import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X } from 'l
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import { classNames } from '../../utils/helpers';
+import Logo from '../ui/Logo';
 
 const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -31,7 +32,10 @@ export default function AdminLayout() {
         <button onClick={() => setSidebarOpen(true)} className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
           <Menu className="w-5 h-5" />
         </button>
-        <Link to="/" className="font-display text-lg font-semibold text-gray-900">Somos Casa</Link>
+        <Link to="/" className="flex items-center gap-2">
+          <Logo size={32} />
+          <span className="font-display text-lg font-semibold text-gray-900">Somos Casa</span>
+        </Link>
         <div className="w-9" />
       </header>
 
@@ -47,9 +51,12 @@ export default function AdminLayout() {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       )}>
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <div>
-            <Link to="/" className="font-display text-lg font-semibold text-gray-900">Somos Casa</Link>
-            <p className="text-xs text-gray-500 mt-1">Panel Administrativo</p>
+          <div className="flex items-center gap-3">
+            <Logo size={36} />
+            <div>
+              <Link to="/" className="font-display text-base font-semibold text-gray-900">Somos Casa</Link>
+              <p className="text-xs text-gray-500">Panel Administrativo</p>
+            </div>
           </div>
           <button onClick={closeSidebar} className="lg:hidden p-1 text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />

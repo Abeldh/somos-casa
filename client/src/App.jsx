@@ -12,11 +12,6 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminMediaPage from './pages/AdminMediaPage';
 import AdminAvailabilityPage from './pages/AdminAvailabilityPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
-import AdminBooksPage from './pages/AdminBooksPage';
-import StorePage from './pages/StorePage';
-import BookDetailPage from './pages/BookDetailPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import Toast from './components/ui/Toast';
@@ -31,12 +26,16 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/store" element={<StorePage />} />
-          <Route path="/store/:slug" element={<BookDetailPage />} />
-          <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
-          <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-          <Route path="/booking" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><UserDashboardPage /></ProtectedRoute>} />
+          <Route path="/booking" element={
+            <ProtectedRoute>
+              <BookingPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <UserDashboardPage />
+            </ProtectedRoute>
+          } />
         </Route>
 
         <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -44,7 +43,6 @@ export default function App() {
           <Route path="/admin/appointments" element={<AdminAppointmentsPage />} />
           <Route path="/admin/availability" element={<AdminAvailabilityPage />} />
           <Route path="/admin/media" element={<AdminMediaPage />} />
-          <Route path="/admin/books" element={<AdminBooksPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

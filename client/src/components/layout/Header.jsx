@@ -29,9 +29,6 @@ export default function Header() {
             <Link to="/" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
               Inicio
             </Link>
-            <Link to="/store" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
-              Librería
-            </Link>
             <Link to="/booking" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
               Agendar
             </Link>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, Home, Calendar, LayoutDashboard, LogOut, User } from 'lucide-react';
+import { Menu, X, Home, Calendar, LayoutDashboard, LogOut, User, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useCart } from '../../hooks/useCart';
 import Button from '../ui/Button';
 import Logo from '../ui/Logo';
 import { getInitials } from '../../utils/helpers';
@@ -9,6 +10,7 @@ import { getInitials } from '../../utils/helpers';
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { itemCount } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -44,6 +46,14 @@ export default function Header() {
                 )}
                 <Link to="/dashboard" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
                   Mis Citas
+                </Link>
+                <Link to="/cart" className="relative text-gray-600 hover:text-primary-600 transition-colors">
+                  <ShoppingCart className="w-5 h-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary-600 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {itemCount > 9 ? '9+' : itemCount}
+                    </span>
+                  )}
                 </Link>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center text-xs font-semibold">
@@ -81,6 +91,9 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Mis Citas</Link>
+                <Link to="/cart" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium flex items-center gap-2">
+                  Carrito {itemCount > 0 && <span className="bg-primary-600 text-white text-xs px-2 py-0.5 rounded-full">{itemCount}</span>}
+                </Link>
                 {isAdmin && <Link to="/admin" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Admin</Link>}
                 <button onClick={handleLogout} className="block py-2 text-red-600 font-medium">Cerrar Sesión</button>
               </>

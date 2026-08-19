@@ -7,8 +7,19 @@ import { registerSchema, loginSchema } from '../validators/auth.validator.js';
 
 const router = Router();
 
+// Public (rate limited)
 router.post('/register', authRateLimiter, validate(registerSchema), authController.register);
 router.post('/login', authRateLimiter, validate(loginSchema), authController.login);
+router.post('/refresh', authRateLimiter, authController.refresh);
+
+// Authenticated
 router.get('/me', authMiddleware, authController.getMe);
+router.post('/logout', authMiddleware, authController.logout);
+
+// MFA (authenticated)
+router.get('/mfa/status', authMiddleware, authController.mfaStatus);
+router.post('/mfa/setup', authMiddleware, authController.mfaSetup);
+router.post('/mfa/verify', authMiddleware, authController.mfaVerify);
+router.post('/mfa/disable', authMiddleware, authController.mfaDisable);
 
 export default router;

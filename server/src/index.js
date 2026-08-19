@@ -1,6 +1,7 @@
 import { env } from './config/env.js';
 import app from './app.js';
 import prisma from './config/database.js';
+import { cleanupExpiredTokens } from './services/token.service.js';
 
 // ═══════════════════════════════════════════════════════════════
 // Validación de variables de entorno críticas ANTES de arrancar
@@ -33,6 +34,12 @@ async function main() {
       console.log(`🌍 Entorno: ${env.nodeEnv}`);
       console.log(`💾 Memoria: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`);
     });
+
+    // Limpieza de refresh tokens expirados cada 6 horas
+    setInterval(async () => {
+      const cleaned = await cleanupExpiredTokens();
+      if (cleaned > 0) console.log(`🧹 ${cleaned} tokens expirados eliminados`);
+    }, 6 * 60 * 60 * 1000);
 
     // Timeouts para conexiones lentas
     server.keepAliveTimeout = 65000;

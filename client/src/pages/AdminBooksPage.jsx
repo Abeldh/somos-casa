@@ -8,6 +8,7 @@ import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
 import Modal from '../components/ui/Modal';
 import ImageUpload from '../components/ui/ImageUpload';
+import PdfUpload from '../components/ui/PdfUpload';
 
 export default function AdminBooksPage() {
   const [books, setBooks] = useState([]);
@@ -107,7 +108,7 @@ export default function AdminBooksPage() {
           </div>
           <Input label="Categoría" name="category" value={form.category} onChange={ch} placeholder="Matrimonio, Fe..." />
           <ImageUpload label="Portada" value={form.coverImage} onChange={(url) => setForm((p) => ({ ...p, coverImage: url }))} />
-          <Input label="URL del PDF (Cloudinary)" name="pdfUrl" value={form.pdfUrl} onChange={ch} placeholder="https://res.cloudinary.com/.../libro.pdf" />
+          <PdfUpload label="Libro PDF" value={form.pdfUrl} onChange={(url) => setForm((p) => ({ ...p, pdfUrl: url }))} />
           <Input label="Editorial" name="publisher" value={form.publisher} onChange={ch} />
           <div className="grid grid-cols-2 gap-4">
             <Input label="Páginas" name="pages" type="number" value={form.pages} onChange={ch} />
@@ -166,7 +167,7 @@ export default function AdminBooksPage() {
             </div>
             <Input label="Categoría" name="category" value={editForm.category} onChange={editCh} />
             <ImageUpload label="Portada" value={editForm.coverImage} onChange={(url) => setEditForm((p) => ({ ...p, coverImage: url }))} />
-            <Input label="URL del PDF" name="pdfUrl" value={editForm.pdfUrl} onChange={editCh} placeholder="https://res.cloudinary.com/.../libro.pdf" />
+            <PdfUpload label="Libro PDF" value={editForm.pdfUrl} onChange={(url) => setEditForm((p) => ({ ...p, pdfUrl: url }))} />
             <Input label="Editorial" name="publisher" value={editForm.publisher} onChange={editCh} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Páginas" name="pages" type="number" value={editForm.pages} onChange={editCh} />

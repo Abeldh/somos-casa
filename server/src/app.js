@@ -6,6 +6,8 @@ import zlib from 'zlib';
 import { corsOptions } from './config/cors.js';
 import { errorHandler } from './middleware/errorHandler.middleware.js';
 import { apiRateLimiter } from './middleware/rateLimiter.middleware.js';
+import { securityHeaders } from './middleware/security.middleware.js';
+import { sanitizeInputs } from './middleware/sanitize.middleware.js';
 import routes from './routes/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -16,7 +18,10 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-// Compresión manual (sin dependencia extra)
+// Security Headers (CSP, HSTS, X-Frame, etc.)
+app.use(securityHeaders);
+
+// Compresión gzip
 app.use((req, res, next) => {
   const originalSend = res.send;
   res.send = function (body) {
@@ -37,38 +42,29 @@ app.use((req, res, next) => {
 // CORS
 app.use(cors(corsOptions));
 
-// Body parsing con límites
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+// Body parsing con límites restrictivos
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Sanitización global de inputs (XSS, NoSQL injection, prototype pollution)
+app.use(sanitizeInputs);
 
 // Rate limiting global para API
 app.use('/api', apiRateLimiter);
 
-// Security headers
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  next();
-});
-
 // API routes
 app.use('/api', routes);
 
-// Serve frontend con cache headers agresivos para assets
+// Serve frontend con cache headers
 const clientDist = path.join(__dirname, '../../client/dist');
-
 app.use(express.static(clientDist, {
-  maxAge: '1y',            // Cache de assets (JS, CSS, imágenes) por 1 año
-  etag: true,              // ETags para validación
+  maxAge: '1y',
+  etag: true,
   lastModified: true,
   setHeaders: (res, filePath) => {
-    // index.html nunca cachear (SPA necesita siempre la última versión)
     if (filePath.endsWith('.html')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
-    // Assets con hash en el nombre → cache inmutable
     if (filePath.match(/\.(js|css)$/) && filePath.includes('-')) {
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     }

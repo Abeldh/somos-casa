@@ -2,6 +2,26 @@ import { env } from './config/env.js';
 import app from './app.js';
 import prisma from './config/database.js';
 
+// ═══════════════════════════════════════════════════════════════
+// Validación de variables de entorno críticas ANTES de arrancar
+// ═══════════════════════════════════════════════════════════════
+function validateEnv() {
+  const errors = [];
+  if (!process.env.DATABASE_URL) errors.push('DATABASE_URL no definida');
+  if (!process.env.JWT_SECRET) errors.push('JWT_SECRET no definida');
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
+    errors.push('JWT_SECRET debe tener mínimo 32 caracteres');
+  }
+  if (errors.length > 0) {
+    console.error('🚨 ERRORES DE CONFIGURACIÓN:');
+    errors.forEach((e) => console.error(`   ❌ ${e}`));
+    console.error('   Corrige las variables de entorno antes de iniciar.');
+    process.exit(1);
+  }
+}
+
+validateEnv();
+
 async function main() {
   try {
     await prisma.$connect();

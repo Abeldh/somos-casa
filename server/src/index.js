@@ -11,7 +11,7 @@ function validateEnv() {
   if (!process.env.DATABASE_URL) errors.push('DATABASE_URL no definida');
   if (!process.env.JWT_SECRET) errors.push('JWT_SECRET no definida');
   if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
-    errors.push('JWT_SECRET debe tener mínimo 32 caracteres');
+    errors.push(`JWT_SECRET debe tener mínimo 32 caracteres (actual: ${process.env.JWT_SECRET.length})`);
   }
   if (errors.length > 0) {
     console.error('🚨 ERRORES DE CONFIGURACIÓN:');

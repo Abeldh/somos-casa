@@ -1,5 +1,9 @@
 import dotenv from 'dotenv';
-dotenv.config();
+
+// Solo cargar .env en desarrollo (Railway inyecta variables directamente)
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const env = {
   port: process.env.PORT || 4000,

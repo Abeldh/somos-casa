@@ -126,11 +126,6 @@ export default function CartPage() {
                   <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Envío</span>
-                  <span className="font-medium text-green-600">Digital — Gratis</span>
-                </div>
-
                 <div className="border-t border-gray-100 pt-4 flex justify-between">
                   <span className="font-semibold text-gray-900">Total</span>
                   <span className="text-2xl font-bold text-primary-700">${total.toFixed(2)}</span>
@@ -145,7 +140,7 @@ export default function CartPage() {
               </Link>
 
               <div className="mt-4 text-center">
-                <p className="text-xs text-gray-400">Libros digitales — descarga inmediata tras confirmar pago</p>
+                <p className="text-xs text-gray-400">Descarga disponible tras confirmar pago</p>
               </div>
             </div>
           </div>

@@ -15,6 +15,7 @@ router.post('/refresh', authRateLimiter, authController.refresh);
 // Authenticated
 router.get('/me', authMiddleware, authController.getMe);
 router.post('/logout', authMiddleware, authController.logout);
+router.post('/change-password', authMiddleware, authController.changePassword);
 
 // MFA (authenticated)
 router.get('/mfa/status', authMiddleware, authController.mfaStatus);

@@ -100,4 +100,17 @@ export const authController = {
       next(error);
     }
   },
+
+  async changePassword(req, res, next) {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Contraseña actual y nueva son requeridas' });
+      }
+      const result = await authService.changePassword(req.user.id, { currentPassword, newPassword }, req);
+      return successResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  },
 };

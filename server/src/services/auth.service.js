@@ -91,4 +91,24 @@ export const authService = {
     const hasMfa = await mfaService.hasMfa(userId);
     return { user: { ...user, mfaEnabled: hasMfa } };
   },
+
+  async changePassword(userId, { currentPassword, newPassword }, req = null) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) { const e = new Error('Usuario no encontrado'); e.statusCode = 404; throw e; }
+
+    const valid = await comparePassword(currentPassword, user.password);
+    if (!valid) { const e = new Error('La contraseña actual es incorrecta'); e.statusCode = 401; throw e; }
+
+    if (newPassword.length < 8) { const e = new Error('La nueva contraseña debe tener mínimo 8 caracteres'); e.statusCode = 422; throw e; }
+
+    const hashed = await hashPassword(newPassword);
+    await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
+
+    // Revocar todos los refresh tokens (forzar re-login en otros dispositivos)
+    await revokeAllTokens(userId);
+
+    await audit(EVENTS.LOGIN_SUCCESS, { userId, detail: 'Password changed', req });
+
+    return { message: 'Contraseña actualizada correctamente' };
+  },
 };

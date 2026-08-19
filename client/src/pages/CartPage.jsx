@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Trash2, Minus, Plus, ShoppingBag, ArrowRight, ArrowLeft, Package } from 'lucide-react';
+import { ShoppingCart, Trash2, Minus, Plus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
 
 export default function CartPage() {
   const { items, subtotal, itemCount, loading, updateQuantity, removeItem, clearCart } = useCart();
-  const shippingCost = subtotal >= 500 ? 0 : 99;
-  const total = subtotal + shippingCost;
+  const total = subtotal;
 
   if (loading) return <Spinner className="py-20" size="lg" />;
 
@@ -128,27 +127,9 @@ export default function CartPage() {
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500 flex items-center gap-1">
-                    <Package className="w-3.5 h-3.5" />
-                    Envío
-                  </span>
-                  {shippingCost === 0 ? (
-                    <span className="font-medium text-green-600">Gratis</span>
-                  ) : (
-                    <span className="font-medium text-gray-900">${shippingCost.toFixed(2)}</span>
-                  )}
+                  <span className="text-gray-500">Envío</span>
+                  <span className="font-medium text-green-600">Digital — Gratis</span>
                 </div>
-
-                {shippingCost > 0 && (
-                  <div className="bg-green-50 rounded-lg p-3">
-                    <p className="text-xs text-green-700">
-                      🚚 ¡Agrega ${(500 - subtotal).toFixed(2)} más para envío gratis!
-                    </p>
-                    <div className="mt-2 w-full bg-green-100 rounded-full h-1.5">
-                      <div className="bg-green-500 h-1.5 rounded-full transition-all" style={{ width: `${Math.min((subtotal / 500) * 100, 100)}%` }} />
-                    </div>
-                  </div>
-                )}
 
                 <div className="border-t border-gray-100 pt-4 flex justify-between">
                   <span className="font-semibold text-gray-900">Total</span>
@@ -164,7 +145,7 @@ export default function CartPage() {
               </Link>
 
               <div className="mt-4 text-center">
-                <p className="text-xs text-gray-400">Pago contra entrega o transferencia</p>
+                <p className="text-xs text-gray-400">Libros digitales — descarga inmediata tras confirmar pago</p>
               </div>
             </div>
           </div>

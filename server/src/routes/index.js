@@ -8,6 +8,8 @@ import bookRoutes from './book.routes.js';
 import cartRoutes from './cart.routes.js';
 import orderRoutes from './order.routes.js';
 
+import { cache } from '../utils/cache.js';
+
 const router = Router();
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
@@ -17,6 +19,16 @@ router.use('/media', mediaRoutes);
 router.use('/books', bookRoutes);
 router.use('/cart', cartRoutes);
 router.use('/orders', orderRoutes);
-router.get('/health', (req, res) => { res.json({ status: 'ok', timestamp: new Date().toISOString() }); });
+
+// Health check con métricas
+router.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: Math.round(process.uptime()) + 's',
+    memory: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
+    cache: cache.stats(),
+  });
+});
 
 export default router;

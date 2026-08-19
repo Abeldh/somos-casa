@@ -18,6 +18,7 @@ export function AuthProvider({ children }) {
       setUser(data.user);
     } catch {
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       setToken(null);
       setUser(null);
     } finally {
@@ -29,33 +30,73 @@ export function AuthProvider({ children }) {
     loadUser();
   }, [loadUser]);
 
-  const login = async (email, password) => {
-    const data = await authService.login({ email, password });
-    localStorage.setItem('token', data.token);
-    setToken(data.token);
+  const login = async (email, password, mfaCode) => {
+    const data = await authService.login({ email, password, mfaCode });
+
+    // Si requiere MFA, no setear tokens aún
+    if (data.requireMfa) {
+      return data;
+    }
+
+    const accessToken = data.accessToken || data.token;
+    const refreshToken = data.refreshToken;
+
+    localStorage.setItem('token', accessToken);
+    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+    setToken(accessToken);
     setUser(data.user);
     return data;
   };
 
   const register = async (userData) => {
     const data = await authService.register(userData);
-    localStorage.setItem('token', data.token);
-    setToken(data.token);
+
+    const accessToken = data.accessToken || data.token;
+    const refreshToken = data.refreshToken;
+
+    localStorage.setItem('token', accessToken);
+    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+    setToken(accessToken);
     setUser(data.user);
     return data;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch {
+      // Ignorar error de logout en servidor
+    }
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     setToken(null);
     setUser(null);
+  };
+
+  const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      logout();
+      return null;
+    }
+    try {
+      const data = await authService.refresh(refreshToken);
+      localStorage.setItem('token', data.accessToken);
+      if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken);
+      setToken(data.accessToken);
+      setUser(data.user);
+      return data.accessToken;
+    } catch {
+      logout();
+      return null;
+    }
   };
 
   const isAdmin = user?.role === 'ADMIN';
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, isAdmin, isAuthenticated, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, isAdmin, isAuthenticated, login, register, logout, refreshAccessToken }}>
       {children}
     </AuthContext.Provider>
   );

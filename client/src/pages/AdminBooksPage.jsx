@@ -7,6 +7,7 @@ import Textarea from '../components/ui/Textarea';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
 import Modal from '../components/ui/Modal';
+import ImageUpload from '../components/ui/ImageUpload';
 
 export default function AdminBooksPage() {
   const [books, setBooks] = useState([]);
@@ -103,7 +104,7 @@ export default function AdminBooksPage() {
             <Input label="Stock" name="stock" type="number" value={form.stock} onChange={ch} />
           </div>
           <Input label="Categoría" name="category" value={form.category} onChange={ch} placeholder="Matrimonio, Fe..." />
-          <Input label="URL Portada" name="coverImage" value={form.coverImage} onChange={ch} placeholder="https://drive.google.com/uc?export=view&id=..." />
+          <ImageUpload label="Portada" value={form.coverImage} onChange={(url) => setForm((p) => ({ ...p, coverImage: url }))} />
           <Input label="Editorial" name="publisher" value={form.publisher} onChange={ch} />
           <div className="grid grid-cols-2 gap-4">
             <Input label="Páginas" name="pages" type="number" value={form.pages} onChange={ch} />
@@ -154,12 +155,6 @@ export default function AdminBooksPage() {
       <Modal isOpen={!!editBook} onClose={() => setEditBook(null)} title="Editar Libro">
         {editBook && (
           <div className="space-y-4">
-            {/* Preview de portada */}
-            {editForm.coverImage && (
-              <div className="flex justify-center">
-                <img src={editForm.coverImage} alt="Preview" className="w-24 h-32 object-cover rounded-lg border border-gray-200" />
-              </div>
-            )}
             <Input label="Título *" name="title" value={editForm.title} onChange={editCh} />
             <Input label="Autor *" name="author" value={editForm.author} onChange={editCh} />
             <div className="grid grid-cols-2 gap-4">
@@ -167,7 +162,7 @@ export default function AdminBooksPage() {
               <Input label="Stock" name="stock" type="number" value={editForm.stock} onChange={editCh} />
             </div>
             <Input label="Categoría" name="category" value={editForm.category} onChange={editCh} />
-            <Input label="URL Portada" name="coverImage" value={editForm.coverImage} onChange={editCh} placeholder="https://drive.google.com/uc?export=view&id=..." />
+            <ImageUpload label="Portada" value={editForm.coverImage} onChange={(url) => setEditForm((p) => ({ ...p, coverImage: url }))} />
             <Input label="Editorial" name="publisher" value={editForm.publisher} onChange={editCh} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Páginas" name="pages" type="number" value={editForm.pages} onChange={editCh} />

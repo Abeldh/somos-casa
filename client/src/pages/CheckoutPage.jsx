@@ -44,15 +44,34 @@ export default function CheckoutPage() {
         Orden: <strong>{orderNum}</strong>
       </p>
       <div className="bg-warm-50 rounded-xl p-5 text-left mb-8">
-        <h4 className="font-semibold text-gray-900 text-sm mb-3">Datos para transferencia:</h4>
-        <ul className="space-y-2 text-sm text-gray-700">
-          <li><strong>Banco:</strong> [Tu banco aquí]</li>
-          <li><strong>CLABE:</strong> [Tu CLABE aquí]</li>
-          <li><strong>Beneficiario:</strong> Somos Casa</li>
-          <li><strong>Concepto:</strong> {orderNum}</li>
-          <li><strong>Monto:</strong> ${subtotal > 0 ? subtotal.toFixed(2) : '—'}</li>
-        </ul>
-        <p className="text-xs text-gray-500 mt-3">Envía tu comprobante por WhatsApp o email para agilizar la confirmación.</p>
+        <h4 className="font-semibold text-gray-900 text-sm mb-3">Métodos de pago:</h4>
+        
+        <div className="space-y-4">
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <p className="font-medium text-gray-800 text-sm mb-2">🏦 Transferencia bancaria</p>
+            <ul className="space-y-1.5 text-sm text-gray-700">
+              <li><strong>Banco:</strong> [Tu banco aquí]</li>
+              <li><strong>CLABE:</strong> [Tu CLABE aquí]</li>
+              <li><strong>Beneficiario:</strong> Somos Casa</li>
+              <li><strong>Concepto:</strong> {orderNum}</li>
+              <li><strong>Monto:</strong> ${subtotal > 0 ? subtotal.toFixed(2) : '—'}</li>
+            </ul>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border border-gray-200">
+            <p className="font-medium text-gray-800 text-sm mb-2">💳 PayPal</p>
+            <ul className="space-y-1.5 text-sm text-gray-700">
+              <li><strong>Enviar a:</strong> [tu-correo@paypal.com]</li>
+              <li><strong>Concepto:</strong> {orderNum}</li>
+              <li><strong>Monto:</strong> ${subtotal > 0 ? subtotal.toFixed(2) : '—'} MXN</li>
+            </ul>
+            <a href="https://www.paypal.com/paypalme/[TU_USUARIO_PAYPAL]" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors">
+              Pagar con PayPal
+            </a>
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-500 mt-4">Envía tu comprobante por WhatsApp o email para agilizar la confirmación.</p>
       </div>
       <div className="space-y-3">
         <Link to="/dashboard">

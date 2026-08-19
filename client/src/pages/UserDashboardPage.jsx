@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Calendar, Plus } from 'lucide-react';
+import { Calendar, Plus, BookOpen } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAppointments } from '../hooks/useAppointments';
 import { useToast } from '../hooks/useToast';
 import UserStats from '../components/dashboard/UserStats';
 import AppointmentList from '../components/dashboard/AppointmentList';
+import MyBooks from '../components/dashboard/MyBooks';
 import Button from '../components/ui/Button';
 
 export default function UserDashboardPage() {
@@ -25,7 +26,7 @@ export default function UserDashboardPage() {
           <h1 className="text-2xl font-display font-bold text-gray-900">
             Hola, {user?.firstName} 👋
           </h1>
-          <p className="text-gray-500 mt-1">Aquí puedes ver y gestionar tus citas de asesoría.</p>
+          <p className="text-gray-500 mt-1">Aquí puedes ver tus libros, citas y más.</p>
         </div>
         <Link to="/booking" className="mt-4 sm:mt-0">
           <Button className="flex items-center gap-2">
@@ -37,6 +38,16 @@ export default function UserDashboardPage() {
 
       <UserStats appointments={appointments} />
 
+      {/* Mis Libros */}
+      <div className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-primary-600" />
+          Mis Libros
+        </h2>
+        <MyBooks />
+      </div>
+
+      {/* Mis Citas */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-primary-600" />

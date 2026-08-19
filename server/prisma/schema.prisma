@@ -106,6 +106,7 @@ model Book {
   description String?
   price       Float
   coverImage  String?  @map("cover_image")
+  pdfUrl      String?  @map("pdf_url")
   category    String?
   isbn        String?  @unique
   stock       Int      @default(0)

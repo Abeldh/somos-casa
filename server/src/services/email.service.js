@@ -78,4 +78,35 @@ export const emailService = {
       console.error('Error enviando email:', error.message);
     }
   },
+
+  async sendDownloadReady({ to, firstName, orderNumber, books }) {
+    try {
+      await transporter.sendMail({
+        from: env.smtp.from,
+        to,
+        subject: '📚 ¡Tus libros están listos para descargar! - Somos Casa',
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #cc4035;">¡Pago confirmado!</h2>
+            <p>Hola ${firstName},</p>
+            <p>Hemos verificado tu pago para la orden <strong>${orderNumber}</strong>.</p>
+            <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #22c55e;">
+              <p style="margin: 0; font-weight: bold; color: #166534;">📖 Tus libros disponibles:</p>
+              <p style="margin: 8px 0 0; color: #166534;">${books}</p>
+            </div>
+            <p>Ya puedes descargar tus libros desde tu perfil en la sección <strong>"Mis Libros"</strong>.</p>
+            <p style="margin-top: 24px;">
+              <a href="${process.env.CLIENT_URL || 'https://somos-casa-production.up.railway.app'}/dashboard" 
+                 style="background: #cc4035; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block;">
+                Ir a Mis Libros
+              </a>
+            </p>
+            <p style="color: #666; font-size: 14px; margin-top: 24px;">— Equipo Somos Casa</p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error('Error enviando email de descarga:', error.message);
+    }
+  },
 };

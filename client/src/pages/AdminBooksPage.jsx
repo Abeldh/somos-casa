@@ -12,7 +12,7 @@ import ImageUpload from '../components/ui/ImageUpload';
 export default function AdminBooksPage() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ title: '', author: '', price: '', stock: '', category: '', coverImage: '', description: '', isbn: '', pages: '', publisher: '' });
+  const [form, setForm] = useState({ title: '', author: '', price: '', stock: '', category: '', coverImage: '', pdfUrl: '', description: '', isbn: '', pages: '', publisher: '' });
   const [saving, setSaving] = useState(false);
   const [editBook, setEditBook] = useState(null);
   const [editForm, setEditForm] = useState({});
@@ -38,7 +38,7 @@ export default function AdminBooksPage() {
     try {
       await bookService.create({ ...form, price: parseFloat(form.price), stock: parseInt(form.stock) || 0, pages: form.pages ? parseInt(form.pages) : null });
       success('Libro creado');
-      setForm({ title: '', author: '', price: '', stock: '', category: '', coverImage: '', description: '', isbn: '', pages: '', publisher: '' });
+      setForm({ title: '', author: '', price: '', stock: '', category: '', coverImage: '', pdfUrl: '', description: '', isbn: '', pages: '', publisher: '' });
       fetchBooks();
     } catch (e) { error(e.message); }
     finally { setSaving(false); }
@@ -53,6 +53,7 @@ export default function AdminBooksPage() {
       stock: String(book.stock || ''),
       category: book.category || '',
       coverImage: book.coverImage || '',
+      pdfUrl: book.pdfUrl || '',
       description: book.description || '',
       isbn: book.isbn || '',
       pages: book.pages ? String(book.pages) : '',
@@ -71,6 +72,7 @@ export default function AdminBooksPage() {
         stock: parseInt(editForm.stock) || 0,
         category: editForm.category || null,
         coverImage: editForm.coverImage || null,
+        pdfUrl: editForm.pdfUrl || null,
         description: editForm.description || null,
         isbn: editForm.isbn || null,
         pages: editForm.pages ? parseInt(editForm.pages) : null,
@@ -105,6 +107,7 @@ export default function AdminBooksPage() {
           </div>
           <Input label="Categoría" name="category" value={form.category} onChange={ch} placeholder="Matrimonio, Fe..." />
           <ImageUpload label="Portada" value={form.coverImage} onChange={(url) => setForm((p) => ({ ...p, coverImage: url }))} />
+          <Input label="URL del PDF (Cloudinary)" name="pdfUrl" value={form.pdfUrl} onChange={ch} placeholder="https://res.cloudinary.com/.../libro.pdf" />
           <Input label="Editorial" name="publisher" value={form.publisher} onChange={ch} />
           <div className="grid grid-cols-2 gap-4">
             <Input label="Páginas" name="pages" type="number" value={form.pages} onChange={ch} />
@@ -163,6 +166,7 @@ export default function AdminBooksPage() {
             </div>
             <Input label="Categoría" name="category" value={editForm.category} onChange={editCh} />
             <ImageUpload label="Portada" value={editForm.coverImage} onChange={(url) => setEditForm((p) => ({ ...p, coverImage: url }))} />
+            <Input label="URL del PDF" name="pdfUrl" value={editForm.pdfUrl} onChange={editCh} placeholder="https://res.cloudinary.com/.../libro.pdf" />
             <Input label="Editorial" name="publisher" value={editForm.publisher} onChange={editCh} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Páginas" name="pages" type="number" value={editForm.pages} onChange={editCh} />

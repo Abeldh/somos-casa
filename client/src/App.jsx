@@ -13,6 +13,7 @@ import AdminMediaPage from './pages/AdminMediaPage';
 import AdminAvailabilityPage from './pages/AdminAvailabilityPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import AdminBooksPage from './pages/AdminBooksPage';
+import AdminOrdersPage from './pages/AdminOrdersPage';
 import StorePage from './pages/StorePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CartPage from './pages/CartPage';
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/admin/availability" element={<AdminAvailabilityPage />} />
           <Route path="/admin/media" element={<AdminMediaPage />} />
           <Route path="/admin/books" element={<AdminBooksPage />} />
+          <Route path="/admin/orders" element={<AdminOrdersPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

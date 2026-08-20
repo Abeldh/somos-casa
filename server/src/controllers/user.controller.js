@@ -2,39 +2,9 @@ import { userService } from '../services/user.service.js';
 import { successResponse } from '../utils/apiResponse.js';
 
 export const userController = {
-  async getAll(req, res, next) {
-    try {
-      const result = await userService.getAll();
-      return successResponse(res, result);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async getById(req, res, next) {
-    try {
-      const result = await userService.getById(req.params.id);
-      return successResponse(res, result);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async updateRole(req, res, next) {
-    try {
-      const result = await userService.updateRole(req.params.id, req.body.role);
-      return successResponse(res, result, 'Rol actualizado');
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async toggleActive(req, res, next) {
-    try {
-      const result = await userService.toggleActive(req.params.id);
-      return successResponse(res, result, 'Estado actualizado');
-    } catch (error) {
-      next(error);
-    }
-  },
+  async getAll(req, res, next) { try { return successResponse(res, await userService.getAll()); } catch (e) { next(e); } },
+  async getById(req, res, next) { try { return successResponse(res, await userService.getById(req.params.id)); } catch (e) { next(e); } },
+  async getActivity(req, res, next) { try { return successResponse(res, await userService.getUserActivity(req.params.id)); } catch (e) { next(e); } },
+  async updateRole(req, res, next) { try { return successResponse(res, await userService.updateRole(req.params.id, req.body.role), 'Rol actualizado'); } catch (e) { next(e); } },
+  async toggleActive(req, res, next) { try { return successResponse(res, await userService.toggleActive(req.params.id), 'Estado actualizado'); } catch (e) { next(e); } },
 };

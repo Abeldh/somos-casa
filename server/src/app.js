@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import zlib from 'zlib';
@@ -41,6 +42,9 @@ app.use((req, res, next) => {
 
 // CORS
 app.use(cors(corsOptions));
+
+// Cookie parser
+app.use(cookieParser());
 
 // Body parsing con límites restrictivos
 app.use(express.json({ limit: '1mb' }));

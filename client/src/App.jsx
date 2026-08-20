@@ -15,6 +15,7 @@ import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import AdminBooksPage from './pages/AdminBooksPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 import StorePage from './pages/StorePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CartPage from './pages/CartPage';
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/admin/books" element={<AdminBooksPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

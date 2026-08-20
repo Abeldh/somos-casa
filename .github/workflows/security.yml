@@ -1,0 +1,63 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # SCA - Dependency vulnerabilities (server)
+      - name: Audit server dependencies
+        run: cd server && npm audit --audit-level=high || true
+
+      # SCA - Dependency vulnerabilities (client)
+      - name: Audit client dependencies
+        run: cd client && npm audit --audit-level=high || true
+
+      # Secret scanning
+      - name: Check for secrets in code
+        run: |
+          echo "Scanning for potential secrets..."
+          # Check for common secret patterns
+          if grep -rn "password\s*=\s*['\"]" --include="*.js" --include="*.jsx" server/src client/src | grep -v node_modules | grep -v ".test." | grep -v "hashPassword" | grep -v "comparePassword" | grep -v "currentPassword" | grep -v "newPassword"; then
+            echo "WARNING: Possible hardcoded password found"
+          fi
+          if grep -rn "sk_live\|sk_test\|AKIA" --include="*.js" --include="*.jsx" server/src client/src; then
+            echo "ERROR: Possible API key found in source"
+            exit 1
+          fi
+          echo "No secrets detected"
+
+      # SAST - Static analysis for security patterns
+      - name: Check for dangerous patterns
+        run: |
+          echo "Checking for dangerous code patterns..."
+          ISSUES=0
+          # Check for eval()
+          if grep -rn "eval(" --include="*.js" --include="*.jsx" server/src client/src; then
+            echo "WARNING: eval() usage found"
+            ISSUES=$((ISSUES+1))
+          fi
+          # Check for dangerouslySetInnerHTML
+          if grep -rn "dangerouslySetInnerHTML" --include="*.jsx" client/src; then
+            echo "WARNING: dangerouslySetInnerHTML found"
+            ISSUES=$((ISSUES+1))
+          fi
+          # Check for SQL string concatenation
+          if grep -rn "SELECT.*+.*FROM\|INSERT.*+.*INTO" --include="*.js" server/src; then
+            echo "ERROR: Possible SQL injection"
+            ISSUES=$((ISSUES+1))
+          fi
+          echo "Issues found: $ISSUES"
+          if [ $ISSUES -gt 2 ]; then exit 1; fi

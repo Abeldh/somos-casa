@@ -7,6 +7,7 @@ import mediaRoutes from './media.routes.js';
 import bookRoutes from './book.routes.js';
 import cartRoutes from './cart.routes.js';
 import orderRoutes from './order.routes.js';
+import uploadRoutes from './upload.routes.js';
 
 import { cache } from '../utils/cache.js';
 
@@ -19,6 +20,7 @@ router.use('/media', mediaRoutes);
 router.use('/books', bookRoutes);
 router.use('/cart', cartRoutes);
 router.use('/orders', orderRoutes);
+router.use('/upload', uploadRoutes);
 
 // Health check con métricas
 router.get('/health', (req, res) => {

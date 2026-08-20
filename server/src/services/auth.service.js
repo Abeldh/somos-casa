@@ -3,6 +3,7 @@ import { hashPassword, comparePassword } from '../utils/hashPassword.js';
 import { createTokenPair, rotateRefreshToken, revokeAllTokens } from './token.service.js';
 import { mfaService } from './mfa.service.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
+import { isPasswordBreached } from '../utils/passwordCheck.js';
 
 export const authService = {
   async register({ firstName, lastName, email, phone, password }, req = null) {
@@ -10,6 +11,14 @@ export const authService = {
     if (existing) {
       const error = new Error('El email ya está registrado');
       error.statusCode = 409;
+      throw error;
+    }
+
+    // Check password against known breaches
+    const breach = await isPasswordBreached(password);
+    if (breach.breached) {
+      const error = new Error(`Esta contraseña ha sido expuesta en ${breach.count.toLocaleString()} filtraciones de datos. Por tu seguridad, elige otra.`);
+      error.statusCode = 422;
       throw error;
     }
 
@@ -100,6 +109,14 @@ export const authService = {
     if (!valid) { const e = new Error('La contraseña actual es incorrecta'); e.statusCode = 401; throw e; }
 
     if (newPassword.length < 8) { const e = new Error('La nueva contraseña debe tener mínimo 8 caracteres'); e.statusCode = 422; throw e; }
+
+    // Check new password against breaches
+    const breach = await isPasswordBreached(newPassword);
+    if (breach.breached) {
+      const e = new Error(`Esta contraseña ha sido expuesta en filtraciones de datos. Elige otra más segura.`);
+      e.statusCode = 422;
+      throw e;
+    }
 
     const hashed = await hashPassword(newPassword);
     await prisma.user.update({ where: { id: userId }, data: { password: hashed } });

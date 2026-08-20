@@ -2,6 +2,20 @@ import crypto from 'crypto';
 import prisma from '../config/database.js';
 import { signToken, verifyToken } from '../config/jwt.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
+import { emailService } from './email.service.js';
+
+/**
+ * Envía alerta de seguridad al admin
+ */
+async function sendSecurityAlert(userId, subject, detail) {
+  try {
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN', isActive: true }, select: { email: true } });
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, firstName: true } });
+    for (const admin of admins) {
+      emailService.sendSecurityAlert({ to: admin.email, subject, detail, affectedUser: user?.email || userId });
+    }
+  } catch (e) { console.error('[SECURITY ALERT] Error:', e.message); }
+}
 
 const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 const ACCESS_TOKEN_EXPIRY = '15m'; // 15 minutos
@@ -66,6 +80,9 @@ export async function rotateRefreshToken(oldToken, req = null) {
       detail: `Refresh token reuse detected. Family ${stored.family} revoked.`,
       req,
     });
+
+    // Alerta al admin por email
+    sendSecurityAlert(stored.userId, 'Token Reuse Detected', `Posible robo de sesión. Family: ${stored.family}. Todos los tokens revocados.`);
     const error = new Error('Sesión comprometida. Inicia sesión de nuevo.');
     error.statusCode = 401;
     throw error;

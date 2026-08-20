@@ -109,4 +109,30 @@ export const emailService = {
       console.error('Error enviando email de descarga:', error.message);
     }
   },
+
+  async sendSecurityAlert({ to, subject, detail, affectedUser }) {
+    try {
+      await transporter.sendMail({
+        from: env.smtp.from,
+        to,
+        subject: `🚨 Alerta de Seguridad: ${subject}`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 16px; border-radius: 4px;">
+              <h2 style="color: #dc2626; margin: 0 0 8px;">🚨 Alerta de Seguridad</h2>
+              <p style="margin: 0; color: #991b1b;"><strong>${subject}</strong></p>
+            </div>
+            <div style="padding: 16px 0;">
+              <p><strong>Usuario afectado:</strong> ${affectedUser}</p>
+              <p><strong>Detalle:</strong> ${detail}</p>
+              <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-MX')}</p>
+            </div>
+            <p style="color: #666; font-size: 12px;">Este es un email automático del sistema de seguridad de Somos Casa.</p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error('Error enviando alerta:', error.message);
+    }
+  },
 };

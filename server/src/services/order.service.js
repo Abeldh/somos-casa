@@ -30,7 +30,14 @@ export const orderService = {
         include: { items: true },
       });
       for (const i of cartItems) {
-        await tx.book.update({ where: { id: i.bookId }, data: { stock: { decrement: i.quantity } } });
+        // Lock optimista: solo decrementa si hay stock suficiente
+        const updated = await tx.book.updateMany({
+          where: { id: i.bookId, stock: { gte: i.quantity } },
+          data: { stock: { decrement: i.quantity } },
+        });
+        if (updated.count === 0) {
+          throw Object.assign(new Error(`Stock agotado para "${i.book.title}" durante el proceso`), { statusCode: 409 });
+        }
       }
       await tx.cartItem.deleteMany({ where: { userId } });
       return o;

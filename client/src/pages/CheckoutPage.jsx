@@ -7,6 +7,7 @@ import { useToast } from '../hooks/useToast';
 import { useAuth } from '../hooks/useAuth';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import TermsCheckbox from '../components/ui/TermsCheckbox';
 
 export default function CheckoutPage() {
   const { items, subtotal, fetchCart } = useCart();
@@ -16,12 +17,14 @@ export default function CheckoutPage() {
   const [done, setDone] = useState(false);
   const [orderNum, setOrderNum] = useState('');
   const [f, setF] = useState({ name: user?.firstName + ' ' + user?.lastName || '', phone: '', notes: '' });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const ch = (e) => setF((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
     if (!f.name) { error('Ingresa tu nombre'); return; }
+    if (!acceptedTerms) { error('Debes aceptar los Términos y Condiciones'); return; }
     setLoading(true);
     try {
       const data = await orderService.create(f);
@@ -148,9 +151,13 @@ export default function CheckoutPage() {
                 <span className="text-2xl font-bold text-primary-700">${subtotal.toFixed(2)}</span>
               </div>
             </div>
-            <Button type="submit" loading={loading} className="w-full mt-6">
+            <div className="mt-4">
+              <TermsCheckbox checked={acceptedTerms} onChange={setAcceptedTerms} error={!acceptedTerms && loading ? 'Requerido' : null} />
+            </div>
+            <Button type="submit" loading={loading} disabled={!acceptedTerms} className="w-full mt-4">
               Confirmar Pedido
             </Button>
+
           </div>
         </div>
       </form>

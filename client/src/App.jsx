@@ -22,18 +22,26 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import NotFoundPage from './pages/NotFoundPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
+import LegalNoticePage from './pages/LegalNoticePage';
+import CookiePolicyPage from './pages/CookiePolicyPage';
+import CookieBanner from './components/common/CookieBanner';
 import Toast from './components/ui/Toast';
 
 export default function App() {
   return (
     <>
       <Toast />
+      <CookieBanner />
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/legal" element={<LegalNoticePage />} />
+          <Route path="/cookies" element={<CookiePolicyPage />} />
           <Route path="/store" element={<StorePage />} />
           <Route path="/store/:slug" element={<BookDetailPage />} />
           <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />

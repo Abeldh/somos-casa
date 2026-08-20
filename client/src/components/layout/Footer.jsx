@@ -40,7 +40,10 @@ export default function Footer() {
               <li><a href="/" className="hover:text-primary-400 transition-colors">Inicio</a></li>
               <li><a href="/booking" className="hover:text-primary-400 transition-colors">Agendar Cita</a></li>
               <li><a href="/login" className="hover:text-primary-400 transition-colors">Iniciar Sesión</a></li>
-              <li><a href="/privacy" className="hover:text-primary-400 transition-colors">Protección de Datos</a></li>
+              <li><a href="/privacy" className="hover:text-primary-400 transition-colors">Aviso de Privacidad</a></li>
+              <li><a href="/terms" className="hover:text-primary-400 transition-colors">Términos y Condiciones</a></li>
+              <li><a href="/cookies" className="hover:text-primary-400 transition-colors">Política de Cookies</a></li>
+              <li><a href="/legal" className="hover:text-primary-400 transition-colors">Aviso Legal</a></li>
             </ul>
           </div>
         </div>

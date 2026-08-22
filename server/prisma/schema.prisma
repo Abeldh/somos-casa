@@ -108,7 +108,7 @@ model Book {
   coverImage  String?  @map("cover_image")
   pdfUrl      String?  @map("pdf_url")
   category    String?
-  isbn        String?  @unique
+  isbn        String?
   stock       Int      @default(0)
   pages       Int?
   publisher   String?

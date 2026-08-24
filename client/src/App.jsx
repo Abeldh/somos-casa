@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { useInactivityLogout } from './hooks/useInactivityLogout';
 import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
@@ -29,6 +30,8 @@ import CookieBanner from './components/common/CookieBanner';
 import Toast from './components/ui/Toast';
 
 export default function App() {
+  useInactivityLogout();
+
   return (
     <>
       <Toast />

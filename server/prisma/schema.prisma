@@ -215,6 +215,9 @@ model AuditLog {
   detail     String?
   ip         String?
   userAgent  String?  @map("user_agent")
+  deviceType String?  @map("device_type")
+  browser    String?
+  os         String?
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([userId])

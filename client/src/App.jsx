@@ -17,6 +17,7 @@ import AdminBooksPage from './pages/AdminBooksPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminAuditPage from './pages/AdminAuditPage';
 import StorePage from './pages/StorePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CartPage from './pages/CartPage';
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
           <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/audit" element={<AdminAuditPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

@@ -1,4 +1,5 @@
 import { appointmentService } from '../services/appointment.service.js';
+import prisma from '../config/database.js';
 import { successResponse, createdResponse } from '../utils/apiResponse.js';
 
 export const appointmentController = {
@@ -38,6 +39,16 @@ export const appointmentController = {
       const { userId, sessions } = req.body;
       if (!userId) return res.status(400).json({ success: false, message: 'userId requerido' });
       return successResponse(res, await appointmentService.releaseSessions(userId, sessions || 4, req), 'Sesiones liberadas');
+    } catch (error) { next(error); }
+  },
+
+  // Usuario sube comprobante de pago de sesiones
+  async uploadSessionProof(req, res, next) {
+    try {
+      const { paymentProofUrl } = req.body;
+      if (!paymentProofUrl) return res.status(400).json({ success: false, message: 'Comprobante requerido' });
+      await prisma.user.update({ where: { id: req.user.id }, data: { paymentProofUrl } });
+      return successResponse(res, { message: 'Comprobante enviado' });
     } catch (error) { next(error); }
   },
 

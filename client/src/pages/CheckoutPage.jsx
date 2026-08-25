@@ -8,6 +8,8 @@ import { useAuth } from '../hooks/useAuth';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import TermsCheckbox from '../components/ui/TermsCheckbox';
+import ProofUpload from '../components/ui/ProofUpload';
+import { orderService } from '../services/order.service';
 
 export default function CheckoutPage() {
   const { items, subtotal, fetchCart } = useCart();
@@ -16,6 +18,8 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [orderNum, setOrderNum] = useState('');
+  const [orderId, setOrderId] = useState('');
+  const [proofUrl, setProofUrl] = useState('');
   const [f, setF] = useState({ name: user?.firstName + ' ' + user?.lastName || '', phone: '', notes: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -29,6 +33,7 @@ export default function CheckoutPage() {
     try {
       const data = await orderService.create(f);
       setOrderNum(data.order.orderNumber);
+      setOrderId(data.order.id);
       setDone(true);
       fetchCart();
       success('¡Pedido realizado!');
@@ -75,6 +80,23 @@ export default function CheckoutPage() {
 
         <p className="text-xs text-gray-500 mt-4">Envía tu comprobante por WhatsApp o email para agilizar la confirmación.</p>
       </div>
+
+      <div className="mb-8">
+        <ProofUpload
+          label="Adjuntar comprobante de pago"
+          value={proofUrl}
+          onChange={async (url) => {
+            setProofUrl(url);
+            if (url && orderId) {
+              try {
+                await orderService.uploadProof(orderId, url);
+                success('Comprobante enviado al administrador');
+              } catch (e) { error(e.message); }
+            }
+          }}
+        />
+      </div>
+
       <div className="space-y-3">
         <Link to="/dashboard">
           <Button className="w-full">Ir a Mi Perfil</Button>

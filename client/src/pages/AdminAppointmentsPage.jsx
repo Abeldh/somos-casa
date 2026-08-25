@@ -87,6 +87,9 @@ export default function AdminAppointmentsPage() {
                   <p className="text-xs text-gray-500">
                     Sesiones: <span className="font-bold text-primary-700">{u.sessionsRemaining ?? '?'}</span> restantes
                   </p>
+                  {u.paymentProofUrl && (
+                    <a href={u.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">📎 Ver comprobante</a>
+                  )}
                 </div>
                 <Button
                   size="sm"

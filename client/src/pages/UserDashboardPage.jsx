@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Plus, BookOpen } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -6,11 +7,15 @@ import { useToast } from '../hooks/useToast';
 import UserStats from '../components/dashboard/UserStats';
 import AppointmentList from '../components/dashboard/AppointmentList';
 import MyBooks from '../components/dashboard/MyBooks';
+import ProofUpload from '../components/ui/ProofUpload';
 import Button from '../components/ui/Button';
+import { appointmentService } from '../services/appointment.service';
 
 export default function UserDashboardPage() {
   const { user } = useAuth();
   const { appointments, sessionsRemaining, sessionsTotal, loading, cancelAppointment } = useAppointments();
+  const [proofUrl, setProofUrl] = useState('');
+  const [proofSending, setProofSending] = useState(false);
   const { success } = useToast();
 
   const handleCancel = async (id) => {
@@ -52,7 +57,20 @@ export default function UserDashboardPage() {
         </div>
         {sessionsRemaining === 0 && (
           <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-sm text-amber-800">No tienes sesiones disponibles. Realiza tu pago mensual y el administrador liberará tus sesiones.</p>
+            <p className="text-sm text-amber-800 mb-3">No tienes sesiones disponibles. Realiza tu pago mensual ($500 MXN) y sube tu comprobante.</p>
+            <ProofUpload
+              label="Adjuntar comprobante de pago"
+              value={proofUrl}
+              onChange={async (url) => {
+                setProofUrl(url);
+                if (url) {
+                  try {
+                    await appointmentService.uploadSessionProof(url);
+                    success('Comprobante enviado. El administrador verificará tu pago.');
+                  } catch (e) { error(e.message); }
+                }
+              }}
+            />
           </div>
         )}
       </div>

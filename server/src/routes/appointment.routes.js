@@ -12,6 +12,7 @@ router.use(authMiddleware);
 router.post('/', validate(createAppointmentSchema), appointmentController.create);
 router.get('/me', appointmentController.getMyAppointments);
 router.patch('/:id/cancel', appointmentController.cancel);
+router.patch('/session-proof', appointmentController.uploadSessionProof);
 router.patch('/:id/reschedule', appointmentController.reschedule);
 
 // Admin routes

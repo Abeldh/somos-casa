@@ -10,6 +10,7 @@ router.use(authMiddleware);
 router.post('/', orderController.create);
 router.get('/me', orderController.getMyOrders);
 router.get('/my-books', orderController.getMyBooks);
+router.patch('/:id/proof', orderController.uploadProof);
 router.get('/:id', orderController.getById);
 
 // Admin routes

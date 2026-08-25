@@ -119,6 +119,9 @@ export default function AdminOrdersPage() {
                 <div>
                   <span className="text-sm text-gray-500">Total: </span>
                   <span className="text-lg font-bold text-primary-700">${order.total.toFixed(2)}</span>
+                  {order.paymentProofUrl && (
+                    <a href={order.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="ml-3 text-xs text-blue-600 hover:underline inline-flex items-center gap-1">📎 Ver comprobante</a>
+                  )}
                 </div>
 
                 {order.status === 'PENDING' && (

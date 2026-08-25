@@ -45,7 +45,7 @@ export const appointmentService = {
     if (filters.status) where.status = filters.status;
     const appointments = await prisma.appointment.findMany({
       where,
-      include: { user: { select: { id: true, email: true, firstName: true, lastName: true, phone: true, sessionsRemaining: true, sessionsTotal: true } } },
+      include: { user: { select: { id: true, email: true, firstName: true, lastName: true, phone: true, sessionsRemaining: true, sessionsTotal: true, paymentProofUrl: true } } },
       orderBy: { createdAt: 'desc' },
     });
     return { appointments };

@@ -20,6 +20,7 @@ export default function CheckoutPage() {
   const [orderNum, setOrderNum] = useState('');
   const [orderId, setOrderId] = useState('');
   const [proofUrl, setProofUrl] = useState('');
+  const [orderTotal, setOrderTotal] = useState(0);
   const [f, setF] = useState({ name: user?.firstName + ' ' + user?.lastName || '', phone: '', notes: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -34,6 +35,7 @@ export default function CheckoutPage() {
       const data = await orderService.create(f);
       setOrderNum(data.order.orderNumber);
       setOrderId(data.order.id);
+      setOrderTotal(data.order.total);
       setDone(true);
       fetchCart();
       success('¡Pedido realizado!');
@@ -62,7 +64,7 @@ export default function CheckoutPage() {
               <li><strong>CLABE:</strong> [Tu CLABE aquí]</li>
               <li><strong>Beneficiario:</strong> Somos Casa</li>
               <li><strong>Concepto:</strong> {orderNum}</li>
-              <li><strong>Monto:</strong> ${subtotal > 0 ? subtotal.toFixed(2) : '—'}</li>
+              <li><strong>Monto:</strong> ${orderTotal > 0 ? orderTotal.toFixed(2) : '—'}</li>
             </ul>
           </div>
 

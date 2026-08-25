@@ -16,7 +16,7 @@ export default function UserDashboardPage() {
   const { appointments, sessionsRemaining, sessionsTotal, loading, cancelAppointment } = useAppointments();
   const [proofUrl, setProofUrl] = useState('');
   const [proofSending, setProofSending] = useState(false);
-  const { success } = useToast();
+  const { success, error } = useToast();
 
   const handleCancel = async (id) => {
     if (!confirm('¿Estás seguro de cancelar esta cita?')) return;

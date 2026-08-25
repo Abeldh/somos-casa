@@ -9,7 +9,6 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import TermsCheckbox from '../components/ui/TermsCheckbox';
 import ProofUpload from '../components/ui/ProofUpload';
-import { orderService } from '../services/order.service';
 
 export default function CheckoutPage() {
   const { items, subtotal, fetchCart } = useCart();

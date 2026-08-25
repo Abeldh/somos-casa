@@ -6,7 +6,7 @@
 const requests = new Map();
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutos
 const MAX_API = 200;              // 200 requests por ventana (API general)
-const MAX_AUTH = 7;               // 7 intentos en auth
+const MAX_AUTH = 15;              // 15 intentos en auth
 
 // Limpieza cada 10 minutos
 setInterval(() => {

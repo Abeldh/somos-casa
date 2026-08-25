@@ -1,10 +1,10 @@
-import { Calendar, Clock, User } from 'lucide-react';
+import { Calendar, Clock, User, Video } from 'lucide-react';
 import { formatDate, formatTime } from '../../utils/formatDate';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 import Spinner from '../ui/Spinner';
 
-export default function AppointmentsTable({ appointments, loading, onUpdateStatus }) {
+export default function AppointmentsTable({ appointments, loading, onUpdateStatus, onSetZoom }) {
   if (loading) return <Spinner className="py-12" />;
 
   if (appointments.length === 0) {

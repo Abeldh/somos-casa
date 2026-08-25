@@ -4,6 +4,8 @@ import { useToast } from './useToast';
 
 export function useAppointments(autoFetch = true) {
   const [appointments, setAppointments] = useState([]);
+  const [sessionsRemaining, setSessionsRemaining] = useState(0);
+  const [sessionsTotal, setSessionsTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const { error: showError } = useToast();
 
@@ -12,6 +14,8 @@ export function useAppointments(autoFetch = true) {
     try {
       const data = await appointmentService.getMyAppointments();
       setAppointments(data.appointments || []);
+      setSessionsRemaining(data.sessionsRemaining || 0);
+      setSessionsTotal(data.sessionsTotal || 0);
     } catch (err) {
       showError(err.message);
     } finally {
@@ -34,9 +38,8 @@ export function useAppointments(autoFetch = true) {
   const cancelAppointment = async (id) => {
     try {
       await appointmentService.cancel(id);
-      setAppointments((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, status: 'CANCELLED' } : a))
-      );
+      setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: 'CANCELLED' } : a)));
+      setSessionsRemaining((prev) => prev + 1);
     } catch (err) {
       showError(err.message);
     }
@@ -46,5 +49,5 @@ export function useAppointments(autoFetch = true) {
     if (autoFetch) fetchAppointments();
   }, [autoFetch, fetchAppointments]);
 
-  return { appointments, loading, fetchAppointments, fetchAll, cancelAppointment };
+  return { appointments, sessionsRemaining, sessionsTotal, loading, fetchAppointments, fetchAll, cancelAppointment };
 }

@@ -43,6 +43,17 @@ export default function AppointmentCard({ appointment, onCancel }) {
             {appointment.reason}
           </p>
         )}
+
+        {appointment.zoomUrl && appointment.status === 'CONFIRMED' && (
+          <a
+            href={appointment.zoomUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors border-t border-gray-100"
+          >
+            📹 Unirse a sesión Zoom
+          </a>
+        )}
       </Card.Body>
     </Card>
   );

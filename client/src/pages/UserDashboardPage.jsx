@@ -10,7 +10,7 @@ import Button from '../components/ui/Button';
 
 export default function UserDashboardPage() {
   const { user } = useAuth();
-  const { appointments, loading, cancelAppointment } = useAppointments();
+  const { appointments, sessionsRemaining, sessionsTotal, loading, cancelAppointment } = useAppointments();
   const { success } = useToast();
 
   const handleCancel = async (id) => {
@@ -37,6 +37,25 @@ export default function UserDashboardPage() {
       </div>
 
       <UserStats appointments={appointments} />
+
+      {/* Sesiones disponibles */}
+      <div className="mb-8 bg-white rounded-xl border border-gray-100 p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-semibold text-gray-900">Paquete de Asesoría</h3>
+            <p className="text-sm text-gray-500 mt-1">4 sesiones por mes — $500 MXN</p>
+          </div>
+          <div className="text-right">
+            <p className="text-3xl font-bold text-primary-700">{sessionsRemaining}</p>
+            <p className="text-xs text-gray-500">sesiones disponibles</p>
+          </div>
+        </div>
+        {sessionsRemaining === 0 && (
+          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <p className="text-sm text-amber-800">No tienes sesiones disponibles. Realiza tu pago mensual y el administrador liberará tus sesiones.</p>
+          </div>
+        )}
+      </div>
 
       {/* Mis Libros */}
       <div className="mb-10">

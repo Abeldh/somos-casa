@@ -11,11 +11,20 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Verificar conexión SMTP al iniciar
+transporter.verify().then(() => {
+  console.log('✅ SMTP conectado:', env.smtp.user);
+}).catch((err) => {
+  console.error('❌ SMTP error:', err.message);
+});
+
+const FROM = env.smtp.from || env.smtp.user || 'noreply@somoscasa.com';
+
 export const emailService = {
   async sendAppointmentConfirmation({ to, firstName, date, time }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: 'Cita confirmada - Somos Casa',
         html: `
@@ -40,7 +49,7 @@ export const emailService = {
   async sendAppointmentCancellation({ to, firstName, date, time }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: 'Cita cancelada - Somos Casa',
         html: `
@@ -61,7 +70,7 @@ export const emailService = {
   async sendWelcome({ to, firstName }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: '¡Bienvenido a Somos Casa!',
         html: `
@@ -82,7 +91,7 @@ export const emailService = {
   async sendDownloadReady({ to, firstName, orderNumber, books }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: '📚 ¡Tus libros están listos para descargar! - Somos Casa',
         html: `
@@ -113,7 +122,7 @@ export const emailService = {
   async sendSecurityAlert({ to, subject, detail, affectedUser }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: `🚨 Alerta de Seguridad: ${subject}`,
         html: `
@@ -139,7 +148,7 @@ export const emailService = {
   async sendPasswordReset({ to, firstName, resetUrl, expiresIn }) {
     try {
       await transporter.sendMail({
-        from: env.smtp.from,
+        from: FROM,
         to,
         subject: '🔐 Recupera tu contraseña - Somos Casa',
         html: `

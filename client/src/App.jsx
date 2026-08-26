@@ -18,6 +18,7 @@ import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminAuditPage from './pages/AdminAuditPage';
+import AdminTestimonialsPage from './pages/AdminTestimonialsPage';
 import StorePage from './pages/StorePage';
 import BookDetailPage from './pages/BookDetailPage';
 import CartPage from './pages/CartPage';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/audit" element={<AdminAuditPage />} />
+          <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

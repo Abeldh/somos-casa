@@ -53,6 +53,7 @@ model User {
   orders       Order[]
   refreshTokens RefreshToken[]
   mfaSecret    MfaSecret?
+  testimonials Testimonial[]
 
   @@map("users")
 }
@@ -230,4 +231,18 @@ model AuditLog {
   @@index([event])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model Testimonial {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  name       String
+  text       String
+  rating     Int      @default(5)
+  isApproved Boolean  @default(false) @map("is_approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("testimonials")
 }

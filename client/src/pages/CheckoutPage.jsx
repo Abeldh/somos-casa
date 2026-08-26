@@ -71,7 +71,7 @@ export default function CheckoutPage() {
             <p className="font-medium text-gray-800 text-sm mb-2">💳 PayPal</p>
             <ul className="space-y-1.5 text-sm text-gray-700">
               <li><strong>Concepto:</strong> {orderNum}</li>
-              <li><strong>Monto:</strong> ${subtotal > 0 ? subtotal.toFixed(2) : '—'} MXN</li>
+              <li><strong>Monto:</strong> ${orderTotal > 0 ? orderTotal.toFixed(2) : '—'} MXN</li>
             </ul>
             <a href="https://paypal.me/AArmentaBarajas" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors">
               Pagar con PayPal

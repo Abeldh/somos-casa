@@ -2,8 +2,9 @@
 
 **Stack:** Vite + React 18 + Tailwind CSS + Lucide Icons  
 **Auth:** JWT en cookies httpOnly con auto-refresh  
-**Imágenes:** Cloudinary (upload directo desde frontend)  
-**Estado:** Context API (Auth, Toast) + Custom Hooks
+**Imágenes/PDFs:** Cloudinary (upload directo)  
+**Estado:** Context API (Auth, Toast) + Custom Hooks  
+**Deploy:** Railway (servido como static files desde Express)
 
 ---
 
@@ -11,177 +12,178 @@
 
 ```
 client/
-├── public/
-│   └── favicon.ico
+├── public/favicon.ico
 ├── src/
 │   ├── main.jsx                       # Entry point (BrowserRouter, Providers)
-│   ├── App.jsx                        # Router principal con todas las rutas
-│   ├── index.css                      # Tailwind + clases utilitarias custom
+│   ├── App.jsx                        # Router completo + auto-logout por inactividad
+│   ├── index.css                      # Tailwind + clases custom + animaciones
 │   ├── components/
-│   │   ├── admin/                     # Componentes del panel admin
-│   │   │   ├── AdminStats.jsx         # Cards de estadísticas
-│   │   │   ├── AppointmentsTable.jsx  # Tabla/cards de citas (responsive)
+│   │   ├── admin/                     # Componentes panel admin
+│   │   │   ├── AdminStats.jsx         # Cards estadísticas dashboard
+│   │   │   ├── AppointmentsTable.jsx  # Tabla/cards citas (responsive + zoom btn)
 │   │   │   ├── AvailabilityCalendar.jsx # Calendario admin
 │   │   │   ├── AvailabilityForm.jsx   # Form agregar horario
 │   │   │   ├── MediaForm.jsx          # Form agregar Spotify/YouTube
-│   │   │   └── MediaList.jsx          # Lista de multimedia con delete
-│   │   ├── booking/                   # Sistema de agendamiento
-│   │   │   ├── BookingForm.jsx        # Orquestador de 3 pasos
+│   │   │   └── MediaList.jsx          # Lista multimedia con delete
+│   │   ├── booking/                   # Sistema agendamiento (3 pasos)
+│   │   │   ├── BookingForm.jsx        # Orquestador pasos + validación sesiones
 │   │   │   ├── BookingSteps.jsx       # Stepper visual
-│   │   │   ├── CalendarPicker.jsx     # Calendario con días disponibles
+│   │   │   ├── CalendarPicker.jsx     # Calendario días disponibles
 │   │   │   ├── StepConfirmation.jsx   # Paso 4: éxito
-│   │   │   ├── StepCoupleInfo.jsx     # Paso 2: datos de pareja
+│   │   │   ├── StepCoupleInfo.jsx     # Paso 2: datos pareja + validación
 │   │   │   ├── StepReason.jsx         # Paso 3: confirmar + checkbox T&C
-│   │   │   └── TimeSlotGrid.jsx       # Grid de horarios disponibles
+│   │   │   └── TimeSlotGrid.jsx       # Grid horarios disponibles
 │   │   ├── common/
-│   │   │   └── CookieBanner.jsx       # Banner de consentimiento de cookies
-│   │   ├── dashboard/                 # Panel del usuario
-│   │   │   ├── AppointmentCard.jsx    # Card de cita con cancel
-│   │   │   ├── AppointmentList.jsx    # Lista de citas
-│   │   │   ├── MyBooks.jsx            # Libros comprados con descarga
-│   │   │   └── UserStats.jsx          # Estadísticas del usuario
-│   │   ├── landing/                   # Secciones del homepage
+│   │   │   └── CookieBanner.jsx       # Banner consentimiento cookies (opt-in)
+│   │   ├── dashboard/                 # Panel usuario
+│   │   │   ├── AppointmentCard.jsx    # Card cita + link Zoom + cancel
+│   │   │   ├── AppointmentList.jsx    # Lista citas
+│   │   │   ├── MyBooks.jsx            # Libros comprados + botón descarga
+│   │   │   └── UserStats.jsx          # Estadísticas usuario
+│   │   ├── landing/                   # Secciones homepage
 │   │   │   ├── CTASection.jsx         # Call to action
 │   │   │   ├── HeroSection.jsx        # Hero con stats y CTA
-│   │   │   ├── SpotifyCard.jsx        # Card con embed de Spotify
-│   │   │   ├── SpotifySection.jsx     # Sección de podcasts
-│   │   │   ├── TestimonialsSection.jsx # Testimonios
-│   │   │   ├── YouTubeCard.jsx        # Card con player YouTube
-│   │   │   └── YouTubeSection.jsx     # Sección de videos con filtros
-│   │   ├── layout/                    # Estructura de la app
-│   │   │   ├── AdminLayout.jsx        # Layout admin con sidebar responsive
-│   │   │   ├── AdminRoute.jsx         # Guard: requiere rol ADMIN
-│   │   │   ├── Footer.jsx             # Footer con links legales
-│   │   │   ├── Header.jsx             # Header con nav + carrito badge + avatar
-│   │   │   ├── MainLayout.jsx         # Layout público (Header + Outlet + Footer)
-│   │   │   └── ProtectedRoute.jsx     # Guard: requiere autenticación
+│   │   │   ├── SpotifyCard.jsx        # Card embed Spotify
+│   │   │   ├── SpotifySection.jsx     # Sección podcasts
+│   │   │   ├── TestimonialsSection.jsx # Testimonios dinámicos + form "Dejar testimonio"
+│   │   │   ├── YouTubeCard.jsx        # Card player YouTube
+│   │   │   └── YouTubeSection.jsx     # Sección videos con filtros
+│   │   ├── layout/                    # Estructura app
+│   │   │   ├── AdminLayout.jsx        # Sidebar responsive (10 items) + mobile menu
+│   │   │   ├── AdminRoute.jsx         # Guard: rol ADMIN
+│   │   │   ├── Footer.jsx             # Footer con 5 links legales
+│   │   │   ├── Header.jsx             # Nav + carrito badge + avatar
+│   │   │   ├── MainLayout.jsx         # Header + Outlet + Footer
+│   │   │   └── ProtectedRoute.jsx     # Guard: autenticación
 │   │   ├── store/
-│   │   │   └── BookCard.jsx           # Card de libro (portada, precio, add to cart)
-│   │   └── ui/                        # Componentes reutilizables
-│   │       ├── Badge.jsx              # Badge de estado con colores
-│   │       ├── Button.jsx             # Botón con variantes y loading
-│   │       ├── Card.jsx               # Card con Header/Body/Footer
-│   │       ├── ImageUpload.jsx        # Upload drag&drop a Cloudinary (imágenes)
-│   │       ├── Input.jsx              # Input con label y error
-│   │       ├── Logo.jsx               # Logo SVG de Somos Casa
-│   │       ├── Modal.jsx              # Modal con overlay y animación
-│   │       ├── PdfUpload.jsx          # Upload drag&drop a Cloudinary (PDF)
-│   │       ├── Select.jsx             # Select con opciones
+│   │   │   └── BookCard.jsx           # Card libro (portada, precio, add to cart)
+│   │   └── ui/                        # Componentes reutilizables (16)
+│   │       ├── Badge.jsx              # Badge estado con colores
+│   │       ├── Button.jsx             # Botón variantes + loading
+│   │       ├── Card.jsx               # Card Header/Body/Footer
+│   │       ├── ImageUpload.jsx        # Upload drag&drop Cloudinary (imágenes)
+│   │       ├── Input.jsx              # Input label + error
+│   │       ├── Logo.jsx               # Logo SVG Somos Casa
+│   │       ├── Modal.jsx              # Modal overlay animado
+│   │       ├── PdfUpload.jsx          # Upload drag&drop Cloudinary (PDF)
+│   │       ├── ProofUpload.jsx        # Upload comprobante de pago
+│   │       ├── Select.jsx             # Select opciones
 │   │       ├── Spinner.jsx            # Loading spinner
-│   │       ├── TermsCheckbox.jsx      # Checkbox T&C + Privacidad (obligatorio)
-│   │       ├── Textarea.jsx           # Textarea con label y error
+│   │       ├── TermsCheckbox.jsx      # Checkbox T&C obligatorio
+│   │       ├── Textarea.jsx           # Textarea label + error
 │   │       └── Toast.jsx              # Notificaciones flotantes
 │   ├── context/
-│   │   ├── AuthContext.jsx            # Estado auth: user, login, logout, refresh
-│   │   └── ToastContext.jsx           # Estado toasts: success, error, warning, info
-│   ├── hooks/
-│   │   ├── useAppointments.js         # CRUD citas del usuario
-│   │   ├── useAuth.js                 # Hook del AuthContext
-│   │   ├── useAvailability.js         # Fetch disponibilidad por fecha/mes
-│   │   ├── useBooks.js                # Listado + detalle de libros
-│   │   ├── useCalendar.js             # Navegación de calendario (mes/año)
-│   │   ├── useCart.js                 # Carrito reactivo con sync global
-│   │   ├── useMedia.js               # Fetch multimedia activa
-│   │   ├── useOrders.js              # Pedidos del usuario + admin
-│   │   └── useToast.js               # Hook del ToastContext
-│   ├── pages/
-│   │   ├── AdminAppointmentsPage.jsx  # Admin: gestión de citas
-│   │   ├── AdminAvailabilityPage.jsx  # Admin: configurar horarios
-│   │   ├── AdminBooksPage.jsx         # Admin: CRUD libros + upload portada/PDF
-│   │   ├── AdminDashboardPage.jsx     # Admin: dashboard con stats
-│   │   ├── AdminMediaPage.jsx         # Admin: gestión multimedia
-│   │   ├── AdminOrdersPage.jsx        # Admin: pedidos + confirmar pago
-│   │   ├── AdminSettingsPage.jsx      # Admin: cambio de contraseña + MFA
-│   │   ├── AdminUsersPage.jsx         # Admin: usuarios + actividad
-│   │   ├── BookDetailPage.jsx         # Detalle de libro + selector cantidad
+│   │   ├── AuthContext.jsx            # Auth: user, login, logout, refresh, MFA support
+│   │   └── ToastContext.jsx           # Toasts: success, error, warning, info
+│   ├── hooks/ (10)
+│   │   ├── useAppointments.js         # Citas + sesiones restantes
+│   │   ├── useAuth.js                 # Hook AuthContext
+│   │   ├── useAvailability.js         # Disponibilidad por fecha/mes
+│   │   ├── useBooks.js                # Listado + detalle libros
+│   │   ├── useCalendar.js             # Navegación calendario
+│   │   ├── useCart.js                 # Carrito reactivo + sync global entre componentes
+│   │   ├── useInactivityLogout.js     # Auto-logout 1h sin interacción
+│   │   ├── useMedia.js               # Multimedia activa
+│   │   ├── useOrders.js              # Pedidos usuario + admin
+│   │   └── useToast.js               # Hook ToastContext
+│   ├── pages/ (22)
+│   │   ├── AdminAppointmentsPage.jsx  # Citas + liberar sesiones + zoom URL
+│   │   ├── AdminAuditPage.jsx         # Auditoría con filtros + export Excel
+│   │   ├── AdminAvailabilityPage.jsx  # Configurar horarios
+│   │   ├── AdminBooksPage.jsx         # CRUD libros + upload portada/PDF + edit modal
+│   │   ├── AdminDashboardPage.jsx     # Dashboard KPIs
+│   │   ├── AdminMediaPage.jsx         # Gestión Spotify/YouTube
+│   │   ├── AdminOrdersPage.jsx        # Pedidos + confirmar pago + ver comprobante
+│   │   ├── AdminSettingsPage.jsx      # Cambio contraseña + strength meter
+│   │   ├── AdminTestimonialsPage.jsx  # Aprobar/rechazar testimonios
+│   │   ├── AdminUsersPage.jsx         # Usuarios + actividad completa (modal)
+│   │   ├── BookDetailPage.jsx         # Detalle libro + selector cantidad
 │   │   ├── BookingPage.jsx            # Agendar asesoría
-│   │   ├── CartPage.jsx               # Carrito de compras
-│   │   ├── CheckoutPage.jsx           # Checkout (transferencia/PayPal)
-│   │   ├── CookiePolicyPage.jsx       # Política de cookies
-│   │   ├── HomePage.jsx               # Landing page
+│   │   ├── CartPage.jsx               # Carrito (sin envío — digital)
+│   │   ├── CheckoutPage.jsx           # Checkout: transferencia/PayPal + comprobante upload
+│   │   ├── CookiePolicyPage.jsx       # Política cookies
+│   │   ├── HomePage.jsx               # Landing completa
 │   │   ├── LegalNoticePage.jsx        # Aviso legal
-│   │   ├── LoginPage.jsx              # Iniciar sesión
+│   │   ├── LoginPage.jsx              # Login
 │   │   ├── NotFoundPage.jsx           # 404
-│   │   ├── PrivacyPolicyPage.jsx      # Aviso de privacidad
+│   │   ├── PrivacyPolicyPage.jsx      # Aviso privacidad
 │   │   ├── RegisterPage.jsx           # Registro
-│   │   ├── StorePage.jsx              # Catálogo de libros
+│   │   ├── StorePage.jsx              # Catálogo libros
 │   │   ├── TermsPage.jsx             # Términos y condiciones
-│   │   └── UserDashboardPage.jsx      # Dashboard usuario (libros + citas)
-│   ├── services/
-│   │   ├── api.js                     # Axios instance + interceptors + auto-refresh
-│   │   ├── appointment.service.js     # API de citas
-│   │   ├── auth.service.js            # API de autenticación + MFA
-│   │   ├── availability.service.js    # API de disponibilidad
-│   │   ├── book.service.js            # API de libros
-│   │   ├── cart.service.js            # API del carrito
-│   │   ├── media.service.js           # API de multimedia
-│   │   └── order.service.js           # API de pedidos
+│   │   └── UserDashboardPage.jsx      # Dashboard: libros + citas + sesiones + comprobante
+│   ├── services/ (8)
+│   │   ├── api.js                     # Axios + withCredentials + auto-refresh 401 + interceptors
+│   │   ├── appointment.service.js     # API citas + zoom + release + proof
+│   │   ├── auth.service.js            # API auth + MFA
+│   │   ├── availability.service.js    # API disponibilidad
+│   │   ├── book.service.js            # API libros
+│   │   ├── cart.service.js            # API carrito
+│   │   ├── media.service.js           # API multimedia
+│   │   └── order.service.js           # API pedidos + proof upload
 │   └── utils/
-│       ├── constants.js               # Enums, labels, colores de estados
-│       ├── formatDate.js              # Formateo de fechas y horas
+│       ├── constants.js               # Enums, labels, colores estados
+│       ├── formatDate.js              # Formateo fechas/horas
 │       └── helpers.js                 # classNames, getInitials, extractIDs
-├── index.html                         # HTML entry con fonts + meta SEO
-├── package.json                       # Dependencias (react, axios, lucide, tailwind)
-├── tailwind.config.js                 # Tema custom (colores primary/warm, fonts)
-├── vite.config.js                     # Vite + proxy a backend
+├── index.html                         # HTML entry + fonts + meta SEO
+├── package.json                       # react, axios, lucide-react, tailwindcss
+├── tailwind.config.js                 # Tema custom (primary/warm)
+├── vite.config.js                     # Vite + proxy backend
 └── postcss.config.js
 ```
 
 ---
 
-## Rutas del Frontend
+## Rutas (35 total)
 
-### Públicas
+### Públicas (8)
 | Ruta | Página | Descripción |
 |------|--------|-------------|
 | `/` | HomePage | Landing: Hero + Spotify + YouTube + Testimonios + CTA |
-| `/store` | StorePage | Catálogo de libros con búsqueda y filtros |
-| `/store/:slug` | BookDetailPage | Detalle de libro + agregar al carrito |
-| `/login` | LoginPage | Inicio de sesión |
-| `/register` | RegisterPage | Registro de cuenta |
-| `/privacy` | PrivacyPolicyPage | Aviso de privacidad (LFPDPPP/RGPD) |
+| `/store` | StorePage | Catálogo libros |
+| `/store/:slug` | BookDetailPage | Detalle libro + cantidad + add cart |
+| `/login` | LoginPage | Inicio sesión |
+| `/register` | RegisterPage | Registro |
+| `/privacy` | PrivacyPolicyPage | Aviso privacidad |
 | `/terms` | TermsPage | Términos y condiciones |
-| `/legal` | LegalNoticePage | Aviso legal (titular) |
-| `/cookies` | CookiePolicyPage | Política de cookies |
+| `/legal` | LegalNoticePage | Aviso legal |
+| `/cookies` | CookiePolicyPage | Política cookies |
 
-### Protegidas (requieren login)
+### Protegidas (4)
 | Ruta | Página | Descripción |
 |------|--------|-------------|
 | `/booking` | BookingPage | Agendar asesoría (3 pasos + T&C) |
-| `/cart` | CartPage | Carrito de compras |
-| `/checkout` | CheckoutPage | Confirmar pedido + datos pago |
-| `/dashboard` | UserDashboardPage | Mis libros + mis citas |
+| `/cart` | CartPage | Carrito |
+| `/checkout` | CheckoutPage | Confirmar pedido + pago + comprobante |
+| `/dashboard` | UserDashboardPage | Mis libros + citas + sesiones + proof |
 
-### Admin (requieren rol ADMIN)
+### Admin (10)
 | Ruta | Página | Descripción |
 |------|--------|-------------|
-| `/admin` | AdminDashboardPage | Dashboard con KPIs |
-| `/admin/appointments` | AdminAppointmentsPage | Gestión de citas |
-| `/admin/availability` | AdminAvailabilityPage | Configurar horarios |
-| `/admin/media` | AdminMediaPage | Gestión Spotify/YouTube |
-| `/admin/books` | AdminBooksPage | CRUD libros + upload portada/PDF |
+| `/admin` | AdminDashboardPage | Dashboard KPIs |
+| `/admin/appointments` | AdminAppointmentsPage | Citas + sesiones + zoom |
+| `/admin/availability` | AdminAvailabilityPage | Horarios |
+| `/admin/media` | AdminMediaPage | Spotify/YouTube |
+| `/admin/books` | AdminBooksPage | CRUD libros + portada/PDF |
 | `/admin/orders` | AdminOrdersPage | Pedidos + confirmar pago |
 | `/admin/users` | AdminUsersPage | Usuarios + actividad |
-| `/admin/settings` | AdminSettingsPage | Cambio contraseña + seguridad |
+| `/admin/audit` | AdminAuditPage | Auditoría + export Excel |
+| `/admin/testimonials` | AdminTestimonialsPage | Aprobar testimonios |
+| `/admin/settings` | AdminSettingsPage | Cambio contraseña |
 
 ---
 
-## Flujos Principales
+## Funcionalidades del Admin (sidebar)
 
-### Compra de libro digital
-```
-/store → Elegir libro → /store/:slug → Agregar al carrito (con cantidad)
-→ /cart → Proceder al pago → /checkout → Confirmar pedido
-→ Mostrar datos bancarios/PayPal → Usuario hace transferencia
-→ Admin confirma pago → Email al usuario → /dashboard → Descargar PDF
-```
-
-### Agendamiento de asesoría
-```
-/booking → Paso 1: Elegir fecha + horario → Paso 2: Datos de pareja + motivo
-→ Paso 3: Confirmar + aceptar T&C → Cita creada (PENDING)
-→ Admin confirma → Email al usuario → /dashboard → Ver citas
-```
+1. **Dashboard** — KPIs: citas, pendientes, confirmadas, completadas
+2. **Citas** — Gestión + liberar sesiones ($500/4) + URL Zoom + comprobante
+3. **Disponibilidad** — Calendario + agregar/eliminar slots
+4. **Multimedia** — Agregar/eliminar Spotify y YouTube
+5. **Libros** — CRUD + portada (Cloudinary) + PDF + edit modal + toggle active/featured
+6. **Pedidos** — Confirmar pago → liberar descarga + email + ver comprobante
+7. **Usuarios** — Lista + actividad completa (compras, citas, audit, sesiones)
+8. **Auditoría** — Logs IP/device/browser/OS + filtros + export CSV/Excel
+9. **Testimonios** — Aprobar/rechazar/eliminar testimonios de usuarios
+10. **Configuración** — Cambio contraseña + indicador fortaleza
 
 ---
 
@@ -189,11 +191,12 @@ client/
 
 | Medida | Implementación |
 |--------|---------------|
-| XSS | React escapa por defecto + CSP del servidor |
-| Auth | Tokens en cookies httpOnly (no localStorage) |
+| Auth | Tokens en cookies httpOnly (no accesibles desde JS) |
 | Auto-refresh | Interceptor 401 → refresh automático → retry |
+| Inactividad | Auto-logout tras 1 hora sin interacción |
 | CSRF | Cookies SameSite=Strict |
-| Validación | Zod-style en formularios antes de enviar |
-| Términos | Checkbox obligatorio (no pre-marcado) en checkout y booking |
-| Cookies | Banner de consentimiento con opt-in |
-| Uploads | Cloudinary directo (imágenes + PDFs) |
+| Términos | Checkbox obligatorio (no pre-marcado) en checkout + booking |
+| Cookies | Banner opt-in |
+| Uploads | Cloudinary directo (imágenes, PDFs, comprobantes) |
+| XSS | React escapa por defecto + CSP del servidor |
+| Cart sync | Event-based entre componentes (badge se actualiza en tiempo real) |

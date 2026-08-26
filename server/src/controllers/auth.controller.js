@@ -112,6 +112,31 @@ export const authController = {
     }
   },
 
+  // Forgot password (público, rate limited)
+  async forgotPassword(req, res, next) {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ success: false, message: 'Email requerido' });
+      const { passwordResetService } = await import('../services/passwordReset.service.js');
+      const result = await passwordResetService.forgotPassword(email, req);
+      return successResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // Reset password con token (público)
+  async resetPassword(req, res, next) {
+    try {
+      const { token, newPassword } = req.body;
+      const { passwordResetService } = await import('../services/passwordReset.service.js');
+      const result = await passwordResetService.resetPassword(token, newPassword, req);
+      return successResponse(res, result);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   // MFA
   async mfaSetup(req, res, next) { try { return successResponse(res, await mfaService.generateSecret(req.user.id), 'Escanea el QR con tu app'); } catch (e) { next(e); } },
   async mfaVerify(req, res, next) { try { const { code } = req.body; if (!code || code.length !== 6) return res.status(400).json({ success: false, message: 'Código de 6 dígitos requerido' }); return successResponse(res, await mfaService.verifyAndEnable(req.user.id, code, req), 'MFA activado'); } catch (e) { next(e); } },

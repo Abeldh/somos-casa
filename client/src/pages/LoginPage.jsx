@@ -66,6 +66,12 @@ export default function LoginPage() {
             <LogIn className="w-4 h-4" />
             Iniciar Sesión
           </Button>
+
+          <div className="text-center">
+            <Link to="/forgot-password" className="text-sm text-gray-500 hover:text-primary-600">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">

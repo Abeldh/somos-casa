@@ -11,6 +11,8 @@ const router = Router();
 router.post('/register', authRateLimiter, validate(registerSchema), authController.register);
 router.post('/login', authRateLimiter, validate(loginSchema), authController.login);
 router.post('/refresh', authRateLimiter, authController.refresh);
+router.post('/forgot-password', authRateLimiter, authController.forgotPassword);
+router.post('/reset-password', authRateLimiter, authController.resetPassword);
 
 // Authenticated
 router.get('/me', authMiddleware, authController.getMe);

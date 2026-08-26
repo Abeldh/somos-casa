@@ -135,4 +135,36 @@ export const emailService = {
       console.error('Error enviando alerta:', error.message);
     }
   },
+
+  async sendPasswordReset({ to, firstName, resetUrl, expiresIn }) {
+    try {
+      await transporter.sendMail({
+        from: env.smtp.from,
+        to,
+        subject: '🔐 Recupera tu contraseña - Somos Casa',
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #cc4035;">Recuperación de contraseña</h2>
+            <p>Hola ${firstName},</p>
+            <p>Recibimos una solicitud para restablecer tu contraseña. Si no fuiste tú, puedes ignorar este correo.</p>
+            <p style="margin: 24px 0;">
+              <a href="${resetUrl}" style="background: #cc4035; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">
+                Restablecer contraseña
+              </a>
+            </p>
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 4px; margin: 16px 0;">
+              <p style="margin: 0; font-size: 14px; color: #92400e;">
+                ⏰ Este enlace expira en <strong>${expiresIn}</strong>.<br>
+                🔒 Solo se puede usar una vez.
+              </p>
+            </div>
+            <p style="font-size: 13px; color: #666;">Si no solicitaste este cambio, tu cuenta está segura. Nadie puede cambiar tu contraseña sin acceso a este correo.</p>
+            <p style="color: #666; font-size: 14px; margin-top: 24px;">— Equipo Somos Casa</p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error('Error enviando email de reset:', error.message);
+    }
+  },
 };

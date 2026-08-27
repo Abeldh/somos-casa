@@ -7,7 +7,7 @@ export const auditController = {
    */
   async getLogs(req, res, next) {
     try {
-      const { userId, event, from, to, limit = 100 } = req.query;
+      const { userId, event, from, to, page = 1, limit = 50 } = req.query;
       const where = {};
       if (userId) where.userId = userId;
       if (event) where.event = event;
@@ -17,13 +17,21 @@ export const auditController = {
         if (to) where.createdAt.lte = new Date(to);
       }
 
-      const logs = await prisma.auditLog.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: Math.min(parseInt(limit), 500),
-      });
+      const parsedPage = Math.max(1, parseInt(page) || 1);
+      const parsedLimit = Math.min(200, Math.max(1, parseInt(limit) || 50));
+      const skip = (parsedPage - 1) * parsedLimit;
 
-      return successResponse(res, { logs });
+      const [logs, total] = await Promise.all([
+        prisma.auditLog.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: parsedLimit,
+        }),
+        prisma.auditLog.count({ where }),
+      ]);
+
+      return successResponse(res, { logs, total, page: parsedPage, limit: parsedLimit, totalPages: Math.ceil(total / parsedLimit) });
     } catch (error) {
       next(error);
     }

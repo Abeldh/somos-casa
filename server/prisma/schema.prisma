@@ -40,6 +40,25 @@ enum ReferralStatus {
   EXPIRED
 }
 
+enum PaymentType {
+  SESSION_PACKAGE
+  BOOK_ORDER
+  OTHER
+}
+
+enum PaymentMethod {
+  PAYPAL
+  TRANSFER
+  CASH
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 enum AppointmentStatus {
   PENDING
   CONFIRMED
@@ -91,6 +110,7 @@ model User {
   sessionNotes       SessionNote[]
   referralsMade      Referral[] @relation("referrer")
   referralsReceived  Referral[] @relation("referred")
+  payments           Payment[]
 
   @@map("users")
 }
@@ -311,6 +331,34 @@ model PasswordResetToken {
 
   @@index([userId])
   @@map("password_reset_tokens")
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  type          PaymentType
+  method        PaymentMethod @default(TRANSFER)
+  status        PaymentStatus @default(PENDING)
+  amount        Float
+  currency      String        @default("MXN")
+  reference     String?
+  orderId       String?       @map("order_id")
+  proofUrl      String?       @map("proof_url")
+  verifiedBy    String?       @map("verified_by")
+  verifiedAt    DateTime?     @map("verified_at")
+  rejectedAt    DateTime?     @map("rejected_at")
+  rejectionNote String?       @map("rejection_note")
+  notes         String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("payments")
 }
 
 

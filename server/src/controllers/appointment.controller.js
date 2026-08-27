@@ -17,7 +17,7 @@ export const appointmentController = {
   },
 
   async getAll(req, res, next) {
-    try { return successResponse(res, await appointmentService.getAll({ status: req.query.status })); }
+    try { return successResponse(res, await appointmentService.getAll({ status: req.query.status, page: req.query.page, limit: req.query.limit })); }
     catch (error) { next(error); }
   },
 

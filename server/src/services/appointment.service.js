@@ -65,12 +65,21 @@ export const appointmentService = {
   async getAll(filters = {}) {
     const where = {};
     if (filters.status) where.status = filters.status;
-    const appointments = await prisma.appointment.findMany({
-      where,
-      include: { user: { select: { id: true, email: true, firstName: true, lastName: true, phone: true, sessionsRemaining: true, sessionsTotal: true, paymentProofUrl: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
-    return { appointments };
+    const page = Math.max(1, parseInt(filters.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(filters.limit) || 50));
+    const skip = (page - 1) * limit;
+
+    const [appointments, total] = await Promise.all([
+      prisma.appointment.findMany({
+        where,
+        include: { user: { select: { id: true, email: true, firstName: true, lastName: true, phone: true, sessionsRemaining: true, sessionsTotal: true, paymentProofUrl: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.appointment.count({ where }),
+    ]);
+    return { appointments, total, page, limit, totalPages: Math.ceil(total / limit) };
   },
 
   async updateStatus(id, status) {

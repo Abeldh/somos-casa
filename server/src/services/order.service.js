@@ -66,19 +66,27 @@ export const orderService = {
   },
 
   // Admin
-  async getAll(status) {
+  async getAll(status, page = 1, limit = 50) {
     const where = {};
     if (status) where.status = status;
-    return {
-      orders: await prisma.order.findMany({
+    page = Math.max(1, parseInt(page) || 1);
+    limit = Math.min(100, Math.max(1, parseInt(limit) || 50));
+    const skip = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
         where,
         include: {
           user: { select: { id: true, email: true, firstName: true, lastName: true, phone: true } },
           items: { include: { book: { select: { id: true, title: true, coverImage: true, pdfUrl: true } } } },
         },
         orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
       }),
-    };
+      prisma.order.count({ where }),
+    ]);
+    return { orders, total, page, limit, totalPages: Math.ceil(total / limit) };
   },
 
   async updateStatus(id, status) {

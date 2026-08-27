@@ -15,6 +15,7 @@ import couponRoutes from './coupon.routes.js';
 import sessionNoteRoutes from './sessionNote.routes.js';
 import referralRoutes from './referral.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
+import paymentRoutes from './payment.routes.js';
 
 import { cache } from '../utils/cache.js';
 
@@ -35,6 +36,7 @@ router.use('/coupons', couponRoutes);
 router.use('/session-notes', sessionNoteRoutes);
 router.use('/referrals', referralRoutes);
 router.use('/dashboard', dashboardRoutes);
+router.use('/payments', paymentRoutes);
 
 // Health check con métricas
 router.get('/health', (req, res) => {

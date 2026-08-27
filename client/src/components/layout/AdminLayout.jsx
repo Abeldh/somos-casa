@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare, Tag, DollarSign, FileText } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import { classNames } from '../../utils/helpers';
@@ -10,9 +10,12 @@ const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/appointments', icon: Calendar, label: 'Citas' },
   { to: '/admin/availability', icon: Clock, label: 'Disponibilidad' },
+  { to: '/admin/session-notes', icon: FileText, label: 'Notas de Sesión' },
   { to: '/admin/media', icon: Film, label: 'Multimedia' },
   { to: '/admin/books', icon: BookOpen, label: 'Libros' },
   { to: '/admin/orders', icon: ShoppingBag, label: 'Pedidos' },
+  { to: '/admin/coupons', icon: Tag, label: 'Cupones' },
+  { to: '/admin/financial', icon: DollarSign, label: 'Finanzas' },
   { to: '/admin/users', icon: Users, label: 'Usuarios' },
   { to: '/admin/audit', icon: Shield, label: 'Auditoría' },
   { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimonios' },

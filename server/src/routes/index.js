@@ -10,6 +10,11 @@ import orderRoutes from './order.routes.js';
 import uploadRoutes from './upload.routes.js';
 import auditRoutes from './audit.routes.js';
 import testimonialRoutes from './testimonial.routes.js';
+import notificationRoutes from './notification.routes.js';
+import couponRoutes from './coupon.routes.js';
+import sessionNoteRoutes from './sessionNote.routes.js';
+import referralRoutes from './referral.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
 
 import { cache } from '../utils/cache.js';
 
@@ -25,6 +30,11 @@ router.use('/orders', orderRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/audit', auditRoutes);
 router.use('/testimonials', testimonialRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/coupons', couponRoutes);
+router.use('/session-notes', sessionNoteRoutes);
+router.use('/referrals', referralRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 // Health check con métricas
 router.get('/health', (req, res) => {

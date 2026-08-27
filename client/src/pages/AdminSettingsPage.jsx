@@ -220,8 +220,26 @@ function CreateAdminSection() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminForm.email)) errs.email = 'Email inválido';
     if (!adminForm.password) errs.password = 'Contraseña es requerida';
     else if (adminForm.password.length < 8) errs.password = 'Mínimo 8 caracteres';
+    else if (!/[A-Z]/.test(adminForm.password)) errs.password = 'Debe contener al menos una mayúscula';
+    else if (!/[0-9]/.test(adminForm.password)) errs.password = 'Debe contener al menos un número';
+    else if (!/[^A-Za-z0-9]/.test(adminForm.password)) errs.password = 'Debe contener al menos un caracter especial (!@#$%...)';
     return errs;
   };
+
+  const getStrength = (password) => {
+    if (!password) return { level: 0, label: '', color: '' };
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    if (score <= 2) return { level: score, label: 'Débil', color: 'bg-red-500' };
+    if (score <= 3) return { level: score, label: 'Media', color: 'bg-yellow-500' };
+    return { level: score, label: 'Fuerte', color: 'bg-green-500' };
+  };
+
+  const strength = getStrength(adminForm.password);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -269,6 +287,24 @@ function CreateAdminSection() {
             {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         </div>
+        {adminForm.password && (
+          <div className="space-y-1">
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= strength.level ? strength.color : 'bg-gray-200'}`} />
+              ))}
+            </div>
+            <p className={`text-xs ${strength.level <= 2 ? 'text-red-500' : strength.level <= 3 ? 'text-yellow-600' : 'text-green-600'}`}>
+              Seguridad: {strength.label}
+            </p>
+            <ul className="text-[11px] text-gray-400 space-y-0.5 mt-1">
+              <li className={adminForm.password.length >= 8 ? 'text-green-600' : ''}>• Mínimo 8 caracteres</li>
+              <li className={/[A-Z]/.test(adminForm.password) ? 'text-green-600' : ''}>• Una letra mayúscula</li>
+              <li className={/[0-9]/.test(adminForm.password) ? 'text-green-600' : ''}>• Un número</li>
+              <li className={/[^A-Za-z0-9]/.test(adminForm.password) ? 'text-green-600' : ''}>• Un caracter especial (!@#$%...)</li>
+            </ul>
+          </div>
+        )}
         <Button type="submit" loading={loading} className="w-full flex items-center justify-center gap-2">
           <UserPlus className="w-4 h-4" />
           Crear Administrador

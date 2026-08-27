@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const FROM = process.env.EMAIL_FROM || 'Somos Casa <onboarding@resend.dev>';
 const CLIENT_URL = process.env.CLIENT_URL || 'https://somos-casa-production.up.railway.app';
@@ -13,7 +13,7 @@ if (process.env.RESEND_API_KEY) {
 }
 
 async function send({ to, subject, html }) {
-  if (!process.env.RESEND_API_KEY) {
+  if (!resend) {
     console.warn(`[Email] Skipped (no API key): ${subject} → ${to}`);
     return null;
   }

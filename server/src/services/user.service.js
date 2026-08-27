@@ -1,4 +1,5 @@
 import prisma from '../config/database.js';
+import bcrypt from 'bcrypt';
 
 export const userService = {
   async getAll() {
@@ -94,6 +95,25 @@ export const userService = {
       where: { id },
       data: { isActive: !existing.isActive },
       select: { id: true, email: true, firstName: true, lastName: true, isActive: true },
+    });
+    return { user };
+  },
+
+  async createAdmin({ firstName, lastName, email, password, phone }) {
+    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (existing) { const e = new Error('Ya existe un usuario con ese email'); e.statusCode = 409; throw e; }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: {
+        firstName,
+        lastName,
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        phone: phone || null,
+        role: 'ADMIN',
+      },
+      select: { id: true, email: true, firstName: true, lastName: true, role: true, createdAt: true },
     });
     return { user };
   },

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, Shield, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Lock, Shield, Eye, EyeOff, CheckCircle, UserPlus } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useAuth } from '../hooks/useAuth';
 import Input from '../components/ui/Input';
@@ -192,7 +192,88 @@ export default function AdminSettingsPage() {
             </p>
           </div>
         </form>
+
+        {/* Crear administrador */}
+        <CreateAdminSection />
       </div>
     </div>
+  );
+}
+
+function CreateAdminSection() {
+  const { success, error } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+  const [adminForm, setAdminForm] = useState({ firstName: '', lastName: '', email: '', password: '', phone: '' });
+  const [adminErrors, setAdminErrors] = useState({});
+
+  const handleChange = (e) => {
+    setAdminForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+    setAdminErrors((p) => ({ ...p, [e.target.name]: null }));
+  };
+
+  const validate = () => {
+    const errs = {};
+    if (!adminForm.firstName.trim()) errs.firstName = 'Nombre es requerido';
+    if (!adminForm.lastName.trim()) errs.lastName = 'Apellido es requerido';
+    if (!adminForm.email.trim()) errs.email = 'Email es requerido';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminForm.email)) errs.email = 'Email inválido';
+    if (!adminForm.password) errs.password = 'Contraseña es requerida';
+    else if (adminForm.password.length < 8) errs.password = 'Mínimo 8 caracteres';
+    return errs;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) { setAdminErrors(errs); return; }
+
+    setLoading(true);
+    try {
+      await api.post('/users/create-admin', adminForm);
+      success('Administrador creado exitosamente');
+      setAdminForm({ firstName: '', lastName: '', email: '', password: '', phone: '' });
+    } catch (err) {
+      error(err.message || 'Error al crear administrador');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 mt-6">
+      <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <UserPlus className="w-4 h-4 text-primary-600" />
+        Crear Administrador
+      </h3>
+      <p className="text-sm text-gray-500 mb-4">Agrega un nuevo usuario con rol de administrador.</p>
+
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <Input label="Nombre" name="firstName" value={adminForm.firstName} onChange={handleChange} error={adminErrors.firstName} placeholder="Juan" />
+          <Input label="Apellido" name="lastName" value={adminForm.lastName} onChange={handleChange} error={adminErrors.lastName} placeholder="Pérez" />
+        </div>
+        <Input label="Correo electrónico" name="email" type="email" value={adminForm.email} onChange={handleChange} error={adminErrors.email} placeholder="admin@somoscasa.com" />
+        <Input label="Teléfono (opcional)" name="phone" value={adminForm.phone} onChange={handleChange} placeholder="55 1234 5678" />
+        <div className="relative">
+          <Input
+            label="Contraseña"
+            name="password"
+            type={showPass ? 'text' : 'password'}
+            value={adminForm.password}
+            onChange={handleChange}
+            error={adminErrors.password}
+            placeholder="Mínimo 8 caracteres"
+          />
+          <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-8 text-gray-400 hover:text-gray-600">
+            {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        </div>
+        <Button type="submit" loading={loading} className="w-full flex items-center justify-center gap-2">
+          <UserPlus className="w-4 h-4" />
+          Crear Administrador
+        </Button>
+      </div>
+    </form>
   );
 }

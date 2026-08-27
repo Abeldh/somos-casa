@@ -1,11 +1,12 @@
 import { MONTHS_ES } from './constants';
 
 export function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  const day = date.getDate();
-  const month = MONTHS_ES[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} de ${month}, ${year}`;
+  // Parsear como fecha local (sin conversión UTC)
+  const parts = String(dateStr).split('T')[0].split('-');
+  const year = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1;
+  const day = parseInt(parts[2]);
+  return `${day} de ${MONTHS_ES[month]}, ${year}`;
 }
 
 export function formatTime(time) {
@@ -18,7 +19,10 @@ export function formatTime(time) {
 
 export function toISODate(date) {
   const d = new Date(date);
-  return d.toISOString().split('T')[0];
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 export function getDaysInMonth(year, month) {

@@ -23,7 +23,7 @@ export function securityHeaders(req, res, next) {
     // Imágenes: mismo origen + HTTPS + data URIs + blobs (Cloudinary, portadas)
     "img-src 'self' https: data: blob:",
     // Conexiones: mismo origen + Cloudinary upload + Railway
-    "connect-src 'self' https://api.cloudinary.com https://*.railway.app https://fonts.googleapis.com https://fonts.gstatic.com",
+    "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.railway.app https://fonts.googleapis.com https://fonts.gstatic.com",
     // Frames: solo Spotify y YouTube (embeds de la landing)
     "frame-src https://open.spotify.com https://www.youtube.com",
     // No permitir plugins (Flash, Java, etc.)

@@ -3,6 +3,18 @@ import { audit, EVENTS } from '../utils/auditLog.js';
 
 export const appointmentService = {
   async create({ userId, date, startTime, endTime, partnerName, reason, notes }) {
+    // Validar que la fecha/hora no sea pasada
+    const appointmentDate = new Date(date);
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const appointmentDateTime = new Date(appointmentDate);
+    appointmentDateTime.setHours(hours, minutes, 0, 0);
+
+    if (appointmentDateTime <= new Date()) {
+      const error = new Error('No puedes agendar en una fecha u horario que ya pasó.');
+      error.statusCode = 422;
+      throw error;
+    }
+
     // Verificar sesiones disponibles (no bloquea, solo marca si necesita pago)
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { sessionsRemaining: true } });
     const hasSessions = user && user.sessionsRemaining > 0;

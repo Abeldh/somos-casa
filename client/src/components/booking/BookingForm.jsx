@@ -82,6 +82,7 @@ export default function BookingForm() {
                 slots={slots}
                 selectedSlot={selectedSlot}
                 onSelectSlot={setSelectedSlot}
+                selectedDate={selectedDate}
                 loading={loading}
               />
             ) : (

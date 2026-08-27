@@ -1,9 +1,23 @@
 import { Clock } from 'lucide-react';
-import { formatTime } from '../../utils/formatDate';
+import { formatTime, isToday } from '../../utils/formatDate';
 import { classNames } from '../../utils/helpers';
 import Spinner from '../ui/Spinner';
 
-export default function TimeSlotGrid({ slots = [], selectedSlot, onSelectSlot, loading }) {
+/**
+ * Verifica si un slot ya pasó (solo aplica si la fecha seleccionada es hoy)
+ */
+function isSlotPast(slot, selectedDate) {
+  if (!selectedDate || !isToday(selectedDate)) return false;
+
+  const now = new Date();
+  const [hours, minutes] = slot.startTime.split(':').map(Number);
+  const slotTime = new Date();
+  slotTime.setHours(hours, minutes, 0, 0);
+
+  return slotTime <= now;
+}
+
+export default function TimeSlotGrid({ slots = [], selectedSlot, onSelectSlot, selectedDate, loading }) {
   if (loading) return <Spinner className="py-8" />;
 
   if (slots.length === 0) {
@@ -15,12 +29,13 @@ export default function TimeSlotGrid({ slots = [], selectedSlot, onSelectSlot, l
     );
   }
 
-  const available = slots.filter((s) => !s.isBooked);
+  // Filtrar: no reservados Y no pasados (si es hoy)
+  const available = slots.filter((s) => !s.isBooked && !isSlotPast(s, selectedDate));
 
   if (available.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        <p className="text-sm">Todos los horarios están ocupados para este día.</p>
+        <p className="text-sm">No hay horarios disponibles para este día.</p>
       </div>
     );
   }

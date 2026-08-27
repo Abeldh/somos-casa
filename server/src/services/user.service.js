@@ -1,5 +1,5 @@
 import prisma from '../config/database.js';
-import bcrypt from 'bcrypt';
+import { hashPassword } from '../utils/hashPassword.js';
 
 export const userService = {
   async getAll() {
@@ -103,7 +103,7 @@ export const userService = {
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (existing) { const e = new Error('Ya existe un usuario con ese email'); e.statusCode = 409; throw e; }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
       data: {
         firstName,

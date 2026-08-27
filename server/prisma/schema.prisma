@@ -69,6 +69,7 @@ model User {
   phone        String?
   role         Role     @default(CLIENT)
   isActive     Boolean  @default(true) @map("is_active")
+  deletedAt    DateTime? @map("deleted_at")
   sessionsRemaining Int  @default(0) @map("sessions_remaining")
   sessionsTotal     Int  @default(0) @map("sessions_total")
   sessionsPaidAt    DateTime? @map("sessions_paid_at")
@@ -111,6 +112,9 @@ model Appointment {
   user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionNotes   SessionNote[]
 
+  @@index([userId, status])
+  @@index([date])
+  @@index([status])
   @@map("appointments")
 }
 
@@ -122,6 +126,8 @@ model Availability {
   isBooked  Boolean  @default(false) @map("is_booked")
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([date, isBooked])
+  @@index([date])
   @@map("availability")
 }
 
@@ -164,6 +170,8 @@ model Book {
   cartItems   CartItem[]
   orderItems  OrderItem[]
 
+  @@index([isActive])
+  @@index([category])
   @@map("books")
 }
 
@@ -210,6 +218,9 @@ model Order {
   coupon          Coupon?     @relation(fields: [couponId], references: [id])
   items           OrderItem[]
 
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
   @@map("orders")
 }
 

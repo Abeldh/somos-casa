@@ -41,7 +41,7 @@ export default function BookingForm() {
     }
     setSubmitting(true);
     try {
-      await appointmentService.create({
+      const result = await appointmentService.create({
         date: selectedDate,
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
@@ -50,7 +50,7 @@ export default function BookingForm() {
         notes: formData.notes,
       });
       success('¡Cita agendada con éxito!');
-      setNeedsPayment(result.needsPayment || false);
+      setNeedsPayment(result?.data?.needsPayment || false);
       setStep(4);
     } catch (err) {
       error(err.message || 'Error al agendar la cita');

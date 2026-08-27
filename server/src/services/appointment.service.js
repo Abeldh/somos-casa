@@ -1,15 +1,17 @@
 import prisma from '../config/database.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
+import { getStartOfDay, getEndOfDay } from '../utils/formatDate.js';
 
 export const appointmentService = {
   async create({ userId, date, startTime, endTime, partnerName, reason, notes }) {
-    // Validar que la fecha/hora no sea pasada
-    const appointmentDate = new Date(date);
-    const [hours, minutes] = startTime.split(':').map(Number);
-    const appointmentDateTime = new Date(appointmentDate);
-    appointmentDateTime.setHours(hours, minutes, 0, 0);
+    // Normalizar la fecha como string YYYY-MM-DD
+    const dateStr = String(date).split('T')[0];
+    
+    // Validar que la fecha/hora no sea pasada (usando zona horaria de México UTC-6)
+    const appointmentUTC = new Date(`${dateStr}T${startTime}:00.000-06:00`);
+    const nowUTC = new Date();
 
-    if (appointmentDateTime <= new Date()) {
+    if (appointmentUTC <= nowUTC) {
       const error = new Error('No puedes agendar en una fecha u horario que ya pasó.');
       error.statusCode = 422;
       throw error;
@@ -19,8 +21,12 @@ export const appointmentService = {
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { sessionsRemaining: true } });
     const hasSessions = user && user.sessionsRemaining > 0;
 
+    // Buscar por rango de fecha (evita problemas de timezone con igualdad exacta)
+    const dayStart = getStartOfDay(dateStr);
+    const dayEnd = getEndOfDay(dateStr);
+
     const slot = await prisma.availability.findFirst({
-      where: { date: new Date(date), startTime, endTime, isBooked: false },
+      where: { date: { gte: dayStart, lte: dayEnd }, startTime, endTime, isBooked: false },
     });
     if (!slot) {
       const error = new Error('El horario seleccionado ya no está disponible');
@@ -29,9 +35,10 @@ export const appointmentService = {
     }
 
     // Si tiene sesiones → decrementar. Si no → la cita queda pendiente de pago
+    const appointmentDate = new Date(`${dateStr}T00:00:00.000Z`);
     const transactionOps = [
       prisma.appointment.create({
-        data: { userId, date: new Date(date), startTime, endTime, partnerName, reason, notes },
+        data: { userId, date: appointmentDate, startTime, endTime, partnerName, reason, notes },
       }),
       prisma.availability.update({ where: { id: slot.id }, data: { isBooked: true } }),
     ];
@@ -121,11 +128,15 @@ export const appointmentService = {
     const appointment = await prisma.appointment.findUnique({ where: { id } });
     if (!appointment || appointment.userId !== userId) { const e = new Error('Cita no encontrada'); e.statusCode = 404; throw e; }
 
-    const newSlot = await prisma.availability.findFirst({ where: { date: new Date(date), startTime, endTime, isBooked: false } });
+    const newDateStr = String(date).split('T')[0];
+    const newDayStart = getStartOfDay(newDateStr);
+    const newDayEnd = getEndOfDay(newDateStr);
+
+    const newSlot = await prisma.availability.findFirst({ where: { date: { gte: newDayStart, lte: newDayEnd }, startTime, endTime, isBooked: false } });
     if (!newSlot) { const e = new Error('El nuevo horario no está disponible'); e.statusCode = 409; throw e; }
 
     const [updated] = await prisma.$transaction([
-      prisma.appointment.update({ where: { id }, data: { date: new Date(date), startTime, endTime, status: 'PENDING' } }),
+      prisma.appointment.update({ where: { id }, data: { date: new Date(`${newDateStr}T00:00:00.000Z`), startTime, endTime, status: 'PENDING' } }),
       prisma.availability.updateMany({ where: { date: appointment.date, startTime: appointment.startTime, endTime: appointment.endTime }, data: { isBooked: false } }),
       prisma.availability.update({ where: { id: newSlot.id }, data: { isBooked: true } }),
     ]);

@@ -1,10 +1,6 @@
 const CACHE_NAME = 'somos-casa-v1';
-const STATIC_ASSETS = ['/'];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
@@ -19,23 +15,43 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  const url = new URL(request.url);
 
-  // API calls: network first
-  if (request.url.includes('/api/')) {
+  // Solo interceptar GET requests
+  if (request.method !== 'GET') return;
+
+  // No cachear requests de navegación (HTML pages) — dejar que el servidor maneje SPA
+  if (request.mode === 'navigate') return;
+
+  // No cachear requests a otros orígenes que no sean Cloudinary
+  if (url.origin !== self.location.origin && !url.hostname.includes('cloudinary')) return;
+
+  // API calls: network first, fallback to cache
+  if (url.pathname.startsWith('/api/')) {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request))
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
 
   // Cloudinary images: cache first
-  if (request.url.includes('res.cloudinary.com')) {
+  if (url.hostname.includes('cloudinary')) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
         return fetch(request).then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
           return response;
         });
       })
@@ -43,17 +59,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets: stale while revalidate
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      const fetchPromise = fetch(request).then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-        }
-        return response;
-      }).catch(() => cached);
-      return cached || fetchPromise;
-    })
-  );
+  // Static assets (JS, CSS, images): stale while revalidate
+  if (request.destination === 'script' || request.destination === 'style' || request.destination === 'image') {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        }).catch(() => cached);
+        return cached || fetchPromise;
+      })
+    );
+  }
 });

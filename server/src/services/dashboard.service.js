@@ -81,12 +81,15 @@ export const dashboardService = {
     }
 
     // Top libros vendidos
-    const topBooks = await prisma.orderItem.groupBy({
-      by: ['bookId', 'title'],
-      _sum: { quantity: true, price: true },
-      orderBy: { _sum: { quantity: 'desc' } },
-      take: 10,
-    });
+    let topBooks = [];
+    try {
+      topBooks = await prisma.orderItem.groupBy({
+        by: ['bookId', 'title'],
+        _sum: { quantity: true, price: true },
+        orderBy: { _sum: { quantity: 'desc' } },
+        take: 10,
+      });
+    } catch (e) { /* tabla vacía o sin datos */ }
 
     // Ingresos totales del año
     const yearTotal = monthlyRevenue.reduce((s, m) => s + m.total, 0);

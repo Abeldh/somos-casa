@@ -11,8 +11,18 @@ function generateReferralCode(firstName) {
 export const referralService = {
   async getMyReferralCode(userId) {
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { referralCode: true, firstName: true } });
+    if (!user) { const e = new Error('Usuario no encontrado'); e.statusCode = 404; throw e; }
+
     if (!user.referralCode) {
-      const code = generateReferralCode(user.firstName);
+      // Generar código con reintentos por si hay colisión
+      let code;
+      let attempts = 0;
+      while (attempts < 5) {
+        code = generateReferralCode(user.firstName);
+        const exists = await prisma.user.findFirst({ where: { referralCode: code } });
+        if (!exists) break;
+        attempts++;
+      }
       await prisma.user.update({ where: { id: userId }, data: { referralCode: code } });
       return { referralCode: code };
     }

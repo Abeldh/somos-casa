@@ -26,7 +26,7 @@ export const sessionNoteService = {
     if (!appointment) { const e = new Error('Cita no encontrada'); e.statusCode = 404; throw e; }
 
     const note = await prisma.sessionNote.create({
-      data: { appointmentId, userId: appointment.userId, content, isPrivate },
+      data: { appointmentId, userId: adminId, content, isPrivate },
       include: { user: { select: { firstName: true, lastName: true } } },
     });
     return { note };

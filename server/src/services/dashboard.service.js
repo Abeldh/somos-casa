@@ -33,14 +33,14 @@ export const dashboardService = {
       prisma.appointment.count({ where: { status: 'COMPLETED', createdAt: { gte: startOfMonth } } }),
       prisma.order.count(),
       prisma.order.count({ where: { createdAt: { gte: startOfMonth } } }),
-      prisma.order.findMany({ where: { status: 'PAID', paidAt: { gte: startOfMonth } }, select: { total: true } }),
-      prisma.order.findMany({ where: { status: 'PAID', paidAt: { gte: startOfLastMonth, lte: endOfLastMonth } }, select: { total: true } }),
+      prisma.order.aggregate({ where: { status: 'PAID', paidAt: { gte: startOfMonth } }, _sum: { total: true } }),
+      prisma.order.aggregate({ where: { status: 'PAID', paidAt: { gte: startOfLastMonth, lte: endOfLastMonth } }, _sum: { total: true } }),
       prisma.book.count({ where: { isActive: true } }),
       prisma.referral.count({ where: { status: 'COMPLETED' } }),
     ]);
 
-    const revenueThisMonth = paidOrdersThisMonth.reduce((sum, o) => sum + o.total, 0);
-    const revenueLastMonth = paidOrdersLastMonth.reduce((sum, o) => sum + o.total, 0);
+    const revenueThisMonth = paidOrdersThisMonth._sum.total || 0;
+    const revenueLastMonth = paidOrdersLastMonth._sum.total || 0;
     const cancellationRate = appointmentsThisMonth > 0 ? Math.round((cancelledThisMonth / appointmentsThisMonth) * 100) : 0;
 
     return {
@@ -56,29 +56,23 @@ export const dashboardService = {
   async getFinancialDashboard({ year, month }) {
     const targetYear = year || new Date().getFullYear();
 
-    // Ingresos mensuales del año
-    const monthlyRevenue = [];
-    for (let m = 0; m < 12; m++) {
+    // Ingresos mensuales del año — parallelizado con Promise.all
+    const monthPromises = Array.from({ length: 12 }, (_, m) => {
       const start = new Date(targetYear, m, 1);
       const end = new Date(targetYear, m + 1, 0, 23, 59, 59);
 
-      const orders = await prisma.order.findMany({
-        where: { status: 'PAID', paidAt: { gte: start, lte: end } },
-        select: { total: true },
-      });
-
-      // Ingresos por sesiones (usuarios que pagaron en ese mes)
-      const sessionPayments = await prisma.user.count({
-        where: { sessionsPaidAt: { gte: start, lte: end } },
-      });
-
-      monthlyRevenue.push({
+      return Promise.all([
+        prisma.order.aggregate({ where: { status: 'PAID', paidAt: { gte: start, lte: end } }, _sum: { total: true } }),
+        prisma.user.count({ where: { sessionsPaidAt: { gte: start, lte: end } } }),
+      ]).then(([orderAgg, sessionPayments]) => ({
         month: m + 1,
-        books: Math.round(orders.reduce((s, o) => s + o.total, 0) * 100) / 100,
-        sessions: sessionPayments * 500, // $500 por paquete
-        total: Math.round(orders.reduce((s, o) => s + o.total, 0) * 100) / 100 + sessionPayments * 500,
-      });
-    }
+        books: Math.round((orderAgg._sum.total || 0) * 100) / 100,
+        sessions: sessionPayments * 500,
+        total: Math.round((orderAgg._sum.total || 0) * 100) / 100 + sessionPayments * 500,
+      }));
+    });
+
+    const monthlyRevenue = await Promise.all(monthPromises);
 
     // Top libros vendidos
     let topBooks = [];

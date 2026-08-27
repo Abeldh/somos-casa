@@ -29,7 +29,7 @@ export const notificationController = {
   async send(req, res, next) {
     try {
       const { userId, type, title, message, link } = req.body;
-      if (!title || !message) return res.status(400).json({ success: false, message: 'Título y mensaje son requeridos' });
+      if (!userId || !title || !message) return res.status(400).json({ success: false, message: 'userId, título y mensaje son requeridos' });
       return createdResponse(res, await notificationService.create({ userId, type, title, message, link }));
     } catch (e) { next(e); }
   },

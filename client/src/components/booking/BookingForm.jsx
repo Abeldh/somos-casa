@@ -16,6 +16,7 @@ export default function BookingForm() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [formData, setFormData] = useState({ partnerName: '', reason: '', notes: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [needsPayment, setNeedsPayment] = useState(false);
 
   const { slots, availableDates, loading, fetchByDate, fetchByMonth } = useAvailability();
   const { success, error } = useToast();
@@ -49,6 +50,7 @@ export default function BookingForm() {
         notes: formData.notes,
       });
       success('¡Cita agendada con éxito!');
+      setNeedsPayment(result.needsPayment || false);
       setStep(4);
     } catch (err) {
       error(err.message || 'Error al agendar la cita');
@@ -57,7 +59,7 @@ export default function BookingForm() {
     }
   };
 
-  if (step === 4) return <StepConfirmation />;
+  if (step === 4) return <StepConfirmation needsPayment={needsPayment} />;
 
   return (
     <div>

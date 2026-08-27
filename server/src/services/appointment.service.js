@@ -3,13 +3,9 @@ import { audit, EVENTS } from '../utils/auditLog.js';
 
 export const appointmentService = {
   async create({ userId, date, startTime, endTime, partnerName, reason, notes }) {
-    // Verificar que el usuario tenga sesiones disponibles
+    // Verificar sesiones disponibles (no bloquea, solo marca si necesita pago)
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { sessionsRemaining: true } });
-    if (!user || user.sessionsRemaining <= 0) {
-      const error = new Error('No tienes sesiones disponibles. Realiza el pago de tu paquete mensual para poder agendar.');
-      error.statusCode = 422;
-      throw error;
-    }
+    const hasSessions = user && user.sessionsRemaining > 0;
 
     const slot = await prisma.availability.findFirst({
       where: { date: new Date(date), startTime, endTime, isBooked: false },
@@ -20,16 +16,23 @@ export const appointmentService = {
       throw error;
     }
 
-    const [appointment] = await prisma.$transaction([
+    // Si tiene sesiones → decrementar. Si no → la cita queda pendiente de pago
+    const transactionOps = [
       prisma.appointment.create({
         data: { userId, date: new Date(date), startTime, endTime, partnerName, reason, notes },
       }),
       prisma.availability.update({ where: { id: slot.id }, data: { isBooked: true } }),
-      // Decrementar sesión disponible
-      prisma.user.update({ where: { id: userId }, data: { sessionsRemaining: { decrement: 1 } } }),
-    ]);
+    ];
 
-    return { appointment };
+    if (hasSessions) {
+      transactionOps.push(
+        prisma.user.update({ where: { id: userId }, data: { sessionsRemaining: { decrement: 1 } } })
+      );
+    }
+
+    const [appointment] = await prisma.$transaction(transactionOps);
+
+    return { appointment, needsPayment: !hasSessions };
   },
 
   async getByUser(userId) {

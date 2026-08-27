@@ -57,9 +57,9 @@ export default function UserDashboardPage() {
         </div>
         {sessionsRemaining === 0 && (
           <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-sm text-amber-800 mb-3">No tienes sesiones disponibles. Realiza tu pago mensual ($500 MXN) y sube tu comprobante.</p>
+            <p className="text-sm text-amber-800 mb-3">No tienes sesiones en tu paquete. Puedes agendar tu cita y al finalizar adjuntar tu comprobante de pago.</p>
             <ProofUpload
-              label="Adjuntar comprobante de pago"
+              label="O sube tu comprobante aquí para adelantar el proceso"
               value={proofUrl}
               onChange={async (url) => {
                 setProofUrl(url);

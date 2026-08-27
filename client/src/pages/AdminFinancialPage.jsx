@@ -19,7 +19,7 @@ export default function AdminFinancialPage() {
     setLoading(true);
     try {
       const res = await dashboardService.getFinancial(year);
-      setData(res.data);
+      setData(res);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };

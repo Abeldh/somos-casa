@@ -27,7 +27,7 @@ export default function NotificationBell() {
   const fetchUnreadCount = async () => {
     try {
       const res = await notificationService.getUnreadCount();
-      setUnreadCount(res.data.unreadCount);
+      setUnreadCount(res.unreadCount || 0);
     } catch (e) { /* silencioso */ }
   };
 
@@ -35,8 +35,8 @@ export default function NotificationBell() {
     setLoading(true);
     try {
       const res = await notificationService.getMyNotifications(1, 10);
-      setNotifications(res.data.notifications);
-      setUnreadCount(res.data.unreadCount);
+      setNotifications(res.notifications || []);
+      setUnreadCount(res.unreadCount || 0);
     } catch (e) { /* silencioso */ }
     finally { setLoading(false); }
   };

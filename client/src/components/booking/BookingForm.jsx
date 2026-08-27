@@ -50,7 +50,7 @@ export default function BookingForm() {
         notes: formData.notes,
       });
       success('¡Cita agendada con éxito!');
-      setNeedsPayment(result?.data?.needsPayment || false);
+      setNeedsPayment(result?.needsPayment || false);
       setStep(4);
     } catch (err) {
       error(err.message || 'Error al agendar la cita');

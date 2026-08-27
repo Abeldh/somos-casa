@@ -26,8 +26,11 @@ export default function AdminSessionNotesPage() {
     setLoading(true);
     try {
       const res = await appointmentService.getAll({ status: filter || undefined });
-      setAppointments(res.data.appointments);
-    } catch (e) { error('Error al cargar citas'); }
+      setAppointments(res.appointments || []);
+    } catch (e) {
+      console.error('Error citas:', e);
+      setAppointments([]);
+    }
     finally { setLoading(false); }
   };
 
@@ -35,7 +38,7 @@ export default function AdminSessionNotesPage() {
     setNotesLoading(true);
     try {
       const res = await sessionNoteService.getByAppointment(appointmentId);
-      setNotes(res.data.notes);
+      setNotes(res.notes || []);
     } catch (e) { setNotes([]); }
     finally { setNotesLoading(false); }
   };

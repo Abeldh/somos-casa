@@ -26,8 +26,8 @@ export default function AdminDashboardPage() {
         dashboardService.getMetrics(),
         dashboardService.getRecentActivity(5),
       ]);
-      setMetrics(metricsRes.data);
-      setActivity(activityRes.data);
+      setMetrics(metricsRes);
+      setActivity(activityRes);
     } catch (e) { console.error(e); }
     finally { setMetricsLoading(false); }
   };

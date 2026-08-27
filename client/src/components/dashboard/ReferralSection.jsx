@@ -23,9 +23,9 @@ export default function ReferralSection() {
         referralService.getMyCode(),
         referralService.getMyReferrals(),
       ]);
-      setCode(codeRes.data.referralCode);
-      setReferrals(referralsRes.data.referrals);
-      setStats(referralsRes.data.stats);
+      setCode(codeRes.referralCode);
+      setReferrals(referralsRes.referrals || []);
+      setStats(referralsRes.stats || { total: 0, completed: 0, pending: 0 });
     } catch (e) { /* silencioso */ }
     finally { setLoading(false); }
   };

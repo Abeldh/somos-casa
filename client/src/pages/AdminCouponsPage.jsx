@@ -26,7 +26,7 @@ export default function AdminCouponsPage() {
     setLoading(true);
     try {
       const res = await couponService.getAll();
-      setCoupons(res.data.coupons);
+      setCoupons(res.coupons || []);
     } catch (e) { error('Error al cargar cupones'); }
     finally { setLoading(false); }
   };

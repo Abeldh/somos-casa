@@ -8,14 +8,12 @@ export default function StorySection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Imagen / espacio para foto de los pastores */}
           <div className="order-2 lg:order-1">
-            <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-primary-100 to-warm-100 flex items-center justify-center overflow-hidden border border-primary-100">
-              {/* TODO: Reemplazar por la foto real de los pastores.
-                  Ejemplo: <img src="/pastores.jpg" alt="Pastores de Somos Casa" className="w-full h-full object-cover" /> */}
-              <div className="text-center p-8">
-                <Cross className="w-12 h-12 text-primary-400 mx-auto mb-3" />
-                <p className="text-sm text-primary-700 font-medium">Foto de los pastores</p>
-                <p className="text-xs text-gray-500 mt-1">(agregar imagen real)</p>
-              </div>
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-primary-100 shadow-lg">
+              <img
+                src="/images/pastores.jpg"
+                alt="Pastores de Somos Casa"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
 

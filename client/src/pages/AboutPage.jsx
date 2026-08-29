@@ -87,11 +87,12 @@ export default function AboutPage() {
           {/* TODO: Reemplazar con la información real de los pastores (nombres, foto, historia). */}
           <div className="bg-white rounded-2xl border border-primary-100 p-8 md:p-10">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary-100 to-warm-100 flex items-center justify-center border border-primary-100">
-                <div className="text-center p-6">
-                  <Users className="w-10 h-10 text-primary-400 mx-auto mb-2" />
-                  <p className="text-xs text-gray-500">(foto de los pastores)</p>
-                </div>
+              <div className="aspect-square rounded-2xl overflow-hidden border border-primary-100 shadow-md">
+                <img
+                  src="/images/pastores.jpg"
+                  alt="Pastores de Somos Casa"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="md:col-span-2">
                 <h3 className="text-xl font-display font-bold text-gray-900">

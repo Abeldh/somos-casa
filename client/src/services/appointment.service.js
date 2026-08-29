@@ -10,6 +10,6 @@ export const appointmentService = {
   cancel: (id) => api.patch(`/appointments/${id}/cancel`),
   reschedule: (id, data) => api.patch(`/appointments/${id}/reschedule`, data),
   setZoomUrl: (id, zoomUrl) => api.patch(`/appointments/${id}/zoom`, { zoomUrl }),
-  releaseSessions: (userId, sessions = 4) => api.post('/appointments/release-sessions', { userId, sessions }),
+  releaseSessions: (userId, sessions = 4, amount = 0) => api.post('/appointments/release-sessions', { userId, sessions, amount }),
   uploadSessionProof: (paymentProofUrl) => api.patch('/appointments/session-proof', { paymentProofUrl }),
 };

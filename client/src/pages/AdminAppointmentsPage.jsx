@@ -30,6 +30,7 @@ export default function AdminAppointmentsPage() {
   const [zoomUrl, setZoomUrl] = useState('');
   const [releaseModal, setReleaseModal] = useState(null);
   const [releaseSessions, setReleaseSessions] = useState(4);
+  const [releaseAmount, setReleaseAmount] = useState(500);
 
   const buildParams = () => ({ ...(filter ? { status: filter } : {}), page, limit });
 
@@ -56,7 +57,7 @@ export default function AdminAppointmentsPage() {
 
   const handleReleaseSessions = async () => {
     try {
-      await appointmentService.releaseSessions(releaseModal.id, releaseSessions);
+      await appointmentService.releaseSessions(releaseModal.id, releaseSessions, releaseAmount);
       success(`${releaseSessions} sesiones liberadas para ${releaseModal.firstName}`);
       setReleaseModal(null);
       fetchAll(buildParams());
@@ -102,7 +103,7 @@ export default function AdminAppointmentsPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setReleaseModal(u)}
+                  onClick={() => { setReleaseModal(u); setReleaseSessions(4); setReleaseAmount(500); }}
                   className="flex items-center gap-1"
                 >
                   <Unlock className="w-3.5 h-3.5" />
@@ -171,6 +172,15 @@ export default function AdminAppointmentsPage() {
               min="1"
               max="12"
             />
+            <Input
+              label="Monto pagado (MXN)"
+              type="number"
+              value={releaseAmount}
+              onChange={(e) => setReleaseAmount(parseFloat(e.target.value) || 0)}
+              min="0"
+              step="0.01"
+            />
+            <p className="text-xs text-gray-400 -mt-2">Este monto se registrará como ingreso de sesiones en el dashboard financiero. Usa 0 si no aplica.</p>
             <Button onClick={handleReleaseSessions} className="w-full flex items-center justify-center gap-2">
               <Unlock className="w-4 h-4" />
               Confirmar Pago y Liberar {releaseSessions} Sesiones

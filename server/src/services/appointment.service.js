@@ -145,7 +145,7 @@ export const appointmentService = {
   /**
    * Admin: Liberar sesiones para un usuario (tras confirmar pago mensual)
    */
-  async releaseSessions(userId, sessions = 4, req = null) {
+  async releaseSessions(userId, sessions = 4, amount = 0, req = null) {
     const user = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -156,7 +156,23 @@ export const appointmentService = {
       select: { id: true, email: true, firstName: true, lastName: true, sessionsRemaining: true, sessionsTotal: true },
     });
 
-    await audit(EVENTS.ORDER_STATUS_CHANGED, { userId, detail: `Sessions released: ${sessions}. Total: ${user.sessionsTotal}`, req });
+    // Registrar el ingreso del paquete de sesiones para el dashboard financiero.
+    const parsedAmount = Number(amount) || 0;
+    if (parsedAmount > 0) {
+      await prisma.payment.create({
+        data: {
+          userId,
+          type: 'SESSION_PACKAGE',
+          method: 'TRANSFER',
+          status: 'VERIFIED',
+          amount: parsedAmount,
+          verifiedAt: new Date(),
+          notes: `Pago de paquete: ${sessions} sesiones`,
+        },
+      });
+    }
+
+    await audit(EVENTS.ORDER_STATUS_CHANGED, { userId, detail: `Sessions released: ${sessions}. Total: ${user.sessionsTotal}. Amount: ${parsedAmount}`, req });
 
     return { user };
   },

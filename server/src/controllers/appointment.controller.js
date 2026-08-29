@@ -49,9 +49,9 @@ export const appointmentController = {
 
   async releaseSessions(req, res, next) {
     try {
-      const { userId, sessions } = req.body;
+      const { userId, sessions, amount } = req.body;
       if (!userId) return res.status(400).json({ success: false, message: 'userId requerido' });
-      return successResponse(res, await appointmentService.releaseSessions(userId, sessions || 4, req), 'Sesiones liberadas');
+      return successResponse(res, await appointmentService.releaseSessions(userId, sessions || 4, amount || 0, req), 'Sesiones liberadas');
     } catch (error) { next(error); }
   },
 

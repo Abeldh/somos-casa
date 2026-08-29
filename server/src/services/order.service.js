@@ -119,6 +119,28 @@ export const orderService = {
       include: { items: { include: { book: { select: { title: true } } } } },
     });
 
+    // Registrar el ingreso en la tabla Payment (para el dashboard financiero).
+    // Evita duplicados si ya existe un Payment verificado para esta orden.
+    const existingPayment = await prisma.payment.findFirst({
+      where: { orderId, type: 'BOOK_ORDER', status: 'VERIFIED' },
+    });
+    if (!existingPayment) {
+      await prisma.payment.create({
+        data: {
+          userId: order.user.id,
+          type: 'BOOK_ORDER',
+          method: 'TRANSFER',
+          status: 'VERIFIED',
+          amount: order.total,
+          orderId: order.id,
+          reference: order.orderNumber,
+          proofUrl: order.paymentProofUrl || null,
+          verifiedAt: new Date(),
+          notes: `Pago de pedido ${order.orderNumber}`,
+        },
+      });
+    }
+
     // Enviar email al usuario
     const bookTitles = order.items.map(i => i.book.title).join(', ');
     emailService.sendDownloadReady({

@@ -41,11 +41,11 @@ export default function TestimonialsSection() {
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="section-title">Lo que dicen las parejas</h2>
+          <h2 className="section-title">Testimonios de restauración</h2>
           <p className="section-subtitle mx-auto">
             {hasTestimonials
-              ? 'Experiencias reales de parejas que han caminado con nosotros.'
-              : 'Pronto compartiremos las experiencias de nuestros lectores y clientes.'}
+              ? 'Historias de matrimonios que Dios ha restaurado y fortalecido.'
+              : 'Pronto compartiremos los testimonios de lo que Dios está haciendo en los matrimonios.'}
           </p>
         </div>
 

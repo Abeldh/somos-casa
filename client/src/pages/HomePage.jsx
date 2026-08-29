@@ -1,5 +1,6 @@
 import HeroSection from '../components/landing/HeroSection';
 import IdentifySection from '../components/landing/IdentifySection';
+import StorySection from '../components/landing/StorySection';
 import SolutionsSection from '../components/landing/SolutionsSection';
 import SpotifySection from '../components/landing/SpotifySection';
 import YouTubeSection from '../components/landing/YouTubeSection';
@@ -10,20 +11,22 @@ import CTASection from '../components/landing/CTASection';
 export default function HomePage() {
   return (
     <>
-      {/* Atención: primera impresión + propuesta de valor */}
+      {/* Atención: esperanza en Cristo + propuesta de valor */}
       <HeroSection />
-      {/* Identificación: reconocer el problema */}
+      {/* Identificación: reconocer el problema con fe */}
       <IdentifySection />
-      {/* Solución: caminos diferenciados (asesorías / libros / ambas) */}
+      {/* Quiénes somos: historia del ministerio */}
+      <StorySection />
+      {/* Solución: caminos (consejería pastoral / recursos / ambos) */}
       <SolutionsSection />
       {/* Contenido de valor: podcast y videos */}
       <SpotifySection />
       <YouTubeSection />
-      {/* Prueba social */}
+      {/* Prueba social: testimonios de restauración */}
       <TestimonialsSection />
       {/* Resolver dudas + aviso responsable */}
       <FAQSection />
-      {/* Acción final */}
+      {/* Acción final: Dios restaura */}
       <CTASection />
     </>
   );

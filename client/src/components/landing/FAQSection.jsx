@@ -4,32 +4,32 @@ import { classNames } from '../../utils/helpers';
 
 const faqs = [
   {
-    q: '¿Cómo funciona una asesoría?',
-    a: 'Reservas una sesión desde tu panel, recibes la confirmación con el enlace de videollamada, tienes tu sesión y al final se establecen objetivos y próximos pasos para tu relación.',
+    q: '¿Qué es la consejería pastoral de Somos Casa?',
+    a: 'Es un espacio de acompañamiento con fundamento en la Palabra de Dios, donde oramos contigo y te guiamos con principios bíblicos para fortalecer y restaurar tu matrimonio.',
   },
   {
-    q: '¿Las asesorías son en línea?',
-    a: 'Sí. Las sesiones se realizan por videollamada, para que puedas participar desde donde te sientas más cómodo.',
+    q: '¿Cómo funciona una sesión?',
+    a: 'Reservas tu sesión desde tu panel, recibes la confirmación con el enlace de videollamada, tienes tu sesión y al final establecemos juntos los próximos pasos, siempre poniendo tu hogar en las manos de Dios.',
   },
   {
-    q: '¿La asesoría es individual o para parejas?',
-    a: 'Puede ser de ambas formas. Al agendar puedes indicarnos tu situación para adaptar el enfoque de la sesión.',
+    q: '¿Las sesiones son en línea?',
+    a: 'Sí. Las sesiones se realizan por videollamada, para que puedas participar desde donde te sientas más cómodo, en cualquier lugar.',
   },
   {
-    q: '¿Qué situaciones se pueden trabajar?',
-    a: 'Comunicación, conflictos frecuentes, confianza, distancia emocional, convivencia, acuerdos de pareja y el fortalecimiento general de la relación, entre otras.',
+    q: '¿Es necesario ser cristiano para recibir consejería?',
+    a: 'Recibimos con amor a toda pareja que desee ayuda para su matrimonio. Nuestro enfoque es cristocéntrico y bíblico, y compartimos con respeto la esperanza que hemos encontrado en Jesucristo.',
   },
   {
-    q: '¿Cómo compro un libro?',
-    a: 'Explora la librería, agrega los libros a tu carrito y completa el proceso de compra. Los libros son digitales, así que podrás descargarlos desde tu panel una vez confirmado tu pago.',
+    q: '¿Qué situaciones podemos llevar delante de Dios?',
+    a: 'Comunicación, conflictos, confianza, distancia emocional, perdón, convivencia y el fortalecimiento general del matrimonio. Creemos que en Cristo hay restauración para cada área del hogar.',
   },
   {
-    q: '¿Qué pasa después de realizar el pago?',
-    a: 'Recibirás la confirmación y, en el caso de los libros, la descarga se habilita en la sección "Mis Libros" de tu panel una vez verificado el pago.',
+    q: '¿Cómo adquiero un libro?',
+    a: 'Explora la librería, agrega los libros a tu carrito y completa la compra. Los libros son digitales, así que podrás descargarlos desde tu panel una vez confirmado tu pago.',
   },
   {
-    q: '¿Puedo combinar libro y asesoría?',
-    a: 'Claro. Muchas personas prefieren aprender con los libros y complementarlo con el acompañamiento de una asesoría. Puedes hacer ambos a tu propio ritmo.',
+    q: '¿Puedo combinar libros y consejería?',
+    a: 'Claro. Muchas parejas complementan la lectura de los recursos con el acompañamiento pastoral. Puedes caminar a tu propio ritmo, de la mano de Dios.',
   },
 ];
 
@@ -87,10 +87,11 @@ export default function FAQSection() {
         <div className="mt-8 flex items-start gap-3 bg-white rounded-xl border border-gray-100 p-5">
           <Info className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-gray-600 leading-relaxed">
-            <strong className="text-gray-800">Aviso importante:</strong> nuestras asesorías son un espacio de
-            orientación y acompañamiento para tu relación. No sustituyen la atención psicológica, terapéutica
-            o médica profesional cuando esta sea necesaria. Si tú o tu pareja atraviesan una crisis que requiere
-            atención especializada, te recomendamos acudir a un profesional de la salud mental.
+            <strong className="text-gray-800">Aviso importante:</strong> nuestra consejería es un espacio de
+            orientación y acompañamiento pastoral con fundamento bíblico. No sustituye la atención psicológica,
+            terapéutica o médica profesional cuando esta sea necesaria. Si tú o tu pareja atraviesan una crisis
+            que requiere atención especializada, con amor te animamos a buscar también el apoyo de un profesional
+            de la salud, confiando en que Dios usa distintos medios para traer sanidad.
           </p>
         </div>
       </div>

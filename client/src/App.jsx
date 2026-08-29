@@ -26,6 +26,7 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const LegalNoticePage = lazy(() => import('./pages/LegalNoticePage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Admin pages
@@ -67,6 +68,7 @@ export default function App() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/legal" element={<LegalNoticePage />} />
               <Route path="/cookies" element={<CookiePolicyPage />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/store" element={<StorePage />} />
               <Route path="/store/:slug" element={<BookDetailPage />} />
               <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />

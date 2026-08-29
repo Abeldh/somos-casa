@@ -8,19 +8,19 @@ const situations = [
   },
   {
     icon: MessageCircleHeart,
-    text: 'Siento que ya no nos comunicamos como antes.',
+    text: 'Siento que la comunicación y la cercanía se han enfriado.',
   },
   {
     icon: Users,
-    text: 'Quiero recuperar la conexión con mi pareja.',
+    text: 'Anhelamos volver a caminar juntos, tomados de la mano de Dios.',
   },
   {
     icon: Clock,
-    text: 'No quiero esperar a que el problema sea más grande.',
+    text: 'No queremos esperar a que la crisis crezca; queremos actuar hoy.',
   },
   {
     icon: Sprout,
-    text: 'Quiero aprender a construir una relación más saludable.',
+    text: 'Deseamos edificar nuestro hogar sobre el fundamento de Cristo.',
   },
 ];
 
@@ -31,7 +31,7 @@ export default function IdentifySection() {
         <div className="text-center mb-12">
           <h2 className="section-title">¿Te identificas con alguna de estas situaciones?</h2>
           <p className="section-subtitle mx-auto">
-            Reconocer lo que estás viviendo es el primer paso. No estás solo en esto.
+            Reconocer dónde estás es el primer paso. Y en Cristo, ningún matrimonio está fuera del alcance de su gracia.
           </p>
         </div>
 
@@ -51,23 +51,28 @@ export default function IdentifySection() {
             );
           })}
 
-          {/* Tarjeta de transición emocional / esperanza */}
+          {/* Tarjeta de transición emocional / esperanza en Dios */}
           <div className="flex flex-col justify-center bg-gradient-to-br from-primary-600 to-primary-700 rounded-xl p-6 text-white">
             <p className="text-lg font-display font-semibold leading-snug">
-              Tener problemas no significa que todo esté perdido.
+              Para Dios no hay imposibles.
             </p>
             <p className="text-primary-100 text-sm mt-2">
-              A veces lo que falta son herramientas, comprensión y acompañamiento.
+              Él restaura corazones, sana heridas y renueva el amor. A veces el camino comienza con
+              una oración y una decisión de buscar ayuda.
             </p>
             <Link
               to="/booking"
               className="inline-flex items-center gap-1.5 text-white font-medium text-sm mt-4 hover:gap-2.5 transition-all"
             >
-              Quiero encontrar una herramienta
+              Quiero dar el primer paso
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
+
+        <p className="text-center text-sm text-gray-500 italic mt-8 max-w-xl mx-auto">
+          "Todo lo puedo en Cristo que me fortalece." — Filipenses 4:13
+        </p>
       </div>
     </section>
   );

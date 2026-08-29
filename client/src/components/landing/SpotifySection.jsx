@@ -16,7 +16,7 @@ export default function SpotifySection() {
           </div>
           <h2 className="section-title">Escucha nuestro podcast</h2>
           <p className="section-subtitle mx-auto">
-            Episodios sobre comunicación, intimidad, finanzas en pareja y más temas que fortalecen tu matrimonio.
+            Episodios con enseñanza bíblica sobre el matrimonio, la comunicación, el perdón y la vida en familia bajo el señorío de Cristo.
           </p>
         </div>
 

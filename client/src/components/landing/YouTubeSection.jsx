@@ -19,9 +19,9 @@ export default function YouTubeSection() {
             <Video className="w-4 h-4" />
             Videos
           </div>
-          <h2 className="section-title">Videos educativos</h2>
+          <h2 className="section-title">Enseñanzas en video</h2>
           <p className="section-subtitle mx-auto">
-            Contenido en video para aprender juntos y crecer como pareja.
+            Prédicas y enseñanzas para edificar tu matrimonio conforme a la Palabra de Dios.
           </p>
         </div>
 

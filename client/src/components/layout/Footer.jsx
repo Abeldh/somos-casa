@@ -12,7 +12,11 @@ export default function Footer() {
               <h3 className="font-display text-xl font-semibold text-white">Somos Casa</h3>
             </div>
             <p className="text-sm leading-relaxed text-gray-400">
-              Fortalecemos matrimonios a través de asesoría profesional, contenido educativo y acompañamiento integral.
+              Un ministerio que ayuda a los matrimonios a encontrar en Jesucristo la fuente de amor,
+              perdón y restauración para su hogar.
+            </p>
+            <p className="text-xs italic text-gray-500 mt-4">
+              "Si Jehová no edificare la casa, en vano trabajan los que la edifican." — Salmo 127:1
             </p>
           </div>
 
@@ -38,7 +42,9 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-4">Navegación</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="/" className="hover:text-primary-400 transition-colors">Inicio</a></li>
-              <li><a href="/booking" className="hover:text-primary-400 transition-colors">Agendar Cita</a></li>
+              <li><a href="/about" className="hover:text-primary-400 transition-colors">Nuestra Historia</a></li>
+              <li><a href="/booking" className="hover:text-primary-400 transition-colors">Agendar Consejería</a></li>
+              <li><a href="/store" className="hover:text-primary-400 transition-colors">Librería</a></li>
               <li><a href="/login" className="hover:text-primary-400 transition-colors">Iniciar Sesión</a></li>
               <li><a href="/privacy" className="hover:text-primary-400 transition-colors">Aviso de Privacidad</a></li>
               <li><a href="/terms" className="hover:text-primary-400 transition-colors">Términos y Condiciones</a></li>
@@ -51,7 +57,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
           <p>&copy; {new Date().getFullYear()} Somos Casa. Todos los derechos reservados.</p>
           <p className="flex items-center gap-1 mt-2 md:mt-0">
-            Hecho con <Heart className="w-3 h-3 text-primary-500 fill-primary-500" /> para matrimonios
+            Para la gloria de <Heart className="w-3 h-3 text-primary-500 fill-primary-500" /> Cristo
           </p>
         </div>
       </div>

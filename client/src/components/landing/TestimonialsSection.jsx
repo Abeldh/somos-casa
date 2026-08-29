@@ -35,12 +35,7 @@ export default function TestimonialsSection() {
     finally { setSending(false); }
   };
 
-  // Fallback: si no hay testimonios en BD, mostrar los estáticos
-  const displayTestimonials = testimonials.length > 0 ? testimonials : [
-    { id: '1', name: 'María y Carlos', text: 'La asesoría nos ayudó a comunicarnos mejor. Después de 10 años de matrimonio, sentimos que nos conocemos de nuevo.', rating: 5 },
-    { id: '2', name: 'Ana y Roberto', text: 'Los podcasts se convirtieron en nuestra rutina semanal. Nos encanta escucharlos juntos y aplicar lo que aprendemos.', rating: 5 },
-    { id: '3', name: 'Laura y Miguel', text: 'Gracias a las sesiones pudimos superar una crisis que parecía imposible. Hoy estamos más unidos que nunca.', rating: 5 },
-  ];
+  const hasTestimonials = testimonials.length > 0;
 
   return (
     <section className="py-20 bg-white">
@@ -48,24 +43,40 @@ export default function TestimonialsSection() {
         <div className="text-center mb-12">
           <h2 className="section-title">Lo que dicen las parejas</h2>
           <p className="section-subtitle mx-auto">
-            Historias reales de matrimonios que han encontrado un nuevo camino juntos.
+            {hasTestimonials
+              ? 'Experiencias reales de parejas que han caminado con nosotros.'
+              : 'Pronto compartiremos las experiencias de nuestros lectores y clientes.'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {displayTestimonials.slice(0, 6).map((testimonial) => (
-            <div key={testimonial.id} className="bg-warm-50 rounded-xl p-6 relative">
-              <Quote className="w-8 h-8 text-primary-200 absolute top-4 right-4" />
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                ))}
+        {hasTestimonials ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.slice(0, 6).map((testimonial) => (
+              <div key={testimonial.id} className="bg-warm-50 rounded-xl p-6 relative">
+                <Quote className="w-8 h-8 text-primary-200 absolute top-4 right-4" />
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: testimonial.rating }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">"{testimonial.text}"</p>
+                <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed mb-4">"{testimonial.text}"</p>
-              <p className="font-semibold text-gray-900 text-sm">{testimonial.name}</p>
+            ))}
+          </div>
+        ) : (
+          <div className="max-w-lg mx-auto text-center bg-warm-50 rounded-2xl p-10 border border-warm-100">
+            <div className="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-4">
+              <Quote className="w-7 h-7 text-primary-500" />
             </div>
-          ))}
-        </div>
+            <p className="text-gray-700 leading-relaxed">
+              Estamos comenzando a reunir las historias de las parejas que confían en nosotros.
+              {isAuthenticated
+                ? ' ¿Ya viviste tu experiencia? Nos encantaría escucharte.'
+                : ' Muy pronto verás sus testimonios aquí.'}
+            </p>
+          </div>
+        )}
 
         {/* Botón para dejar testimonio */}
         {isAuthenticated && (

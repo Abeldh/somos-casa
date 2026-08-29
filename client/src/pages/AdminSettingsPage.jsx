@@ -204,7 +204,7 @@ function CreateAdminSection() {
   const { success, error } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const [adminForm, setAdminForm] = useState({ firstName: '', lastName: '', email: '', password: '', phone: '' });
+  const [adminForm, setAdminForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [adminErrors, setAdminErrors] = useState({});
 
   const handleChange = (e) => {
@@ -223,6 +223,8 @@ function CreateAdminSection() {
     else if (!/[A-Z]/.test(adminForm.password)) errs.password = 'Debe contener al menos una mayúscula';
     else if (!/[0-9]/.test(adminForm.password)) errs.password = 'Debe contener al menos un número';
     else if (!/[^A-Za-z0-9]/.test(adminForm.password)) errs.password = 'Debe contener al menos un caracter especial (!@#$%...)';
+    if (!adminForm.confirmPassword) errs.confirmPassword = 'Confirma la contraseña';
+    else if (adminForm.password !== adminForm.confirmPassword) errs.confirmPassword = 'Las contraseñas no coinciden';
     return errs;
   };
 
@@ -250,7 +252,7 @@ function CreateAdminSection() {
     try {
       await api.post('/users/create-admin', adminForm);
       success('Administrador creado exitosamente');
-      setAdminForm({ firstName: '', lastName: '', email: '', password: '', phone: '' });
+      setAdminForm({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '' });
     } catch (err) {
       error(err.message || 'Error al crear administrador');
     } finally {
@@ -305,6 +307,15 @@ function CreateAdminSection() {
             </ul>
           </div>
         )}
+        <Input
+          label="Confirmar contraseña"
+          name="confirmPassword"
+          type="password"
+          value={adminForm.confirmPassword}
+          onChange={handleChange}
+          error={adminErrors.confirmPassword}
+          placeholder="Repite la contraseña"
+        />
         <Button type="submit" loading={loading} className="w-full flex items-center justify-center gap-2">
           <UserPlus className="w-4 h-4" />
           Crear Administrador

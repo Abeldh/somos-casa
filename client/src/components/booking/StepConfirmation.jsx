@@ -37,10 +37,13 @@ export default function StepConfirmation({ needsPayment = false }) {
           <div className="bg-warm-50 rounded-xl p-5 text-left mb-6">
             <h4 className="font-semibold text-gray-900 text-sm mb-3">Datos de pago:</h4>
             <ul className="space-y-1.5 text-sm text-gray-700">
+              <li><strong>Transferencia:</strong> 4027 6600 1036 6823</li>
+              <li><strong>Beneficiario:</strong> Angélica Armenta Barajas</li>
               <li><strong>PayPal:</strong> <a href="https://paypal.me/AArmentaBarajas" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">paypal.me/AArmentaBarajas</a></li>
               <li><strong>Monto:</strong> $500.00 MXN (paquete 4 sesiones)</li>
               <li><strong>Concepto:</strong> Asesoría mensual</li>
             </ul>
+            <p className="text-xs text-gray-500 mt-3">Envía tu comprobante por WhatsApp (722 414 8552) o a somoscasatoluca@gmail.com.</p>
           </div>
 
           <div className="text-left mb-6">

@@ -1,13 +1,11 @@
 import { MessageCircle } from 'lucide-react';
 
-// Configura aquí el número de WhatsApp (formato internacional, solo dígitos).
-// Ejemplo México: 52 + 10 dígitos => '5215512345678'
-const WHATSAPP_NUMBER = '5210000000000';
+// Número de WhatsApp de Somos Casa (formato internacional, solo dígitos).
+const WHATSAPP_NUMBER = '527224148552';
 const DEFAULT_MESSAGE = 'Hola, me gustaría conocer más sobre las asesorías matrimoniales.';
 
 export default function WhatsAppButton() {
-  // Si no se ha configurado un número real, no renderizar el botón.
-  if (!WHATSAPP_NUMBER || WHATSAPP_NUMBER === '5210000000000') return null;
+  if (!WHATSAPP_NUMBER) return null;
 
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`;
 

@@ -52,8 +52,9 @@ export default function TermsPage() {
 
           <h4 className="font-medium text-gray-800 mt-4">3.2 Proceso de Pago</h4>
           <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>El pago se realiza mediante transferencia bancaria o PayPal.</li>
+            <li>El pago se realiza mediante transferencia bancaria (cuenta a nombre de Angélica Armenta Barajas) o PayPal.</li>
             <li>El usuario debe incluir su número de orden como concepto/referencia del pago.</li>
+            <li>El comprobante puede enviarse por WhatsApp (722 414 8552) o al correo somoscasatoluca@gmail.com.</li>
             <li>La liberación de la descarga se realiza una vez que el equipo de Somos Casa verifica el depósito.</li>
           </ul>
 
@@ -78,7 +79,7 @@ export default function TermsPage() {
         </Section>
 
         <Section icon={Scale} title="6. Jurisdicción">
-          <p>Estos Términos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se someterá a los tribunales competentes de la Ciudad de México.</p>
+          <p>Estos Términos se rigen por las leyes de los Estados Unidos Mexicanos. Cualquier controversia se someterá a los tribunales competentes de Toluca, Estado de México.</p>
         </Section>
 
         <Section icon={FileText} title="7. Modificaciones">
@@ -86,7 +87,7 @@ export default function TermsPage() {
         </Section>
 
         <Section icon={FileText} title="8. Contacto">
-          <p>Para consultas sobre estos Términos: <strong>contacto@somoscasa.com</strong></p>
+          <p>Para consultas sobre estos Términos: <strong>somoscasatoluca@gmail.com</strong> · WhatsApp <strong>+52 722 414 8552</strong></p>
         </Section>
       </div>
     </div>

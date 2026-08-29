@@ -59,11 +59,10 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-lg p-4 border border-gray-200">
             <p className="font-medium text-gray-800 text-sm mb-2">🏦 Transferencia bancaria</p>
             <ul className="space-y-1.5 text-sm text-gray-700">
-              <li><strong>Banco:</strong> [Tu banco aquí]</li>
-              <li><strong>CLABE:</strong> [Tu CLABE aquí]</li>
-              <li><strong>Beneficiario:</strong> Somos Casa</li>
+              <li><strong>Número de cuenta:</strong> 4027 6600 1036 6823</li>
+              <li><strong>Beneficiario:</strong> Angélica Armenta Barajas</li>
               <li><strong>Concepto:</strong> {orderNum}</li>
-              <li><strong>Monto:</strong> ${orderTotal > 0 ? orderTotal.toFixed(2) : '—'}</li>
+              <li><strong>Monto:</strong> ${orderTotal > 0 ? orderTotal.toFixed(2) : '—'} MXN</li>
             </ul>
           </div>
 
@@ -79,7 +78,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <p className="text-xs text-gray-500 mt-4">Envía tu comprobante por WhatsApp o email para agilizar la confirmación.</p>
+        <p className="text-xs text-gray-500 mt-4">Envía tu comprobante por WhatsApp (722 414 8552) o al correo somoscasatoluca@gmail.com para agilizar la confirmación.</p>
       </div>
 
       <div className="mb-8">

@@ -13,7 +13,7 @@ export default function LegalNoticePage() {
           <Building2 className="w-5 h-5 text-primary-600 mt-1" />
           <div>
             <h3 className="font-semibold text-gray-900">Titular</h3>
-            <p className="text-gray-600 mt-1">Somos Casa Asesoría Matrimonial</p>
+            <p className="text-gray-600 mt-1">Somos Casa Asesoría Matrimonial — Angélica Armenta Barajas</p>
           </div>
         </div>
 
@@ -29,7 +29,7 @@ export default function LegalNoticePage() {
           <Building2 className="w-5 h-5 text-primary-600 mt-1" />
           <div>
             <h3 className="font-semibold text-gray-900">Domicilio</h3>
-            <p className="text-gray-600 mt-1">Ciudad de México, México</p>
+            <p className="text-gray-600 mt-1">Toluca, Estado de México, México</p>
           </div>
         </div>
 
@@ -37,7 +37,7 @@ export default function LegalNoticePage() {
           <Mail className="w-5 h-5 text-primary-600 mt-1" />
           <div>
             <h3 className="font-semibold text-gray-900">Contacto</h3>
-            <p className="text-gray-600 mt-1">contacto@somoscasa.com</p>
+            <p className="text-gray-600 mt-1">somoscasatoluca@gmail.com · WhatsApp +52 722 414 8552</p>
           </div>
         </div>
 

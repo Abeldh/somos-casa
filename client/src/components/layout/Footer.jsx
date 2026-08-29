@@ -21,15 +21,15 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary-400" />
-                <span>contacto@somoscasa.com</span>
+                <a href="mailto:somoscasatoluca@gmail.com" className="hover:text-primary-400 transition-colors break-all">somoscasatoluca@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary-400" />
-                <span>+52 (555) 123-4567</span>
+                <a href="https://wa.me/527224148552" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400 transition-colors">+52 722 414 8552</a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary-400" />
-                <span>Ciudad de México, MX</span>
+                <span>Toluca, Estado de México, MX</span>
               </li>
             </ul>
           </div>

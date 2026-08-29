@@ -29,9 +29,10 @@ export default function PrivacyPolicyPage() {
             <strong>Somos Casa</strong> es el responsable del tratamiento de los datos personales que nos proporcionas a través de esta plataforma web.
           </p>
           <ul className="list-disc list-inside space-y-1 mt-3">
-            <li><strong>Razón social:</strong> Somos Casa Asesoría Matrimonial</li>
-            <li><strong>Correo de contacto:</strong> contacto@somoscasa.com</li>
-            <li><strong>Ubicación:</strong> Ciudad de México, México</li>
+            <li><strong>Razón social:</strong> Somos Casa Asesoría Matrimonial — Angélica Armenta Barajas</li>
+            <li><strong>Correo de contacto:</strong> somoscasatoluca@gmail.com</li>
+            <li><strong>WhatsApp:</strong> +52 722 414 8552</li>
+            <li><strong>Ubicación:</strong> Toluca, Estado de México, México</li>
           </ul>
         </Section>
 
@@ -105,8 +106,8 @@ export default function PrivacyPolicyPage() {
           </div>
           <p className="mt-4 text-sm text-gray-600">
             Para ejercer cualquiera de estos derechos, envía un correo a{' '}
-            <a href="mailto:contacto@somoscasa.com" className="text-primary-600 font-medium hover:underline">
-              contacto@somoscasa.com
+            <a href="mailto:somoscasatoluca@gmail.com" className="text-primary-600 font-medium hover:underline">
+              somoscasatoluca@gmail.com
             </a>{' '}
             con el asunto "Derechos ARCO" incluyendo tu nombre completo y correo registrado.
           </p>
@@ -148,7 +149,8 @@ export default function PrivacyPolicyPage() {
           <p>Si tienes preguntas o inquietudes sobre esta política o el manejo de tus datos:</p>
           <div className="mt-4 bg-white border border-gray-200 rounded-xl p-6">
             <ul className="space-y-2 text-sm">
-              <li><strong>Email:</strong> contacto@somoscasa.com</li>
+              <li><strong>Email:</strong> somoscasatoluca@gmail.com</li>
+              <li><strong>WhatsApp:</strong> +52 722 414 8552</li>
               <li><strong>Asunto sugerido:</strong> "Protección de Datos - [Tu consulta]"</li>
               <li><strong>Tiempo de respuesta:</strong> Máximo 10 días hábiles</li>
             </ul>

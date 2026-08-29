@@ -1,3 +1,4 @@
+import { usePageMeta } from '../hooks/usePageMeta';
 import HeroSection from '../components/landing/HeroSection';
 import IdentifySection from '../components/landing/IdentifySection';
 import StorySection from '../components/landing/StorySection';
@@ -10,6 +11,11 @@ import FAQSection from '../components/landing/FAQSection';
 import CTASection from '../components/landing/CTASection';
 
 export default function HomePage() {
+  usePageMeta(
+    'Restauración Matrimonial en Cristo',
+    'Ministerio cristiano de restauración matrimonial. Consejería pastoral con fundamento bíblico, libros y recursos para fortalecer tu matrimonio en Cristo.'
+  );
+
   return (
     <>
       {/* Atención: esperanza en Cristo + propuesta de valor */}

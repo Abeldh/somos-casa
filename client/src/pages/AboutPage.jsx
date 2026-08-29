@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Cross, Heart, BookOpen, Users, Calendar, ArrowRight, Sparkles } from 'lucide-react';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const values = [
   {
@@ -25,6 +26,10 @@ const values = [
 ];
 
 export default function AboutPage() {
+  usePageMeta(
+    'Nuestra Historia',
+    'Conoce la historia de Somos Casa y sus pastores. Un ministerio dedicado a la restauración de los matrimonios en Jesucristo.'
+  );
   return (
     <div>
       {/* Hero */}

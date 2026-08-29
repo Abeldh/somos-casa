@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /checkout
+Disallow: /cart
+
+Sitemap: https://somos-casa-production.up.railway.app/sitemap.xml

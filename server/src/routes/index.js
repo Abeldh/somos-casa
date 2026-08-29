@@ -17,6 +17,7 @@ import referralRoutes from './referral.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import paymentRoutes from './payment.routes.js';
 import albumRoutes from './album.routes.js';
+import blogRoutes from './blog.routes.js';
 
 import { cache } from '../utils/cache.js';
 
@@ -39,6 +40,7 @@ router.use('/referrals', referralRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/album', albumRoutes);
+router.use('/blog', blogRoutes);
 
 // Health check con métricas
 router.get('/health', (req, res) => {

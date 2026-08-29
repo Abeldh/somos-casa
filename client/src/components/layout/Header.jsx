@@ -35,6 +35,9 @@ export default function Header() {
             <Link to="/about" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
               Nuestra Historia
             </Link>
+            <Link to="/blog" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
+              Blog
+            </Link>
             <Link to="/store" className="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">
               Librería
             </Link>
@@ -92,6 +95,7 @@ export default function Header() {
           <nav className="px-4 py-4 space-y-2">
             <Link to="/" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Inicio</Link>
             <Link to="/about" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Nuestra Historia</Link>
+            <Link to="/blog" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Blog</Link>
             <Link to="/store" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Librería</Link>
             <Link to="/booking" onClick={() => setMobileOpen(false)} className="block py-2 text-gray-700 font-medium">Agendar</Link>
             {isAuthenticated ? (

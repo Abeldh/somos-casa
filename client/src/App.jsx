@@ -27,6 +27,8 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const LegalNoticePage = lazy(() => import('./pages/LegalNoticePage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Admin pages
@@ -45,6 +47,7 @@ const AdminFinancialPage = lazy(() => import('./pages/AdminFinancialPage'));
 const AdminSessionNotesPage = lazy(() => import('./pages/AdminSessionNotesPage'));
 const AdminAlbumPage = lazy(() => import('./pages/AdminAlbumPage'));
 const AdminHealthPage = lazy(() => import('./pages/AdminHealthPage'));
+const AdminBlogPage = lazy(() => import('./pages/AdminBlogPage'));
 
 function PageLoader() {
   return <Spinner className="py-20" />;
@@ -71,6 +74,8 @@ export default function App() {
               <Route path="/legal" element={<LegalNoticePage />} />
               <Route path="/cookies" element={<CookiePolicyPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/store" element={<StorePage />} />
               <Route path="/store/:slug" element={<BookDetailPage />} />
               <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
@@ -95,6 +100,7 @@ export default function App() {
               <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
               <Route path="/admin/album" element={<AdminAlbumPage />} />
               <Route path="/admin/health" element={<AdminHealthPage />} />
+              <Route path="/admin/blog" element={<AdminBlogPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

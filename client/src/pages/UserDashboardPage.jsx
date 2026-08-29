@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Plus, BookOpen, Share2, HeartHandshake } from 'lucide-react';
+import { Calendar, Plus, BookOpen, Share2, HeartHandshake, History } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAppointments } from '../hooks/useAppointments';
 import { useToast } from '../hooks/useToast';
@@ -9,6 +9,7 @@ import AppointmentList from '../components/dashboard/AppointmentList';
 import MyBooks from '../components/dashboard/MyBooks';
 import ReferralSection from '../components/dashboard/ReferralSection';
 import RestorationAlbum from '../components/dashboard/RestorationAlbum';
+import SessionHistory from '../components/dashboard/SessionHistory';
 import ProofUpload from '../components/ui/ProofUpload';
 import Button from '../components/ui/Button';
 import { appointmentService } from '../services/appointment.service';
@@ -93,6 +94,15 @@ export default function UserDashboardPage() {
           Mis Citas
         </h2>
         <AppointmentList appointments={appointments} loading={loading} onCancel={handleCancel} />
+      </div>
+
+      {/* Historial de Sesiones */}
+      <div className="mt-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <History className="w-5 h-5 text-primary-600" />
+          Historial de Sesiones
+        </h2>
+        <SessionHistory />
       </div>
 
       {/* Álbum de Restauración */}

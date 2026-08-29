@@ -16,6 +16,19 @@ export const appointmentController = {
     catch (error) { next(error); }
   },
 
+  async getMyHistory(req, res, next) {
+    try { return successResponse(res, await appointmentService.getMyHistory(req.user.id)); }
+    catch (error) { next(error); }
+  },
+
+  async rate(req, res, next) {
+    try {
+      const { rating, comment } = req.body;
+      if (!rating) return res.status(400).json({ success: false, message: 'La calificación es requerida' });
+      return successResponse(res, await appointmentService.rate(req.params.id, req.user.id, { rating, comment }), 'Gracias por tu calificación');
+    } catch (error) { next(error); }
+  },
+
   async getAll(req, res, next) {
     try { return successResponse(res, await appointmentService.getAll({ status: req.query.status, page: req.query.page, limit: req.query.limit })); }
     catch (error) { next(error); }

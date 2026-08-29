@@ -62,6 +62,41 @@ export const appointmentService = {
     return { appointments, sessionsRemaining: user.sessionsRemaining, sessionsTotal: user.sessionsTotal, sessionsPaidAt: user.sessionsPaidAt };
   },
 
+  /**
+   * Usuario: historial de sesiones completadas, incluyendo notas NO privadas del consejero.
+   */
+  async getMyHistory(userId) {
+    const appointments = await prisma.appointment.findMany({
+      where: { userId, status: 'COMPLETED' },
+      orderBy: { date: 'desc' },
+      include: {
+        sessionNotes: {
+          where: { isPrivate: false },
+          orderBy: { createdAt: 'desc' },
+          select: { id: true, content: true, createdAt: true },
+        },
+      },
+    });
+    return { appointments };
+  },
+
+  /**
+   * Usuario: calificar una cita completada.
+   */
+  async rate(id, userId, { rating, comment }) {
+    const appointment = await prisma.appointment.findUnique({ where: { id } });
+    if (!appointment) { const e = new Error('Cita no encontrada'); e.statusCode = 404; throw e; }
+    if (appointment.userId !== userId) { const e = new Error('No tienes permiso'); e.statusCode = 403; throw e; }
+    if (appointment.status !== 'COMPLETED') { const e = new Error('Solo puedes calificar sesiones completadas'); e.statusCode = 422; throw e; }
+
+    const value = Math.min(Math.max(parseInt(rating), 1), 5);
+    const updated = await prisma.appointment.update({
+      where: { id },
+      data: { rating: value, ratingComment: comment || null, ratedAt: new Date() },
+    });
+    return { appointment: updated };
+  },
+
   async getAll(filters = {}) {
     const where = {};
     if (filters.status) where.status = filters.status;

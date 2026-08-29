@@ -127,6 +127,9 @@ model Appointment {
   reason         String
   notes          String?
   zoomUrl        String?  @map("zoom_url")
+  rating         Int?
+  ratingComment  String?  @map("rating_comment")
+  ratedAt        DateTime? @map("rated_at")
   createdAt      DateTime          @default(now()) @map("created_at")
   updatedAt      DateTime          @updatedAt @map("updated_at")
 

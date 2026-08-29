@@ -10,13 +10,16 @@ export const prayerService = {
     return { prayer };
   },
 
-  // Usuario: sus propias peticiones
-  async getMine(userId) {
-    const prayers = await prisma.prayerRequest.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
-    return { prayers };
+  // Usuario: sus propias peticiones (paginado)
+  async getMine(userId, { page = 1, limit = 10 } = {}) {
+    const p = Math.max(1, parseInt(page) || 1);
+    const l = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (p - 1) * l;
+    const [prayers, total] = await Promise.all([
+      prisma.prayerRequest.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, skip, take: l }),
+      prisma.prayerRequest.count({ where: { userId } }),
+    ]);
+    return { prayers, total, page: p, limit: l, totalPages: Math.ceil(total / l) };
   },
 
   // Público: muro de oración (solo peticiones NO privadas y no archivadas)
@@ -30,16 +33,24 @@ export const prayerService = {
     return { prayers };
   },
 
-  // Admin: todas
-  async getAll({ status } = {}) {
+  // Admin: todas (paginado)
+  async getAll({ status, page = 1, limit = 10 } = {}) {
     const where = {};
     if (status) where.status = status;
-    const prayers = await prisma.prayerRequest.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: { user: { select: { email: true, firstName: true, lastName: true } } },
-    });
-    return { prayers };
+    const p = Math.max(1, parseInt(page) || 1);
+    const l = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (p - 1) * l;
+    const [prayers, total] = await Promise.all([
+      prisma.prayerRequest.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: { user: { select: { email: true, firstName: true, lastName: true } } },
+        skip,
+        take: l,
+      }),
+      prisma.prayerRequest.count({ where }),
+    ]);
+    return { prayers, total, page: p, limit: l, totalPages: Math.ceil(total / l) };
   },
 
   // Admin: marcar como orada

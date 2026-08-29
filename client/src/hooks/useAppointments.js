@@ -7,6 +7,7 @@ export function useAppointments(autoFetch = true) {
   const [sessionsRemaining, setSessionsRemaining] = useState(0);
   const [sessionsTotal, setSessionsTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, totalPages: 1 });
   const { error: showError } = useToast();
 
   const fetchAppointments = useCallback(async () => {
@@ -28,6 +29,12 @@ export function useAppointments(autoFetch = true) {
     try {
       const data = await appointmentService.getAll(params);
       setAppointments(data.appointments || []);
+      setPagination({
+        total: data.total || 0,
+        page: data.page || 1,
+        limit: data.limit || 10,
+        totalPages: data.totalPages || 1,
+      });
     } catch (err) {
       showError(err.message);
     } finally {
@@ -49,5 +56,5 @@ export function useAppointments(autoFetch = true) {
     if (autoFetch) fetchAppointments();
   }, [autoFetch, fetchAppointments]);
 
-  return { appointments, sessionsRemaining, sessionsTotal, loading, fetchAppointments, fetchAll, cancelAppointment };
+  return { appointments, sessionsRemaining, sessionsTotal, loading, pagination, fetchAppointments, fetchAll, cancelAppointment };
 }

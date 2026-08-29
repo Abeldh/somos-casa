@@ -8,6 +8,7 @@ import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Modal from '../ui/Modal';
 import Spinner from '../ui/Spinner';
+import Pagination from '../ui/Pagination';
 
 export default function PrayerSection() {
   const { user } = useAuth();
@@ -17,17 +18,24 @@ export default function PrayerSection() {
   const [showForm, setShowForm] = useState(false);
   const [sending, setSending] = useState(false);
   const [form, setForm] = useState({ name: '', request: '', isPrivate: true });
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = async () => {
     setLoading(true);
     try {
-      const res = await prayerService.getMine();
+      const res = await prayerService.getMine(page, limit);
       setPrayers(res.prayers || []);
+      setTotalPages(res.totalPages || 1);
+      setTotal(res.total || 0);
     } catch (e) { /* silencioso */ }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [page, limit]);
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const openForm = () => {
     setForm({ name: user ? `${user.firstName} ${user.lastName}` : '', request: '', isPrivate: true });
@@ -42,7 +50,7 @@ export default function PrayerSection() {
       await prayerService.create(form);
       success('Tu petición fue recibida. Oraremos por ti.');
       setShowForm(false);
-      load();
+      if (page !== 1) setPage(1); else load();
     } catch (err) { error(err.message); }
     finally { setSending(false); }
   };
@@ -95,6 +103,17 @@ export default function PrayerSection() {
             </div>
           ))}
         </div>
+      )}
+
+      {!loading && prayers.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          total={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={changeLimit}
+        />
       )}
 
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Comparte tu petición de oración">

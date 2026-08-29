@@ -3,6 +3,7 @@ import { HandHeart, Check, Archive, Trash2, Clock, Lock, Globe, CheckCircle } fr
 import { prayerService } from '../services/prayer.service';
 import { useToast } from '../hooks/useToast';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 
 const FILTERS = [
   { value: '', label: 'Todas' },
@@ -16,17 +17,27 @@ export default function AdminPrayerPage() {
   const [prayers, setPrayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const load = async () => {
     setLoading(true);
     try {
-      const res = await prayerService.getAll(filter || undefined);
+      const res = await prayerService.getAll(filter || undefined, page, limit);
       setPrayers(res.prayers || []);
+      setTotalPages(res.totalPages || 1);
+      setTotal(res.total || 0);
     } catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, [filter]);
+  useEffect(() => { load(); }, [filter, page, limit]);
+
+  // Al cambiar filtro o tamaño, volver a la página 1
+  const changeFilter = (v) => { setFilter(v); setPage(1); };
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const handlePrayed = async (id) => {
     try { await prayerService.markPrayed(id); success('Marcada como orada'); load(); }
@@ -44,8 +55,6 @@ export default function AdminPrayerPage() {
     catch (e) { error(e.message); }
   };
 
-  const pendingCount = prayers.filter((p) => p.status === 'PENDING').length;
-
   return (
     <div>
       <div className="mb-8">
@@ -58,13 +67,10 @@ export default function AdminPrayerPage() {
         {FILTERS.map((f) => (
           <button
             key={f.value}
-            onClick={() => setFilter(f.value)}
+            onClick={() => changeFilter(f.value)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === f.value ? 'bg-primary-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
           >
             {f.label}
-            {f.value === 'PENDING' && pendingCount > 0 && (
-              <span className="ml-1.5 text-xs bg-amber-400 text-white rounded-full px-1.5">{pendingCount}</span>
-            )}
           </button>
         ))}
       </div>
@@ -113,6 +119,17 @@ export default function AdminPrayerPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {!loading && prayers.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          total={total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={changeLimit}
+        />
       )}
     </div>
   );

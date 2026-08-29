@@ -3,22 +3,30 @@ import { Images, Check, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { albumService } from '../services/album.service';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 
 export default function AdminAlbumPage() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const { success, error } = useToast();
 
   const load = async () => {
     setLoading(true);
     try {
-      const res = await albumService.getAll();
+      const res = await albumService.getAll({ page, limit });
       setPhotos(res.photos || []);
+      setTotalPages(res.totalPages || 1);
+      setTotal(res.total || 0);
     } catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [page, limit]);
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const handleToggle = async (id) => {
     try { await albumService.toggleApproval(id); success('Estado actualizado'); load(); }
@@ -44,51 +52,31 @@ export default function AdminAlbumPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{photos.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{total}</p>
           <p className="text-xs text-gray-500">Total</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className="text-2xl font-bold text-amber-600">{pending.length}</p>
-          <p className="text-xs text-gray-500">Pendientes</p>
+          <p className="text-xs text-gray-500">Pendientes (página)</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className="text-2xl font-bold text-green-600">{approved.length}</p>
-          <p className="text-xs text-gray-500">Publicadas</p>
+          <p className="text-xs text-gray-500">Publicadas (página)</p>
         </div>
       </div>
 
       {loading ? <Spinner className="py-12" /> : photos.length === 0 ? (
         <p className="text-center text-gray-500 py-12">Aún no hay fotos en el álbum.</p>
       ) : (
-        <div className="space-y-8">
-          {pending.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Images className="w-4 h-4 text-amber-600" />
-                Pendientes de aprobación ({pending.length})
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {pending.map((p) => (
-                  <PhotoCard key={p.id} photo={p} onToggle={handleToggle} onDelete={handleDelete} />
-                ))}
-              </div>
-            </div>
-          )}
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {photos.map((p) => (
+              <PhotoCard key={p.id} photo={p} onToggle={handleToggle} onDelete={handleDelete} />
+            ))}
+          </div>
 
-          {approved.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600" />
-                Publicadas en la página ({approved.length})
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {approved.map((p) => (
-                  <PhotoCard key={p.id} photo={p} onToggle={handleToggle} onDelete={handleDelete} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+          <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
+        </>
       )}
     </div>
   );

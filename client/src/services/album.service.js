@@ -7,7 +7,7 @@ export const albumService = {
   getMine: () => api.get('/album/mine'),
   create: (data) => api.post('/album', data),
   // Admin
-  getAll: () => api.get('/album'),
+  getAll: (params) => api.get('/album', { params }),
   toggleApproval: (id) => api.patch(`/album/${id}/toggle`),
   remove: (id) => api.delete(`/album/${id}`),
 };

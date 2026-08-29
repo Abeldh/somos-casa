@@ -10,6 +10,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import Badge from '../components/ui/Badge';
+import Pagination from '../components/ui/Pagination';
 
 const statusOptions = [
   { value: '', label: 'Todos los estados' },
@@ -20,18 +21,25 @@ const statusOptions = [
 ];
 
 export default function AdminAppointmentsPage() {
-  const { appointments, loading, fetchAll } = useAppointments(false);
+  const { appointments, loading, pagination, fetchAll } = useAppointments(false);
   const { success, error } = useToast();
   const [filter, setFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [zoomModal, setZoomModal] = useState(null);
   const [zoomUrl, setZoomUrl] = useState('');
   const [releaseModal, setReleaseModal] = useState(null);
   const [releaseSessions, setReleaseSessions] = useState(4);
 
-  useEffect(() => { fetchAll(filter ? { status: filter } : {}); }, [fetchAll, filter]);
+  const buildParams = () => ({ ...(filter ? { status: filter } : {}), page, limit });
+
+  useEffect(() => { fetchAll(buildParams()); }, [fetchAll, filter, page, limit]);
+
+  const changeFilter = (v) => { setFilter(v); setPage(1); };
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const handleUpdateStatus = async (id, status) => {
-    try { await appointmentService.updateStatus(id, status); success('Estado actualizado'); fetchAll(filter ? { status: filter } : {}); }
+    try { await appointmentService.updateStatus(id, status); success('Estado actualizado'); fetchAll(buildParams()); }
     catch (err) { error(err.message); }
   };
 
@@ -42,7 +50,7 @@ export default function AdminAppointmentsPage() {
       success('URL de Zoom agregada');
       setZoomModal(null);
       setZoomUrl('');
-      fetchAll(filter ? { status: filter } : {});
+      fetchAll(buildParams());
     } catch (err) { error(err.message); }
   };
 
@@ -51,7 +59,7 @@ export default function AdminAppointmentsPage() {
       await appointmentService.releaseSessions(releaseModal.id, releaseSessions);
       success(`${releaseSessions} sesiones liberadas para ${releaseModal.firstName}`);
       setReleaseModal(null);
-      fetchAll(filter ? { status: filter } : {});
+      fetchAll(buildParams());
     } catch (err) { error(err.message); }
   };
 
@@ -67,7 +75,7 @@ export default function AdminAppointmentsPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className="w-48">
-            <Select options={statusOptions} value={filter} onChange={(e) => setFilter(e.target.value)} />
+            <Select options={statusOptions} value={filter} onChange={(e) => changeFilter(e.target.value)} />
           </div>
         </div>
       </div>
@@ -113,6 +121,17 @@ export default function AdminAppointmentsPage() {
         onUpdateStatus={handleUpdateStatus}
         onSetZoom={(apt) => { setZoomModal(apt); setZoomUrl(apt.zoomUrl || ''); }}
       />
+
+      {!loading && appointments.length > 0 && (
+        <Pagination
+          page={page}
+          totalPages={pagination.totalPages}
+          total={pagination.total}
+          limit={limit}
+          onPageChange={setPage}
+          onLimitChange={changeLimit}
+        />
+      )}
 
       {/* Modal: Agregar URL Zoom */}
       <Modal isOpen={!!zoomModal} onClose={() => setZoomModal(null)} title="URL de Sesión Zoom">

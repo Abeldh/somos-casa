@@ -6,6 +6,7 @@ import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 
 const statusOptions = [
   { value: '', label: 'Todos' },
@@ -18,18 +19,27 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const { success, error } = useToast();
 
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const data = await orderService.getAll({ status: filter || undefined });
+      const data = await orderService.getAll({ status: filter || undefined, page, limit });
       setOrders(data.orders || []);
+      setTotalPages(data.totalPages || 1);
+      setTotal(data.total || 0);
     } catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchOrders(); }, [filter]);
+  useEffect(() => { fetchOrders(); }, [filter, page, limit]);
+
+  const changeFilter = (v) => { setFilter(v); setPage(1); };
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const handleConfirmPayment = async (orderId) => {
     if (!confirm('¿Confirmar pago? Esto liberará los libros para descarga y enviará un email al usuario.')) return;
@@ -50,16 +60,16 @@ export default function AdminOrdersPage() {
           <p className="text-gray-500 mt-1">Verifica pagos y libera descargas.</p>
         </div>
         <div className="mt-4 sm:mt-0 w-48">
-          <Select options={statusOptions} value={filter} onChange={(e) => setFilter(e.target.value)} />
+          <Select options={statusOptions} value={filter} onChange={(e) => changeFilter(e.target.value)} />
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total" value={orders.length} icon={Package} color="bg-blue-50 text-blue-600" />
-        <StatCard label="Pendientes" value={orders.filter(o => o.status === 'PENDING').length} icon={Clock} color="bg-yellow-50 text-yellow-600" />
-        <StatCard label="Pagados" value={orders.filter(o => o.status === 'PAID').length} icon={CheckCircle} color="bg-green-50 text-green-600" />
-        <StatCard label="Ingresos" value={`$${orders.filter(o => o.status === 'PAID').reduce((s, o) => s + o.total, 0).toFixed(0)}`} icon={DollarSign} color="bg-purple-50 text-purple-600" />
+        <StatCard label="Total" value={total} icon={Package} color="bg-blue-50 text-blue-600" />
+        <StatCard label="En esta página" value={orders.length} icon={Clock} color="bg-yellow-50 text-yellow-600" />
+        <StatCard label="Pagados (página)" value={orders.filter(o => o.status === 'PAID').length} icon={CheckCircle} color="bg-green-50 text-green-600" />
+        <StatCard label="Ingresos (página)" value={`$${orders.filter(o => o.status === 'PAID').reduce((s, o) => s + o.total, 0).toFixed(0)}`} icon={DollarSign} color="bg-purple-50 text-purple-600" />
       </div>
 
       {/* Orders list */}
@@ -145,6 +155,10 @@ export default function AdminOrdersPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {!loading && orders.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
       )}
     </div>
   );

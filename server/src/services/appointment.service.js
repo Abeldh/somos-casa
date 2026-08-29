@@ -65,19 +65,28 @@ export const appointmentService = {
   /**
    * Usuario: historial de sesiones completadas, incluyendo notas NO privadas del consejero.
    */
-  async getMyHistory(userId) {
-    const appointments = await prisma.appointment.findMany({
-      where: { userId, status: 'COMPLETED' },
-      orderBy: { date: 'desc' },
-      include: {
-        sessionNotes: {
-          where: { isPrivate: false },
-          orderBy: { createdAt: 'desc' },
-          select: { id: true, content: true, createdAt: true },
+  async getMyHistory(userId, { page = 1, limit = 10 } = {}) {
+    const p = Math.max(1, parseInt(page) || 1);
+    const l = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (p - 1) * l;
+    const where = { userId, status: 'COMPLETED' };
+    const [appointments, total] = await Promise.all([
+      prisma.appointment.findMany({
+        where,
+        orderBy: { date: 'desc' },
+        include: {
+          sessionNotes: {
+            where: { isPrivate: false },
+            orderBy: { createdAt: 'desc' },
+            select: { id: true, content: true, createdAt: true },
+          },
         },
-      },
-    });
-    return { appointments };
+        skip,
+        take: l,
+      }),
+      prisma.appointment.count({ where }),
+    ]);
+    return { appointments, total, page: p, limit: l, totalPages: Math.ceil(total / l) };
   },
 
   /**

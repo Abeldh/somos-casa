@@ -3,21 +3,32 @@ import { MessageSquare, Check, X, Star, Eye, EyeOff, Trash2 } from 'lucide-react
 import { useToast } from '../hooks/useToast';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 import api from '../services/api';
 
 export default function AdminTestimonialsPage() {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const { success, error } = useToast();
 
   const fetch = async () => {
     setLoading(true);
-    try { const data = await api.get('/testimonials'); setTestimonials(data.testimonials || []); }
+    try {
+      const data = await api.get('/testimonials', { params: { page, limit } });
+      setTestimonials(data.testimonials || []);
+      setTotalPages(data.totalPages || 1);
+      setTotal(data.total || 0);
+    }
     catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetch(); }, [page, limit]);
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const handleToggle = async (id) => {
     try { await api.patch(`/testimonials/${id}/toggle`); success('Estado actualizado'); fetch(); }
@@ -45,53 +56,31 @@ export default function AdminTestimonialsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{testimonials.length}</p>
+          <p className="text-2xl font-bold text-gray-900">{total}</p>
           <p className="text-xs text-gray-500">Total</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className="text-2xl font-bold text-yellow-600">{pending.length}</p>
-          <p className="text-xs text-gray-500">Pendientes</p>
+          <p className="text-xs text-gray-500">Pendientes (página)</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
           <p className="text-2xl font-bold text-green-600">{approved.length}</p>
-          <p className="text-xs text-gray-500">Publicados</p>
+          <p className="text-xs text-gray-500">Publicados (página)</p>
         </div>
       </div>
 
       {loading ? <Spinner className="py-12" /> : testimonials.length === 0 ? (
         <p className="text-center text-gray-500 py-12">No hay testimonios aún.</p>
       ) : (
-        <div className="space-y-6">
-          {/* Pendientes */}
-          {pending.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-yellow-600" />
-                Pendientes de aprobación ({pending.length})
-              </h3>
-              <div className="space-y-3">
-                {pending.map((t) => (
-                  <TestimonialCard key={t.id} testimonial={t} onToggle={handleToggle} onDelete={handleDelete} />
-                ))}
-              </div>
-            </div>
-          )}
+        <>
+          <div className="space-y-3">
+            {testimonials.map((t) => (
+              <TestimonialCard key={t.id} testimonial={t} onToggle={handleToggle} onDelete={handleDelete} />
+            ))}
+          </div>
 
-          {/* Aprobados */}
-          {approved.length > 0 && (
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-600" />
-                Publicados en la página ({approved.length})
-              </h3>
-              <div className="space-y-3">
-                {approved.map((t) => (
-                  <TestimonialCard key={t.id} testimonial={t} onToggle={handleToggle} onDelete={handleDelete} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+          <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
+        </>
       )}
     </div>
   );

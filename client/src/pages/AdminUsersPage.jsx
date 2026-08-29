@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 import api from '../services/api';
 
 export default function AdminUsersPage() {
@@ -13,16 +14,26 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [activity, setActivity] = useState(null);
   const [activityLoading, setActivityLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const { success, error } = useToast();
 
   const fetchUsers = async () => {
     setLoading(true);
-    try { const data = await api.get('/users'); setUsers(data.users || []); }
+    try {
+      const data = await api.get('/users', { params: { page, limit } });
+      setUsers(data.users || []);
+      setTotalPages(data.totalPages || 1);
+      setTotal(data.total || 0);
+    }
     catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => { fetchUsers(); }, [page, limit]);
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const viewActivity = async (user) => {
     setSelectedUser(user);
@@ -51,10 +62,10 @@ export default function AdminUsersPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total" value={users.length} icon={Users} color="bg-blue-50 text-blue-600" />
-        <StatCard label="Activos" value={users.filter(u => u.isActive).length} icon={Shield} color="bg-green-50 text-green-600" />
-        <StatCard label="Admins" value={users.filter(u => u.role === 'ADMIN').length} icon={Activity} color="bg-purple-50 text-purple-600" />
-        <StatCard label="Inactivos" value={users.filter(u => !u.isActive).length} icon={ShieldOff} color="bg-red-50 text-red-600" />
+        <StatCard label="Total" value={total} icon={Users} color="bg-blue-50 text-blue-600" />
+        <StatCard label="Activos (página)" value={users.filter(u => u.isActive).length} icon={Shield} color="bg-green-50 text-green-600" />
+        <StatCard label="Admins (página)" value={users.filter(u => u.role === 'ADMIN').length} icon={Activity} color="bg-purple-50 text-purple-600" />
+        <StatCard label="Inactivos (página)" value={users.filter(u => !u.isActive).length} icon={ShieldOff} color="bg-red-50 text-red-600" />
       </div>
 
       {/* Users table */}
@@ -100,6 +111,10 @@ export default function AdminUsersPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {!loading && users.length > 0 && (
+        <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
       )}
 
       {/* Activity Modal */}

@@ -26,7 +26,7 @@ export const albumController = {
 
   // Admin
   async getAll(req, res, next) {
-    try { return successResponse(res, await albumService.getAll()); } catch (e) { next(e); }
+    try { return successResponse(res, await albumService.getAll({ page: req.query.page, limit: req.query.limit })); } catch (e) { next(e); }
   },
 
   async toggleApproval(req, res, next) {

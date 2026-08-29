@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
 import Input from '../components/ui/Input';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 import api from '../services/api';
 
 const eventOptions = [
@@ -31,24 +32,33 @@ export default function AdminAuditPage() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ event: '', from: '', to: '' });
+  const [applied, setApplied] = useState({ event: '', from: '', to: '' });
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const { error } = useToast();
 
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const params = {};
-      if (filters.event) params.event = filters.event;
-      if (filters.from) params.from = filters.from;
-      if (filters.to) params.to = filters.to;
+      const params = { page, limit };
+      if (applied.event) params.event = applied.event;
+      if (applied.from) params.from = applied.from;
+      if (applied.to) params.to = applied.to;
       const data = await api.get('/audit', { params });
       setLogs(data.logs || []);
+      setTotalPages(data.totalPages || 1);
+      setTotal(data.total || 0);
     } catch (e) { error(e.message); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchLogs(); }, []);
+  useEffect(() => { fetchLogs(); }, [page, limit, applied]);
 
-  const handleFilter = () => fetchLogs();
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
+  const handleFilter = () => { setApplied(filters); setPage(1); };
+  const handleClear = () => { const empty = { event: '', from: '', to: '' }; setFilters(empty); setApplied(empty); setPage(1); };
 
   const handleExport = () => {
     const params = new URLSearchParams();
@@ -114,7 +124,7 @@ export default function AdminAuditPage() {
             <Filter className="w-3.5 h-3.5" />
             Filtrar
           </Button>
-          <Button onClick={() => { setFilters({ event: '', from: '', to: '' }); fetchLogs(); }} variant="ghost" size="sm" className="flex items-center gap-2">
+          <Button onClick={handleClear} variant="ghost" size="sm" className="flex items-center gap-2">
             <RefreshCw className="w-3.5 h-3.5" />
             Limpiar
           </Button>
@@ -126,7 +136,7 @@ export default function AdminAuditPage() {
         <p className="text-center text-gray-500 py-12">No hay registros de auditoría.</p>
       ) : (
         <>
-          <p className="text-sm text-gray-500 mb-4">{logs.length} registros</p>
+          <p className="text-sm text-gray-500 mb-4">{total} registros</p>
 
           {/* Desktop */}
           <div className="hidden lg:block bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -189,6 +199,8 @@ export default function AdminAuditPage() {
               </div>
             ))}
           </div>
+
+          <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
         </>
       )}
     </div>

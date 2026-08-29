@@ -7,11 +7,16 @@ import Button from '../ui/Button';
 import Textarea from '../ui/Textarea';
 import Modal from '../ui/Modal';
 import Spinner from '../ui/Spinner';
+import Pagination from '../ui/Pagination';
 
 export default function SessionHistory() {
   const { success, error } = useToast();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const [rating, setRating] = useState(null); // cita seleccionada para calificar
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
@@ -20,13 +25,16 @@ export default function SessionHistory() {
   const load = async () => {
     setLoading(true);
     try {
-      const res = await appointmentService.getMyHistory();
+      const res = await appointmentService.getMyHistory({ page, limit });
       setSessions(res.appointments || []);
+      setTotalPages(res.totalPages || 1);
+      setTotal(res.total || 0);
     } catch (e) { /* silencioso */ }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [page, limit]);
+  const changeLimit = (l) => { setLimit(l); setPage(1); };
 
   const openRating = (session) => {
     setRating(session);
@@ -48,7 +56,7 @@ export default function SessionHistory() {
 
   if (loading) return <Spinner className="py-8" />;
 
-  if (sessions.length === 0) {
+  if (total === 0) {
     return (
       <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
         <History className="w-10 h-10 text-gray-200 mx-auto mb-2" />
@@ -103,6 +111,8 @@ export default function SessionHistory() {
           )}
         </div>
       ))}
+
+      <Pagination page={page} totalPages={totalPages} total={total} limit={limit} onPageChange={setPage} onLimitChange={changeLimit} />
 
       {/* Modal de calificación */}
       <Modal isOpen={!!rating} onClose={() => setRating(null)} title="Califica tu sesión">

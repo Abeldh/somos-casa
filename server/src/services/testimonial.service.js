@@ -25,13 +25,21 @@ export const testimonialService = {
     return { testimonial };
   },
 
-  // Admin: obtener todos (aprobados y pendientes)
-  async getAll() {
-    const testimonials = await prisma.testimonial.findMany({
-      include: { user: { select: { email: true, firstName: true, lastName: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
-    return { testimonials };
+  // Admin: obtener todos (aprobados y pendientes) — paginado
+  async getAll({ page = 1, limit = 10 } = {}) {
+    const p = Math.max(1, parseInt(page) || 1);
+    const l = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (p - 1) * l;
+    const [testimonials, total] = await Promise.all([
+      prisma.testimonial.findMany({
+        include: { user: { select: { email: true, firstName: true, lastName: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: l,
+      }),
+      prisma.testimonial.count(),
+    ]);
+    return { testimonials, total, page: p, limit: l, totalPages: Math.ceil(total / l) };
   },
 
   // Admin: aprobar testimonio

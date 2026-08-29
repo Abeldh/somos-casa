@@ -17,7 +17,7 @@ export const prayerController = {
   },
 
   async getMine(req, res, next) {
-    try { return successResponse(res, await prayerService.getMine(req.user.id)); } catch (e) { next(e); }
+    try { return successResponse(res, await prayerService.getMine(req.user.id, { page: req.query.page, limit: req.query.limit })); } catch (e) { next(e); }
   },
 
   async getPublicWall(req, res, next) {
@@ -26,7 +26,7 @@ export const prayerController = {
 
   // Admin
   async getAll(req, res, next) {
-    try { return successResponse(res, await prayerService.getAll({ status: req.query.status })); } catch (e) { next(e); }
+    try { return successResponse(res, await prayerService.getAll({ status: req.query.status, page: req.query.page, limit: req.query.limit })); } catch (e) { next(e); }
   },
   async markPrayed(req, res, next) {
     try { return successResponse(res, await prayerService.markPrayed(req.params.id, req.user.id), 'Marcada como orada'); } catch (e) { next(e); }

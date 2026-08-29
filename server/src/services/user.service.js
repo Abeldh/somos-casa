@@ -2,16 +2,24 @@ import prisma from '../config/database.js';
 import { hashPassword } from '../utils/hashPassword.js';
 
 export const userService = {
-  async getAll() {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true, email: true, firstName: true, lastName: true,
-        phone: true, role: true, isActive: true, createdAt: true,
-        _count: { select: { orders: true, appointments: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    return { users };
+  async getAll({ page = 1, limit = 10 } = {}) {
+    const p = Math.max(1, parseInt(page) || 1);
+    const l = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const skip = (p - 1) * l;
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        select: {
+          id: true, email: true, firstName: true, lastName: true,
+          phone: true, role: true, isActive: true, createdAt: true,
+          _count: { select: { orders: true, appointments: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: l,
+      }),
+      prisma.user.count(),
+    ]);
+    return { users, total, page: p, limit: l, totalPages: Math.ceil(total / l) };
   },
 
   async getById(id) {

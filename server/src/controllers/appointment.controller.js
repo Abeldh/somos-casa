@@ -17,7 +17,7 @@ export const appointmentController = {
   },
 
   async getMyHistory(req, res, next) {
-    try { return successResponse(res, await appointmentService.getMyHistory(req.user.id)); }
+    try { return successResponse(res, await appointmentService.getMyHistory(req.user.id, { page: req.query.page, limit: req.query.limit })); }
     catch (error) { next(error); }
   },
 

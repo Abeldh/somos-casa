@@ -18,6 +18,7 @@ import dashboardRoutes from './dashboard.routes.js';
 import paymentRoutes from './payment.routes.js';
 import albumRoutes from './album.routes.js';
 import blogRoutes from './blog.routes.js';
+import prayerRoutes from './prayer.routes.js';
 
 import { cache } from '../utils/cache.js';
 
@@ -41,6 +42,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/album', albumRoutes);
 router.use('/blog', blogRoutes);
+router.use('/prayers', prayerRoutes);
 
 // Health check con métricas
 router.get('/health', (req, res) => {

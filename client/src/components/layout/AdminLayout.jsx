@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare, Tag, DollarSign, FileText, Images, Activity, Newspaper } from 'lucide-react';
+import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare, Tag, DollarSign, FileText, Images, Activity, Newspaper, HandHeart } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import { classNames } from '../../utils/helpers';
@@ -21,6 +21,7 @@ const navItems = [
   { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimonios' },
   { to: '/admin/album', icon: Images, label: 'Álbum' },
   { to: '/admin/blog', icon: Newspaper, label: 'Blog' },
+  { to: '/admin/prayers', icon: HandHeart, label: 'Oración' },
   { to: '/admin/health', icon: Activity, label: 'Salud del Sistema' },
   { to: '/admin/settings', icon: Settings, label: 'Configuración' },
 ];

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Plus, BookOpen, Share2, HeartHandshake, History } from 'lucide-react';
+import { Calendar, Plus, BookOpen, Share2, HeartHandshake, History, HandHeart } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAppointments } from '../hooks/useAppointments';
 import { useToast } from '../hooks/useToast';
@@ -10,6 +10,7 @@ import MyBooks from '../components/dashboard/MyBooks';
 import ReferralSection from '../components/dashboard/ReferralSection';
 import RestorationAlbum from '../components/dashboard/RestorationAlbum';
 import SessionHistory from '../components/dashboard/SessionHistory';
+import PrayerSection from '../components/dashboard/PrayerSection';
 import ProofUpload from '../components/ui/ProofUpload';
 import Button from '../components/ui/Button';
 import { appointmentService } from '../services/appointment.service';
@@ -112,6 +113,15 @@ export default function UserDashboardPage() {
           Álbum de Restauración
         </h2>
         <RestorationAlbum />
+      </div>
+
+      {/* Peticiones de Oración */}
+      <div className="mt-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <HandHeart className="w-5 h-5 text-primary-600" />
+          Peticiones de Oración
+        </h2>
+        <PrayerSection />
       </div>
 
       {/* Referidos */}

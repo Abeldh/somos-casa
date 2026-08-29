@@ -14,8 +14,8 @@ export function securityHeaders(req, res, next) {
   // ═══════════════════════════════════════════════════════════════
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    // Scripts: solo del mismo origen (unsafe-inline necesario para React en dev)
-    "script-src 'self' 'unsafe-inline'",
+    // Scripts: mismo origen + inline + Google Analytics (gtag)
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
     // Estilos: mismo origen + inline (Tailwind) + Google Fonts
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     // Fuentes: mismo origen + Google Fonts
@@ -23,7 +23,7 @@ export function securityHeaders(req, res, next) {
     // Imágenes: mismo origen + HTTPS + data URIs + blobs (Cloudinary, portadas)
     "img-src 'self' https: data: blob:",
     // Conexiones: mismo origen + Cloudinary upload + Railway
-    "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.railway.app https://fonts.googleapis.com https://fonts.gstatic.com",
+    "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.railway.app https://fonts.googleapis.com https://fonts.gstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com",
     // Frames: solo Spotify y YouTube (embeds de la landing)
     "frame-src https://open.spotify.com https://www.youtube.com",
     // No permitir plugins (Flash, Java, etc.)

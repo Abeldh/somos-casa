@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useInactivityLogout } from './hooks/useInactivityLogout';
+import { useAnalytics } from './hooks/useAnalytics';
 import MainLayout from './components/layout/MainLayout';
 import AdminLayout from './components/layout/AdminLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
@@ -48,6 +49,7 @@ const AdminSessionNotesPage = lazy(() => import('./pages/AdminSessionNotesPage')
 const AdminAlbumPage = lazy(() => import('./pages/AdminAlbumPage'));
 const AdminHealthPage = lazy(() => import('./pages/AdminHealthPage'));
 const AdminBlogPage = lazy(() => import('./pages/AdminBlogPage'));
+const AdminPrayerPage = lazy(() => import('./pages/AdminPrayerPage'));
 
 function PageLoader() {
   return <Spinner className="py-20" />;
@@ -55,6 +57,7 @@ function PageLoader() {
 
 export default function App() {
   useInactivityLogout();
+  useAnalytics();
 
   return (
     <>
@@ -101,6 +104,7 @@ export default function App() {
               <Route path="/admin/album" element={<AdminAlbumPage />} />
               <Route path="/admin/health" element={<AdminHealthPage />} />
               <Route path="/admin/blog" element={<AdminBlogPage />} />
+              <Route path="/admin/prayers" element={<AdminPrayerPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

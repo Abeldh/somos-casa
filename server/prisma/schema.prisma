@@ -112,6 +112,7 @@ model User {
   referralsReceived  Referral[] @relation("referred")
   payments           Payment[]
   albumPhotos        AlbumPhoto[]
+  prayerRequests     PrayerRequest[]
 
   @@map("users")
 }
@@ -355,6 +356,30 @@ model BlogPost {
   @@index([isPublished])
   @@index([slug])
   @@map("blog_posts")
+}
+
+enum PrayerStatus {
+  PENDING
+  PRAYED
+  ARCHIVED
+}
+
+model PrayerRequest {
+  id         String       @id @default(uuid())
+  userId     String?      @map("user_id")
+  name       String
+  request    String
+  isPrivate  Boolean      @default(true) @map("is_private")
+  status     PrayerStatus @default(PENDING)
+  prayedBy   String?      @map("prayed_by")
+  prayedAt   DateTime?    @map("prayed_at")
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([userId])
+  @@map("prayer_requests")
 }
 
 model PasswordResetToken {

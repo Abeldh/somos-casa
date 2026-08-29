@@ -6,7 +6,6 @@ import { useCart } from '../../hooks/useCart';
 import Button from '../ui/Button';
 import Logo from '../ui/Logo';
 import NotificationBell from '../ui/NotificationBell';
-import LanguageSelector from '../ui/LanguageSelector';
 import { getInitials } from '../../utils/helpers';
 
 export default function Header() {
@@ -61,7 +60,6 @@ export default function Header() {
                   )}
                 </Link>
                 <NotificationBell />
-                <LanguageSelector />
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center text-xs font-semibold">
                     {getInitials(user.firstName, user.lastName)}
@@ -73,7 +71,6 @@ export default function Header() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <LanguageSelector />
                 <Link to="/login">
                   <Button variant="ghost" size="sm">Iniciar Sesión</Button>
                 </Link>

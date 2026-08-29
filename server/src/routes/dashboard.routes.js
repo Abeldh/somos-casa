@@ -10,5 +10,6 @@ router.use(adminMiddleware);
 router.get('/metrics', dashboardController.getMetrics);
 router.get('/financial', dashboardController.getFinancial);
 router.get('/activity', dashboardController.getRecentActivity);
+router.get('/health', dashboardController.getSystemHealth);
 
 export default router;

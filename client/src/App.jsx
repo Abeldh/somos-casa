@@ -44,6 +44,7 @@ const AdminCouponsPage = lazy(() => import('./pages/AdminCouponsPage'));
 const AdminFinancialPage = lazy(() => import('./pages/AdminFinancialPage'));
 const AdminSessionNotesPage = lazy(() => import('./pages/AdminSessionNotesPage'));
 const AdminAlbumPage = lazy(() => import('./pages/AdminAlbumPage'));
+const AdminHealthPage = lazy(() => import('./pages/AdminHealthPage'));
 
 function PageLoader() {
   return <Spinner className="py-20" />;
@@ -93,6 +94,7 @@ export default function App() {
               <Route path="/admin/audit" element={<AdminAuditPage />} />
               <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
               <Route path="/admin/album" element={<AdminAlbumPage />} />
+              <Route path="/admin/health" element={<AdminHealthPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

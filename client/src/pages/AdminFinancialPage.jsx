@@ -112,6 +112,29 @@ export default function AdminFinancialPage() {
         </div>
       </div>
 
+      {/* Ingresos por método de pago */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Ingresos por Método de Pago ({year})</h2>
+        {!data.byMethod || data.byMethod.length === 0 ? (
+          <p className="text-sm text-gray-500">Sin pagos verificados este año.</p>
+        ) : (
+          <div className="space-y-3">
+            {data.byMethod.map((m, i) => (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                <span className="text-sm font-medium text-gray-900">{METHOD_LABELS[m.method] || m.method}</span>
+                <div className="text-right">
+                  <span className="text-sm font-semibold text-gray-900">${(m._sum.amount || 0).toLocaleString('es-MX')}</span>
+                  <span className="text-xs text-gray-400 ml-2">({m._count} pagos)</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <p className="text-xs text-gray-400 mt-4 pt-3 border-t border-gray-50">
+          Los ingresos se calculan a partir de los pagos verificados registrados en el sistema.
+        </p>
+      </div>
+
       {/* Top Books */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Libros Más Vendidos</h2>
@@ -136,6 +159,13 @@ export default function AdminFinancialPage() {
     </div>
   );
 }
+
+const METHOD_LABELS = {
+  PAYPAL: 'PayPal',
+  TRANSFER: 'Transferencia bancaria',
+  CASH: 'Efectivo',
+  OTHER: 'Otro',
+};
 
 function KPICard({ title, value, subtitle, icon: Icon, color }) {
   const colors = {

@@ -19,4 +19,8 @@ export const dashboardController = {
       return successResponse(res, await dashboardService.getRecentActivity(limit));
     } catch (e) { next(e); }
   },
+
+  async getSystemHealth(req, res, next) {
+    try { return successResponse(res, await dashboardService.getSystemHealth()); } catch (e) { next(e); }
+  },
 };

@@ -20,12 +20,16 @@ export default function CookiePolicyPage() {
             <CookieRow name="access_token" type="Técnica (Necesaria)" purpose="Mantiene tu sesión activa" duration="15 minutos" />
             <CookieRow name="refresh_token" type="Técnica (Necesaria)" purpose="Permite renovar tu sesión sin re-login" duration="7 días" />
             <CookieRow name="cookie_consent" type="Preferencia" purpose="Recuerda tu elección sobre cookies" duration="1 año" />
+            <CookieRow name="Google Analytics (_ga)" type="Analítica (Terceros)" purpose="Medir visitas y uso de la página de forma anónima y agregada" duration="Hasta 2 años" />
             <CookieRow name="Spotify Embed" type="Terceros" purpose="Reproductor de podcast embebido" duration="Según Spotify" />
             <CookieRow name="YouTube Embed" type="Terceros" purpose="Reproductor de video embebido" duration="Según Google" />
           </div>
 
-          <div className="mt-4 bg-green-50 rounded-lg p-4 text-sm text-green-800">
-            <strong>✓ Lo que NO usamos:</strong> No utilizamos Google Analytics, píxeles de publicidad, cookies de retargeting ni rastreo de terceros.
+          <div className="mt-4 bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+            <strong>Analítica:</strong> Utilizamos Google Analytics para entender de forma anónima y agregada cómo se usa nuestra página (número de visitas, páginas más vistas, origen del tráfico). Estos datos no identifican a personas individuales y nos ayudan a mejorar el ministerio.
+          </div>
+          <div className="mt-3 bg-green-50 rounded-lg p-4 text-sm text-green-800">
+            <strong>✓ Lo que NO usamos:</strong> No utilizamos píxeles de publicidad, cookies de retargeting comercial ni venta de datos a terceros.
           </div>
         </Section>
 

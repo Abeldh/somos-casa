@@ -1,6 +1,6 @@
-// Google Analytics 4 — carga condicional según VITE_GA_ID.
-// Configura el ID en las variables de entorno (Railway/.env): VITE_GA_ID=G-XXXXXXXXXX
-const GA_ID = import.meta.env.VITE_GA_ID;
+// Google Analytics 4 — carga condicional.
+// Se puede sobrescribir con la variable de entorno VITE_GA_ID en build.
+const GA_ID = import.meta.env.VITE_GA_ID || 'G-YB6M79B0DV';
 
 let initialized = false;
 

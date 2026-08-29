@@ -121,10 +121,11 @@ export default function PrivacyPolicyPage() {
           <p>Esta plataforma utiliza:</p>
           <ul className="list-disc list-inside space-y-2 mt-3">
             <li><strong>LocalStorage:</strong> Para almacenar tu token de sesión (JWT) y mantener tu sesión activa.</li>
+            <li><strong>Google Analytics:</strong> Para medir de forma anónima y agregada el uso de la página (visitas, páginas más vistas, origen del tráfico). No identifica a personas individuales.</li>
             <li><strong>Cookies de terceros:</strong> Los reproductores embebidos de Spotify y YouTube pueden usar cookies propias según sus políticas de privacidad.</li>
           </ul>
           <p className="mt-3 text-sm text-gray-500">
-            No utilizamos cookies de rastreo, analytics ni publicidad.
+            No utilizamos cookies con fines publicitarios ni de retargeting comercial. Los datos de analítica se usan únicamente para mejorar el ministerio.
           </p>
         </Section>
 

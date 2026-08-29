@@ -111,6 +111,7 @@ model User {
   referralsMade      Referral[] @relation("referrer")
   referralsReceived  Referral[] @relation("referred")
   payments           Payment[]
+  albumPhotos        AlbumPhoto[]
 
   @@map("users")
 }
@@ -317,6 +318,21 @@ model Testimonial {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("testimonials")
+}
+
+model AlbumPhoto {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  coupleName String   @map("couple_name")
+  message    String
+  photoUrl   String   @map("photo_url")
+  isApproved Boolean  @default(false) @map("is_approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([isApproved])
+  @@map("album_photos")
 }
 
 model PasswordResetToken {

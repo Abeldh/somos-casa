@@ -5,6 +5,7 @@ import SolutionsSection from '../components/landing/SolutionsSection';
 import SpotifySection from '../components/landing/SpotifySection';
 import YouTubeSection from '../components/landing/YouTubeSection';
 import TestimonialsSection from '../components/landing/TestimonialsSection';
+import AlbumSection from '../components/landing/AlbumSection';
 import FAQSection from '../components/landing/FAQSection';
 import CTASection from '../components/landing/CTASection';
 
@@ -24,6 +25,8 @@ export default function HomePage() {
       <YouTubeSection />
       {/* Prueba social: testimonios de restauración */}
       <TestimonialsSection />
+      {/* Álbum de restauración: fotos de parejas */}
+      <AlbumSection />
       {/* Resolver dudas + aviso responsable */}
       <FAQSection />
       {/* Acción final: Dios restaura */}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare, Tag, DollarSign, FileText } from 'lucide-react';
+import { LayoutDashboard, Calendar, Clock, Film, LogOut, Home, Menu, X, BookOpen, ShoppingBag, Settings, Users, Shield, MessageSquare, Tag, DollarSign, FileText, Images } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import { classNames } from '../../utils/helpers';
@@ -19,6 +19,7 @@ const navItems = [
   { to: '/admin/users', icon: Users, label: 'Usuarios' },
   { to: '/admin/audit', icon: Shield, label: 'Auditoría' },
   { to: '/admin/testimonials', icon: MessageSquare, label: 'Testimonios' },
+  { to: '/admin/album', icon: Images, label: 'Álbum' },
   { to: '/admin/settings', icon: Settings, label: 'Configuración' },
 ];
 

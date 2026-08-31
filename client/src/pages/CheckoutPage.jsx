@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { CreditCard, CheckCircle, ArrowLeft, Copy, BookOpen } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { orderService } from '../services/order.service';
+import { couponService } from '../services/coupon.service';
 import { useToast } from '../hooks/useToast';
 import { useAuth } from '../hooks/useAuth';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import TermsCheckbox from '../components/ui/TermsCheckbox';
 import ProofUpload from '../components/ui/ProofUpload';
+import { X, Tag } from 'lucide-react';
 
 export default function CheckoutPage() {
   const { items, subtotal, fetchCart } = useCart();
@@ -23,7 +25,32 @@ export default function CheckoutPage() {
   const [f, setF] = useState({ name: user?.firstName + ' ' + user?.lastName || '', phone: '', notes: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
+  // Cupón
+  const [couponCode, setCouponCode] = useState('');
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [coupon, setCoupon] = useState(null); // { code, discount }
+
   const ch = (e) => setF((p) => ({ ...p, [e.target.name]: e.target.value }));
+
+  const discount = coupon?.discount || 0;
+  const total = Math.max(0, subtotal - discount);
+
+  const applyCoupon = async () => {
+    const code = couponCode.trim();
+    if (!code) { error('Ingresa un código de cupón'); return; }
+    setApplyingCoupon(true);
+    try {
+      const data = await couponService.validate(code, subtotal);
+      setCoupon({ code: data.coupon.code, discount: data.discount });
+      success(`Cupón aplicado: -$${data.discount.toFixed(2)}`);
+    } catch (e) { error(e.message); setCoupon(null); }
+    finally { setApplyingCoupon(false); }
+  };
+
+  const removeCoupon = () => {
+    setCoupon(null);
+    setCouponCode('');
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -31,7 +58,7 @@ export default function CheckoutPage() {
     if (!acceptedTerms) { error('Debes aceptar los Términos y Condiciones'); return; }
     setLoading(true);
     try {
-      const data = await orderService.create(f);
+      const data = await orderService.create({ ...f, couponCode: coupon?.code || undefined });
       setOrderNum(data.order.orderNumber);
       setOrderId(data.order.id);
       setOrderTotal(data.order.total);
@@ -162,14 +189,54 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
+            {/* Cupón de descuento */}
+            <div className="border-t border-gray-100 pt-4 mb-4">
+              {coupon ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Tag className="w-4 h-4 text-green-600 flex-shrink-0" />
+                    <span className="text-sm font-medium text-green-700 truncate">{coupon.code}</span>
+                  </div>
+                  <button type="button" onClick={removeCoupon} className="text-green-600 hover:text-red-500 transition-colors flex-shrink-0" title="Quitar cupón">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <Input
+                      label="¿Tienes un cupón?"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="CÓDIGO"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+                    />
+                  </div>
+                  <Button type="button" variant="outline" onClick={applyCoupon} loading={applyingCoupon} className="mb-0.5">
+                    Aplicar
+                  </Button>
+                </div>
+              )}
+            </div>
+
             <div className="border-t border-gray-100 pt-4">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="text-gray-500">Subtotal</span>
+                <span className="text-gray-700">${subtotal.toFixed(2)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-green-600">Descuento ({coupon.code})</span>
+                  <span className="text-green-600 font-medium">-${discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-gray-500">Envío</span>
                 <span className="text-green-600 font-medium">Digital — Gratis</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between mt-2">
                 <span className="font-semibold text-gray-900">Total</span>
-                <span className="text-2xl font-bold text-primary-700">${subtotal.toFixed(2)}</span>
+                <span className="text-2xl font-bold text-primary-700">${total.toFixed(2)}</span>
               </div>
             </div>
             <div className="mt-4">

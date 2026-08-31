@@ -1,6 +1,7 @@
 import prisma from '../config/database.js';
 import { emailService } from './email.service.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
+import { couponService } from './coupon.service.js';
 
 function genNum() {
   const d = new Date();
@@ -17,12 +18,26 @@ export const orderService = {
 
     const subtotal = cartItems.reduce((s, i) => s + i.book.price * i.quantity, 0);
     const shippingCost = 0; // Libros digitales no tienen envío
-    const total = subtotal;
+
+    // Validar y calcular descuento del cupón (si se envió uno)
+    let discount = 0;
+    let couponId = null;
+    let couponCode = null;
+    if (shipping.couponCode) {
+      // Lanza error si el cupón no es válido (código, vigencia, mínimo, uso previo, etc.)
+      const result = await couponService.validate(shipping.couponCode, userId, subtotal);
+      discount = result.discount;
+      couponId = result.coupon.id;
+      couponCode = result.coupon.code;
+    }
+
+    const total = Math.round(Math.max(0, subtotal - discount) * 100) / 100;
 
     const order = await prisma.$transaction(async (tx) => {
       const o = await tx.order.create({
         data: {
-          userId, orderNumber: genNum(), subtotal, shippingCost, total,
+          userId, orderNumber: genNum(), subtotal, shippingCost, discount, total,
+          couponId, couponCode,
           shippingName: shipping.name, shippingPhone: shipping.phone,
           notes: shipping.notes,
           items: { create: cartItems.map(i => ({ bookId: i.bookId, title: i.book.title, price: i.book.price, quantity: i.quantity })) },
@@ -38,6 +53,11 @@ export const orderService = {
         if (updated.count === 0) {
           throw Object.assign(new Error(`Stock agotado para "${i.book.title}" durante el proceso`), { statusCode: 409 });
         }
+      }
+      // Registrar uso del cupón dentro de la misma transacción
+      if (couponId) {
+        await tx.couponUsage.create({ data: { couponId, userId, orderId: o.id, discount } });
+        await tx.coupon.update({ where: { id: couponId }, data: { usedCount: { increment: 1 } } });
       }
       await tx.cartItem.deleteMany({ where: { userId } });
       return o;

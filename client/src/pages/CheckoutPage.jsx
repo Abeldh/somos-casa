@@ -22,6 +22,8 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState('');
   const [proofUrl, setProofUrl] = useState('');
   const [orderTotal, setOrderTotal] = useState(0);
+  const [orderDiscount, setOrderDiscount] = useState(0);
+  const [orderCouponCode, setOrderCouponCode] = useState('');
   const [f, setF] = useState({ name: user?.firstName + ' ' + user?.lastName || '', phone: '', notes: '' });
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -62,6 +64,8 @@ export default function CheckoutPage() {
       setOrderNum(data.order.orderNumber);
       setOrderId(data.order.id);
       setOrderTotal(data.order.total);
+      setOrderDiscount(data.order.discount || 0);
+      setOrderCouponCode(data.order.couponCode || '');
       setDone(true);
       fetchCart();
       success('¡Pedido realizado!');
@@ -79,6 +83,11 @@ export default function CheckoutPage() {
       <p className="text-sm bg-gray-50 rounded-lg p-3 font-mono text-gray-700 mb-6">
         Orden: <strong>{orderNum}</strong>
       </p>
+      {orderDiscount > 0 && (
+        <p className="text-sm bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 mb-6">
+          Cupón {orderCouponCode ? <strong>{orderCouponCode}</strong> : ''} aplicado: descuento de <strong>${orderDiscount.toFixed(2)}</strong> MXN
+        </p>
+      )}
       <div className="bg-warm-50 rounded-xl p-5 text-left mb-8">
         <h4 className="font-semibold text-gray-900 text-sm mb-3">Métodos de pago:</h4>
         

@@ -127,6 +127,14 @@ export default function AdminOrdersPage() {
               {/* Footer: total + acciones */}
               <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                 <div>
+                  {order.discount > 0 && (
+                    <div className="text-xs text-gray-500 mb-1">
+                      <span>Subtotal: ${order.subtotal.toFixed(2)}</span>
+                      <span className="ml-2 text-green-600">
+                        Cupón {order.couponCode ? `(${order.couponCode})` : ''}: -${order.discount.toFixed(2)}
+                      </span>
+                    </div>
+                  )}
                   <span className="text-sm text-gray-500">Total: </span>
                   <span className="text-lg font-bold text-primary-700">${order.total.toFixed(2)}</span>
                   {order.paymentProofUrl && (

@@ -20,9 +20,9 @@ export const sessionNoteController = {
 
   async update(req, res, next) {
     try {
-      const { content } = req.body;
+      const { content, isPrivate } = req.body;
       if (!content) return res.status(400).json({ success: false, message: 'Contenido es requerido' });
-      return successResponse(res, await sessionNoteService.update(req.params.id, content));
+      return successResponse(res, await sessionNoteService.update(req.params.id, content, isPrivate));
     } catch (e) { next(e); }
   },
 

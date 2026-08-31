@@ -32,10 +32,12 @@ export const sessionNoteService = {
     return { note };
   },
 
-  async update(id, content) {
+  async update(id, content, isPrivate) {
     const note = await prisma.sessionNote.findUnique({ where: { id } });
     if (!note) { const e = new Error('Nota no encontrada'); e.statusCode = 404; throw e; }
-    const updated = await prisma.sessionNote.update({ where: { id }, data: { content } });
+    const data = { content };
+    if (typeof isPrivate === 'boolean') data.isPrivate = isPrivate;
+    const updated = await prisma.sessionNote.update({ where: { id }, data });
     return { note: updated };
   },
 

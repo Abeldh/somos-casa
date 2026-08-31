@@ -17,6 +17,7 @@ export default function AdminSessionNotesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [content, setContent] = useState('');
+  const [shareWithUser, setShareWithUser] = useState(false);
   const [filter, setFilter] = useState('COMPLETED');
   const { success, error } = useToast();
 
@@ -53,15 +54,16 @@ export default function AdminSessionNotesPage() {
     if (!content.trim()) return;
     try {
       if (editingNote) {
-        await sessionNoteService.update(editingNote.id, content);
+        await sessionNoteService.update(editingNote.id, content, !shareWithUser);
         success('Nota actualizada');
       } else {
-        await sessionNoteService.create({ appointmentId: selectedApt.id, content, isPrivate: true });
+        await sessionNoteService.create({ appointmentId: selectedApt.id, content, isPrivate: !shareWithUser });
         success('Nota agregada');
       }
       setShowModal(false);
       setEditingNote(null);
       setContent('');
+      setShareWithUser(false);
       loadNotes(selectedApt.id);
     } catch (e) { error(e.response?.data?.message || 'Error'); }
   };
@@ -123,7 +125,7 @@ export default function AdminSessionNotesPage() {
                   <h3 className="font-semibold text-gray-900">{selectedApt.user?.firstName} {selectedApt.user?.lastName}</h3>
                   <p className="text-sm text-gray-500">{formatDate(selectedApt.date)} • {formatTime(selectedApt.startTime)} - {formatTime(selectedApt.endTime)}</p>
                 </div>
-                <Button size="sm" onClick={() => { setEditingNote(null); setContent(''); setShowModal(true); }} className="flex items-center gap-1">
+                <Button size="sm" onClick={() => { setEditingNote(null); setContent(''); setShareWithUser(false); setShowModal(true); }} className="flex items-center gap-1">
                   <Plus className="w-4 h-4" /> Agregar Nota
                 </Button>
               </div>
@@ -147,7 +149,7 @@ export default function AdminSessionNotesPage() {
                       <div className="flex items-start justify-between">
                         <p className="text-sm text-gray-700 whitespace-pre-wrap flex-1">{note.content}</p>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ml-2">
-                          <button onClick={() => { setEditingNote(note); setContent(note.content); setShowModal(true); }} className="p-1 hover:bg-gray-100 rounded">
+                          <button onClick={() => { setEditingNote(note); setContent(note.content); setShareWithUser(!note.isPrivate); setShowModal(true); }} className="p-1 hover:bg-gray-100 rounded">
                             <Edit className="w-3.5 h-3.5 text-gray-400" />
                           </button>
                           <button onClick={() => handleDelete(note.id)} className="p-1 hover:bg-red-50 rounded">
@@ -155,7 +157,14 @@ export default function AdminSessionNotesPage() {
                           </button>
                         </div>
                       </div>
-                      <p className="text-[10px] text-gray-400 mt-2">{new Date(note.createdAt).toLocaleString('es-MX')}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-[10px] text-gray-400">{new Date(note.createdAt).toLocaleString('es-MX')}</span>
+                        {note.isPrivate ? (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500">Privada</span>
+                        ) : (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">Compartida con el usuario</span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -182,7 +191,22 @@ export default function AdminSessionNotesPage() {
               placeholder="Escribe aquí las observaciones de la sesión..."
               required
             />
-            <p className="text-xs text-gray-400">Esta nota es privada y solo será visible para administradores.</p>
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={shareWithUser}
+                onChange={(e) => setShareWithUser(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <span className="text-xs text-gray-600">
+                Compartir esta nota con el usuario.
+                <span className="block text-gray-400">
+                  {shareWithUser
+                    ? 'El usuario verá esta nota como "Nota del consejero" en su historial de sesiones.'
+                    : 'La nota permanece privada y solo será visible para administradores.'}
+                </span>
+              </span>
+            </label>
             <div className="flex gap-3">
               <Button type="button" variant="ghost" onClick={() => setShowModal(false)} className="flex-1">Cancelar</Button>
               <Button type="submit" className="flex-1">{editingNote ? 'Guardar' : 'Agregar Nota'}</Button>

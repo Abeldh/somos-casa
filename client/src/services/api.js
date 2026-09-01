@@ -76,11 +76,20 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch (refreshError) {
           isRefreshing = false;
-          // Refresh falló → sesión expirada completamente
+          // Refresh falló → sesión expirada. Limpiamos tokens pero NO forzamos
+          // redirección aquí: en páginas públicas el 401 debe ser silencioso, y
+          // en rutas protegidas ProtectedRoute/AdminRoute ya redirigen a /login
+          // cuando no hay usuario. Evita expulsar al usuario con una recarga dura.
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
-          return Promise.reject({ message: 'Sesión expirada. Inicia sesión de nuevo.' });
+          // Notifica a los requests encolados que el refresh falló (token nulo)
+          onRefreshed(null);
+          // Avisa a la app (AuthContext) que la sesión expiró, para que limpie el
+          // estado y las rutas protegidas redirijan de forma limpia (sin recarga dura).
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('auth:session-expired'));
+          }
+          return Promise.reject({ message: 'Sesión expirada. Inicia sesión de nuevo.', status: 401 });
         }
       } else {
         // Ya hay un refresh en progreso, encolar este request

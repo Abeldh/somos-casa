@@ -30,6 +30,19 @@ export function AuthProvider({ children }) {
     loadUser();
   }, [loadUser]);
 
+  // Si el interceptor de la API detecta que la sesión expiró (refresh falló),
+  // limpiamos el estado aquí para que las rutas protegidas redirijan sin recarga dura.
+  useEffect(() => {
+    const onSessionExpired = () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      setToken(null);
+      setUser(null);
+    };
+    window.addEventListener('auth:session-expired', onSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', onSessionExpired);
+  }, []);
+
   const login = async (email, password, mfaCode) => {
     const data = await authService.login({ email, password, mfaCode });
 

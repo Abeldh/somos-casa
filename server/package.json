@@ -19,7 +19,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^6.9.14",
     "resend": "^6.24.0",
     "zod": "^4.4.3"
   },

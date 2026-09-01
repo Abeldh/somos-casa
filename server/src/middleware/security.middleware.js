@@ -22,10 +22,15 @@ export function securityHeaders(req, res, next) {
     "font-src 'self' https://fonts.gstatic.com",
     // Imágenes: mismo origen + HTTPS + data URIs + blobs (Cloudinary, portadas)
     "img-src 'self' https: data: blob:",
-    // Conexiones: mismo origen + Cloudinary upload + Railway
-    "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.railway.app https://fonts.googleapis.com https://fonts.gstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com",
-    // Frames: solo Spotify y YouTube (embeds de la landing)
-    "frame-src https://open.spotify.com https://www.youtube.com",
+    // Conexiones (fetch/XHR/WebSocket): mismo origen + Cloudinary + Railway + Google Analytics.
+    // Nota: fonts.googleapis/gstatic NO van aquí (son estilos/fuentes, ya cubiertos arriba).
+    "connect-src 'self' https://api.cloudinary.com https://res.cloudinary.com https://*.railway.app https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com",
+    // Frames: mismo origen + embeds de Spotify y YouTube (landing)
+    "frame-src 'self' https://open.spotify.com https://www.youtube.com",
+    // Manifest de PWA: solo mismo origen
+    "manifest-src 'self'",
+    // Service Worker / workers: solo mismo origen
+    "worker-src 'self'",
     // No permitir plugins (Flash, Java, etc.)
     "object-src 'none'",
     // Base URI: solo mismo origen (previene base tag injection)

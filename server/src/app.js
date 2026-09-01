@@ -19,6 +19,21 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
+// Timeout de requests: corta conexiones lentas o colgadas para no agotar recursos
+// (mitigación básica de Slowloris / conexiones abusivas). 30s cubre de sobra
+// cualquier operación legítima de esta API.
+const REQUEST_TIMEOUT_MS = 30 * 1000;
+app.use((req, res, next) => {
+  res.setTimeout(REQUEST_TIMEOUT_MS, () => {
+    if (!res.headersSent) {
+      res.status(503).json({ success: false, message: 'La solicitud tardó demasiado. Intenta de nuevo.' });
+    }
+    // Cierra el socket si sigue colgado tras responder
+    if (req.socket && !req.socket.destroyed) req.socket.destroy();
+  });
+  next();
+});
+
 // Security Headers (CSP, HSTS, X-Frame, etc.)
 app.use(securityHeaders);
 

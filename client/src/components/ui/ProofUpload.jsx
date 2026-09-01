@@ -27,7 +27,9 @@ export default function ProofUpload({ value, onChange, label = 'Comprobante de p
 
   const handleFile = (file) => {
     if (!file) return;
-    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') { alert('Solo imágenes o PDF'); return; }
+    // Lista blanca: imágenes seguras o PDF (excluye SVG y otros formatos riesgosos)
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+    if (!allowed.includes(file.type)) { alert('Formato no permitido. Usa JPG, PNG, WEBP o PDF.'); return; }
     if (file.size > 10 * 1024 * 1024) { alert('Máximo 10MB'); return; }
     upload(file);
   };

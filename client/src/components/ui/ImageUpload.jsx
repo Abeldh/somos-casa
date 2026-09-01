@@ -38,7 +38,9 @@ export default function ImageUpload({ value, onChange, label = 'Portada' }) {
 
   const handleFile = (file) => {
     if (!file) return;
-    if (!file.type.startsWith('image/')) return;
+    // Lista blanca de formatos de imagen seguros (excluye SVG, que puede contener scripts)
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowed.includes(file.type)) { alert('Formato no permitido. Usa JPG, PNG, WEBP o GIF.'); return; }
     if (file.size > 10 * 1024 * 1024) { alert('Máximo 10MB'); return; }
     uploadToCloudinary(file);
   };

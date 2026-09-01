@@ -14,7 +14,8 @@ if (process.env.RESEND_API_KEY) {
 
 async function send({ to, subject, html }) {
   if (!resend) {
-    console.warn(`[Email] Skipped (no API key): ${subject} → ${to}`);
+    // No se registra el destinatario para no exponer datos personales en logs.
+    console.warn(`[Email] Skipped (no API key): ${subject}`);
     return null;
   }
   try {

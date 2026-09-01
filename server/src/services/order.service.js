@@ -1,11 +1,21 @@
 import prisma from '../config/database.js';
+import crypto from 'crypto';
 import { emailService } from './email.service.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
 import { couponService } from './coupon.service.js';
 
+// Sufijo aleatorio criptográficamente seguro (5 caracteres alfanuméricos en mayúsculas)
+function secureSuffix(len = 5) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const bytes = crypto.randomBytes(len);
+  let out = '';
+  for (let i = 0; i < len; i++) out += alphabet[bytes[i] % alphabet.length];
+  return out;
+}
+
 function genNum() {
   const d = new Date();
-  return `SC-${d.getFullYear().toString().slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+  return `SC-${d.getFullYear().toString().slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${secureSuffix(5)}`;
 }
 
 export const orderService = {

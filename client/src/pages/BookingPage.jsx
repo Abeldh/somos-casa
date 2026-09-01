@@ -1,7 +1,13 @@
 import { Calendar } from 'lucide-react';
 import BookingForm from '../components/booking/BookingForm';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 export default function BookingPage() {
+  usePageMeta(
+    'Agenda tu consejería matrimonial',
+    'Agenda una sesión de consejería pastoral para tu matrimonio. Selecciona fecha y horario disponible y da el primer paso hacia la restauración.',
+    { path: '/booking' }
+  );
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-10">

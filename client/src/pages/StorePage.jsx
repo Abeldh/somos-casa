@@ -4,7 +4,13 @@ import { useBooks } from '../hooks/useBooks';
 import { bookService } from '../services/book.service';
 import BookCard from '../components/store/BookCard';
 import Spinner from '../components/ui/Spinner';
+import { usePageMeta } from '../hooks/usePageMeta';
 export default function StorePage() {
+  usePageMeta(
+    'Librería Cristiana',
+    'Libros y recursos cristianos para fortalecer tu matrimonio: comunicación, perdón, restauración y vida en familia bajo el señorío de Cristo.',
+    { path: '/store' }
+  );
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');

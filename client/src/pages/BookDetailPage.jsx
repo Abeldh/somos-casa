@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, BookOpen, Package, Globe, Minus, Plus } from 'lucide-react';
 import { useBook } from '../hooks/useBooks';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
+import { usePageMeta } from '../hooks/usePageMeta';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
 export default function BookDetailPage() {
@@ -12,6 +13,35 @@ export default function BookDetailPage() {
   const { addItem } = useCart();
   const { isAuthenticated } = useAuth();
   const [qty, setQty] = useState(1);
+
+  // Datos estructurados (schema.org) del libro para resultados enriquecidos en Google
+  const jsonLd = useMemo(() => {
+    if (!book) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Book',
+      name: book.title,
+      author: { '@type': 'Person', name: book.author },
+      ...(book.description && { description: book.description }),
+      ...(book.isbn && { isbn: book.isbn }),
+      ...(book.publisher && { publisher: { '@type': 'Organization', name: book.publisher } }),
+      ...(book.language && { inLanguage: book.language }),
+      ...(book.coverImage && { image: book.coverImage }),
+      offers: {
+        '@type': 'Offer',
+        price: book.price,
+        priceCurrency: 'MXN',
+        availability: book.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      },
+    };
+  }, [book]);
+
+  usePageMeta(
+    book ? `${book.title} — ${book.author}` : undefined,
+    book ? (book.description ? book.description.slice(0, 155) : `${book.title}, por ${book.author}. Recurso cristiano para tu matrimonio.`) : undefined,
+    { path: `/store/${slug}`, image: book?.coverImage, jsonLd }
+  );
+
   if(loading) return <Spinner className="py-20" size="lg"/>;
   if(!book) return <div className="text-center py-20"><p className="text-gray-500">Libro no encontrado.</p><Link to="/store" className="text-primary-600 hover:underline mt-4 inline-block">Volver</Link></div>;
   return (

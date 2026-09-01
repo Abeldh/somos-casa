@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { blogService } from '../services/blog.service';
@@ -19,7 +19,27 @@ export default function BlogPostPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  usePageMeta(post?.title, post?.excerpt || undefined);
+  // Datos estructurados (schema.org) del artículo para Google
+  const jsonLd = useMemo(() => {
+    if (!post) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      author: { '@type': 'Person', name: post.author },
+      ...(post.publishedAt && { datePublished: post.publishedAt }),
+      ...(post.excerpt && { description: post.excerpt }),
+      ...(post.coverImage && { image: post.coverImage }),
+      ...(post.category && { articleSection: post.category }),
+      publisher: { '@type': 'Organization', name: 'Somos Casa' },
+    };
+  }, [post]);
+
+  usePageMeta(post?.title, post?.excerpt || undefined, {
+    path: `/blog/${slug}`,
+    image: post?.coverImage,
+    jsonLd,
+  });
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 

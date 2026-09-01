@@ -1,0 +1,59 @@
+# Dependabot: actualizaciones y alertas automáticas de dependencias.
+# Documentación: https://docs.github.com/code-security/dependabot
+version: 2
+updates:
+  # Dependencias del cliente (React + Vite)
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "client"
+    commit-message:
+      prefix: "deps(client)"
+    # Agrupa las actualizaciones menores/parches para reducir el ruido de PRs
+    groups:
+      client-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Dependencias del servidor (Node + Express + Prisma)
+  - package-ecosystem: "npm"
+    directory: "/server"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "server"
+    commit-message:
+      prefix: "deps(server)"
+    groups:
+      server-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Dependencias en la raíz (scripts de despliegue del monorepo)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "deps"
+
+  # Mantiene actualizadas las propias GitHub Actions usadas en los workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "ci"
+    commit-message:
+      prefix: "ci"

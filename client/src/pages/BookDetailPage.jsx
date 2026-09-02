@@ -5,6 +5,7 @@ import { useBook } from '../hooks/useBooks';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { cldImage } from '../utils/cloudinary';
 import Button from '../components/ui/Button';
 import Spinner from '../components/ui/Spinner';
 export default function BookDetailPage() {
@@ -49,7 +50,7 @@ export default function BookDetailPage() {
       <Link to="/store" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary-600 mb-8"><ArrowLeft className="w-4 h-4"/>Volver a la tienda</Link>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="aspect-[3/4] max-w-sm mx-auto md:mx-0 bg-gray-100 rounded-2xl overflow-hidden shadow-lg">
-          {book.coverImage?<img src={book.coverImage} alt={book.title} className="w-full h-full object-cover"/>:<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-50 to-warm-50"><BookOpen className="w-20 h-20 text-primary-200"/></div>}
+          {book.coverImage?<img src={cldImage(book.coverImage,{width:600})} alt={book.title} width="600" height="800" className="w-full h-full object-cover"/>:<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-50 to-warm-50"><BookOpen className="w-20 h-20 text-primary-200"/></div>}
         </div>
         <div>
           {book.category&&<span className="inline-block text-xs bg-primary-100 text-primary-700 px-3 py-1 rounded-full font-medium mb-4">{book.category}</span>}

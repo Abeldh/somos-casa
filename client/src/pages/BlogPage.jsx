@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { BookOpen, ArrowRight, Calendar } from 'lucide-react';
 import { blogService } from '../services/blog.service';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { cldImage } from '../utils/cloudinary';
 import Spinner from '../components/ui/Spinner';
 
 export default function BlogPage() {
@@ -59,7 +60,7 @@ export default function BlogPage() {
                 >
                   <div className="aspect-[16/10] bg-warm-100 overflow-hidden">
                     {post.coverImage ? (
-                      <img src={post.coverImage} alt={post.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={cldImage(post.coverImage,{width:500})} alt={post.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <BookOpen className="w-10 h-10 text-primary-200" />

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { blogService } from '../services/blog.service';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { cldImage } from '../utils/cloudinary';
 import Spinner from '../components/ui/Spinner';
 
 export default function BlogPostPage() {
@@ -74,7 +75,7 @@ export default function BlogPostPage() {
 
       {post.coverImage && (
         <div className="rounded-2xl overflow-hidden mt-6 border border-gray-100">
-          <img src={post.coverImage} alt={post.title} className="w-full object-cover" />
+          <img src={cldImage(post.coverImage,{width:1000})} alt={post.title} className="w-full object-cover" />
         </div>
       )}
 

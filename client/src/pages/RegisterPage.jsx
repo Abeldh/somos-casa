@@ -9,6 +9,8 @@ import Logo from '../components/ui/Logo';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '' });
+  const [acceptPrivacyTerms, setAcceptPrivacyTerms] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const { success, error } = useToast();
@@ -32,10 +34,22 @@ export default function RegisterPage() {
       error('Las contraseñas no coinciden');
       return;
     }
+    if (!acceptPrivacyTerms) {
+      error('Debes leer y aceptar el Aviso de Privacidad y los Términos y Condiciones.');
+      return;
+    }
 
     setLoading(true);
     try {
-      await register({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phone, password: form.password });
+      await register({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone,
+        password: form.password,
+        acceptPrivacyTerms,
+        marketingConsent,
+      });
       success('¡Cuenta creada con éxito!');
       navigate('/dashboard');
     } catch (err) {
@@ -67,7 +81,42 @@ export default function RegisterPage() {
           <Input label="Contraseña" name="password" type="password" value={form.password} onChange={handleChange} placeholder="Mínimo 6 caracteres" />
           <Input label="Confirmar contraseña" name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} placeholder="Repite tu contraseña" />
 
-          <Button type="submit" loading={loading} className="w-full flex items-center justify-center gap-2">
+          {/* Consentimientos diferenciados (LFPDPPP) — casillas independientes, ninguna pre-marcada */}
+          <div className="space-y-3 pt-2">
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={acceptPrivacyTerms}
+                onChange={(e) => setAcceptPrivacyTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 flex-shrink-0"
+              />
+              <span className="text-xs text-gray-600 leading-relaxed">
+                He leído y acepto el{' '}
+                <Link to="/privacy" target="_blank" className="text-primary-600 hover:underline font-medium">Aviso de Privacidad</Link>
+                {' '}y los{' '}
+                <Link to="/terms" target="_blank" className="text-primary-600 hover:underline font-medium">Términos y Condiciones</Link>.
+                <span className="text-red-500"> *</span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={marketingConsent}
+                onChange={(e) => setMarketingConsent(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 flex-shrink-0"
+              />
+              <span className="text-xs text-gray-600 leading-relaxed">
+                Deseo recibir promociones, novedades y comunicaciones comerciales (opcional).
+              </span>
+            </label>
+
+            <p className="text-[11px] text-gray-400 leading-relaxed">
+              Al registrarte confirmas que eres mayor de edad. Esta plataforma no está dirigida a menores de edad.
+            </p>
+          </div>
+
+          <Button type="submit" loading={loading} disabled={!acceptPrivacyTerms} className="w-full flex items-center justify-center gap-2">
             <UserPlus className="w-4 h-4" />
             Crear Cuenta
           </Button>

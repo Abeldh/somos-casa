@@ -4,13 +4,21 @@ import { createTokenPair, rotateRefreshToken, revokeAllTokens } from './token.se
 import { mfaService } from './mfa.service.js';
 import { audit, EVENTS } from '../utils/auditLog.js';
 import { isPasswordBreached } from '../utils/passwordCheck.js';
+import { LEGAL_VERSIONS } from '../config/legalVersions.js';
 
 export const authService = {
-  async register({ firstName, lastName, email, phone, password }, req = null) {
+  async register({ firstName, lastName, email, phone, password, acceptPrivacyTerms, marketingConsent }, req = null) {
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       const error = new Error('El email ya está registrado');
       error.statusCode = 409;
+      throw error;
+    }
+
+    // Consentimiento de Aviso de Privacidad + Términos es OBLIGATORIO para registrarse
+    if (!acceptPrivacyTerms) {
+      const error = new Error('Debes leer y aceptar el Aviso de Privacidad y los Términos y Condiciones.');
+      error.statusCode = 422;
       throw error;
     }
 
@@ -23,13 +31,48 @@ export const authService = {
     }
 
     const hashed = await hashPassword(password);
-    const user = await prisma.user.create({
-      data: { firstName, lastName, email, phone, password: hashed },
-      select: { id: true, email: true, firstName: true, lastName: true, role: true },
+    const marketing = !!marketingConsent;
+    const ip = req?.headers?.['x-forwarded-for']?.split(',')[0]?.trim() || req?.ip || null;
+    const userAgent = req?.headers?.['user-agent'] || null;
+
+    // Crear usuario + evidencia de consentimiento en una transacción atómica
+    const user = await prisma.$transaction(async (tx) => {
+      const created = await tx.user.create({
+        data: { firstName, lastName, email, phone, password: hashed, marketingConsent: marketing },
+        select: { id: true, email: true, firstName: true, lastName: true, role: true },
+      });
+
+      // Evidencia: consentimiento obligatorio (privacidad + términos)
+      await tx.consentRecord.create({
+        data: {
+          userId: created.id,
+          type: 'PRIVACY_TERMS',
+          granted: true,
+          documentVersion: LEGAL_VERSIONS.privacyTerms,
+          source: 'register',
+          ip,
+          userAgent,
+        },
+      });
+
+      // Evidencia: consentimiento de marketing (opt-in, se registra otorgado o negado)
+      await tx.consentRecord.create({
+        data: {
+          userId: created.id,
+          type: 'MARKETING',
+          granted: marketing,
+          documentVersion: LEGAL_VERSIONS.privacyTerms,
+          source: 'register',
+          ip,
+          userAgent,
+        },
+      });
+
+      return created;
     });
 
     const tokens = await createTokenPair(user);
-    await audit(EVENTS.REGISTER, { userId: user.id, detail: `Registered: ${email}`, req });
+    await audit(EVENTS.REGISTER, { userId: user.id, detail: `Registered: ${email} (marketing: ${marketing})`, req });
 
     return { user, ...tokens };
   },

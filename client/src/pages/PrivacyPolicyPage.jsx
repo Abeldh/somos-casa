@@ -1,6 +1,15 @@
-import { Shield, Lock, Eye, Database, Trash2, Mail, Globe, UserCheck } from 'lucide-react';
+import { Shield, Lock, Eye, Database, Trash2, Mail, Globe, UserCheck, Share2, Ban, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { usePageMeta } from '../hooks/usePageMeta';
+
+const PRIVACY_VERSION = '2026-08-1';
 
 export default function PrivacyPolicyPage() {
+  usePageMeta(
+    'Aviso de Privacidad',
+    'Aviso de Privacidad de Somos Casa conforme a la LFPDPPP: datos que recopilamos, finalidades, transferencias, derechos ARCO y medidas de seguridad.',
+    { path: '/privacy' }
+  );
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       {/* Header */}
@@ -10,12 +19,13 @@ export default function PrivacyPolicyPage() {
           Privacidad y Seguridad
         </div>
         <h1 className="text-3xl md:text-4xl font-display font-bold text-gray-900">
-          Política de Protección de Datos
+          Aviso de Privacidad
         </h1>
         <p className="text-gray-500 mt-3 max-w-2xl mx-auto">
-          En Somos Casa protegemos tu información personal. Conoce cómo recopilamos, usamos y resguardamos tus datos.
+          En Somos Casa protegemos tu información personal conforme a la Ley Federal de Protección de Datos
+          Personales en Posesión de los Particulares (LFPDPPP). Conoce cómo recopilamos, usamos y resguardamos tus datos.
         </p>
-        <p className="text-sm text-gray-400 mt-4">Última actualización: Agosto 2026</p>
+        <p className="text-sm text-gray-400 mt-4">Última actualización: Agosto 2026 · Versión {PRIVACY_VERSION}</p>
       </div>
 
       {/* Content */}
@@ -29,10 +39,10 @@ export default function PrivacyPolicyPage() {
             <strong>Somos Casa</strong> es el responsable del tratamiento de los datos personales que nos proporcionas a través de esta plataforma web.
           </p>
           <ul className="list-disc list-inside space-y-1 mt-3">
-            <li><strong>Razón social:</strong> Somos Casa Asesoría Matrimonial — Angélica Armenta Barajas</li>
-            <li><strong>Correo de contacto:</strong> somoscasatoluca@gmail.com</li>
+            <li><strong>Responsable:</strong> Angélica Armenta Barajas (Somos Casa Asesoría Matrimonial)</li>
+            <li><strong>Domicilio:</strong> Aeropuerto Miguel Alemán 445, Nueva San Pedro, C.P. 50225, San Francisco Totoltepec, Estado de México, México</li>
+            <li><strong>Correo de privacidad:</strong> somoscasatoluca@gmail.com</li>
             <li><strong>WhatsApp:</strong> +52 722 414 8552</li>
-            <li><strong>Ubicación:</strong> Toluca, Estado de México, México</li>
           </ul>
         </Section>
 
@@ -56,6 +66,11 @@ export default function PrivacyPolicyPage() {
               'Historial de citas agendadas',
             ]} />
           </div>
+          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+            <strong>Datos que podrían considerarse sensibles:</strong> el "motivo de la consulta" y las notas de tu proceso de asesoría matrimonial pueden revelar información sobre tu vida personal o familiar. Solo te pedimos la información estrictamente necesaria para brindarte el acompañamiento pastoral y la tratamos con especial cuidado y confidencialidad. Únicamente el equipo pastoral autorizado accede a esta información.
+          </div>
+          <div className="hidden">
+          </div>
         </Section>
 
         {/* 3. Finalidad */}
@@ -63,16 +78,30 @@ export default function PrivacyPolicyPage() {
           icon={Eye}
           title="3. Finalidad del Tratamiento"
         >
-          <p>Utilizamos tus datos personales exclusivamente para:</p>
-          <ul className="list-disc list-inside space-y-2 mt-3">
+          <p className="font-medium text-gray-800">Finalidades primarias (necesarias para prestarte el servicio):</p>
+          <ul className="list-disc list-inside space-y-2 mt-2">
             <li>Crear y gestionar tu cuenta de usuario en la plataforma.</li>
             <li>Agendar, confirmar y administrar sesiones de asesoría matrimonial.</li>
-            <li>Enviarte comunicaciones relacionadas con tus citas (confirmaciones, recordatorios, cancelaciones).</li>
-            <li>Mejorar nuestros servicios y la experiencia del usuario.</li>
+            <li>Procesar y verificar tus pagos y pedidos de libros digitales.</li>
+            <li>Enviarte comunicaciones relacionadas con tus citas y pedidos (confirmaciones, recordatorios, cancelaciones, entrega de descargas).</li>
+            <li>Atender tus solicitudes de soporte y ejercicio de derechos.</li>
             <li>Cumplir con obligaciones legales aplicables.</li>
           </ul>
-          <p className="mt-4 text-sm text-gray-500 bg-warm-50 p-4 rounded-lg">
-            <strong>Nota:</strong> No vendemos, alquilamos ni compartimos tus datos personales con terceros con fines comerciales o publicitarios.
+
+          <p className="font-medium text-gray-800 mt-5">Finalidades secundarias (no necesarias; puedes negarlas):</p>
+          <ul className="list-disc list-inside space-y-2 mt-2">
+            <li>Envío de promociones, novedades y comunicaciones comerciales del ministerio.</li>
+            <li>Análisis estadístico y de uso de la plataforma para mejorarla (mediante cookies analíticas, sujetas a tu consentimiento).</li>
+          </ul>
+          <p className="mt-4 text-sm text-gray-600 bg-warm-50 p-4 rounded-lg">
+            Puedes <strong>negar tu consentimiento</strong> para las finalidades secundarias sin que ello afecte la
+            prestación del servicio. Durante el registro encontrarás una casilla independiente para las comunicaciones
+            comerciales, y en cualquier momento puedes desactivarlas escribiéndonos a somoscasatoluca@gmail.com o
+            gestionar las cookies analíticas desde nuestra{' '}
+            <Link to="/cookies" className="text-primary-600 hover:underline font-medium">Política de Cookies</Link>.
+          </p>
+          <p className="mt-3 text-sm text-gray-500">
+            No vendemos ni alquilamos tus datos personales a terceros con fines comerciales.
           </p>
         </Section>
 
@@ -109,14 +138,61 @@ export default function PrivacyPolicyPage() {
             <a href="mailto:somoscasatoluca@gmail.com" className="text-primary-600 font-medium hover:underline">
               somoscasatoluca@gmail.com
             </a>{' '}
-            con el asunto "Derechos ARCO" incluyendo tu nombre completo y correo registrado.
+            con el asunto "Derechos ARCO" incluyendo tu nombre completo y correo registrado. Consulta el detalle,
+            los plazos y el mecanismo de solicitud en nuestra página de{' '}
+            <Link to="/derechos-arco" className="text-primary-600 font-medium hover:underline">Derechos ARCO</Link>.
+          </p>
+        </Section>
+
+        {/* Transferencias y encargados */}
+        <Section icon={Share2} title="6. Transferencias y Proveedores que Participan en el Tratamiento">
+          <p>
+            Para operar la plataforma nos apoyamos en proveedores de servicios (encargados) que pueden tratar datos
+            por cuenta nuestra, únicamente para las finalidades descritas y bajo obligaciones de confidencialidad:
+          </p>
+          <ul className="list-disc list-inside space-y-1.5 mt-3">
+            <li><strong>Railway:</strong> alojamiento del sitio, del servidor y de la base de datos.</li>
+            <li><strong>Cloudinary:</strong> almacenamiento y entrega de imágenes y archivos (portadas, comprobantes).</li>
+            <li><strong>Resend:</strong> envío de correos transaccionales (confirmaciones, avisos).</li>
+            <li><strong>PayPal:</strong> procesamiento de pagos, cuando eliges ese método.</li>
+            <li><strong>Google Analytics:</strong> analítica de uso del sitio, sujeta a tu consentimiento de cookies.</li>
+          </ul>
+          <p className="mt-3 text-sm text-gray-500 bg-warm-50 p-4 rounded-lg">
+            Algunos de estos proveedores pueden almacenar información en servidores fuera de México. No realizamos
+            transferencias de tus datos a terceros para fines distintos de la operación del servicio, salvo que la ley
+            lo requiera o contemos con tu consentimiento. En estos casos no se requiere tu consentimiento adicional
+            conforme a la LFPDPPP por tratarse de encargados necesarios para la prestación del servicio.
+          </p>
+        </Section>
+
+        {/* Revocación y limitación */}
+        <Section icon={Ban} title="7. Revocación del Consentimiento y Limitación de Uso">
+          <p>
+            Puedes revocar en cualquier momento el consentimiento que nos otorgaste, así como limitar el uso o
+            divulgación de tus datos. Para ello, escríbenos a somoscasatoluca@gmail.com. Ten en cuenta que la
+            revocación del consentimiento necesario para prestarte el servicio podría implicar que ya no podamos
+            continuar con la asesoría o la gestión de tu cuenta.
+          </p>
+          <p className="mt-3 text-sm text-gray-600">
+            Para dejar de recibir comunicaciones comerciales, puedes indicarlo por el mismo medio en cualquier momento,
+            sin que afecte los servicios que ya tengas contratados.
+          </p>
+        </Section>
+
+        {/* Menores de edad */}
+        <Section icon={Users} title="8. Menores de Edad">
+          <p>
+            Esta plataforma y sus servicios están dirigidos exclusivamente a <strong>personas mayores de edad</strong>.
+            No recopilamos de forma consciente datos personales de menores de edad. Si detectamos que se ha creado una
+            cuenta con datos de una persona menor de edad sin la autorización correspondiente de quien ejerza la patria
+            potestad o tutela, procederemos a cancelarla y a eliminar la información asociada.
           </p>
         </Section>
 
         {/* 6. Cookies */}
         <Section
           icon={Globe}
-          title="6. Cookies y Almacenamiento Local"
+          title="9. Cookies y Almacenamiento Local"
         >
           <p>Esta plataforma utiliza:</p>
           <ul className="list-disc list-inside space-y-2 mt-3">
@@ -132,7 +208,7 @@ export default function PrivacyPolicyPage() {
         {/* 7. Retención */}
         <Section
           icon={Trash2}
-          title="7. Retención y Eliminación de Datos"
+          title="10. Retención y Eliminación de Datos"
         >
           <ul className="list-disc list-inside space-y-2">
             <li>Tus datos se conservan mientras tu cuenta esté activa.</li>
@@ -145,7 +221,7 @@ export default function PrivacyPolicyPage() {
         {/* 8. Contacto */}
         <Section
           icon={Mail}
-          title="8. Contacto"
+          title="11. Contacto"
         >
           <p>Si tienes preguntas o inquietudes sobre esta política o el manejo de tus datos:</p>
           <div className="mt-4 bg-white border border-gray-200 rounded-xl p-6">
@@ -161,10 +237,13 @@ export default function PrivacyPolicyPage() {
         {/* 9. Cambios */}
         <Section
           icon={Shield}
-          title="9. Cambios en esta Política"
+          title="12. Cambios al Aviso de Privacidad"
         >
           <p>
-            Nos reservamos el derecho de actualizar esta política. Cualquier cambio será publicado en esta misma página con la fecha de actualización correspondiente. Te recomendamos revisarla periódicamente.
+            Nos reservamos el derecho de actualizar este Aviso de Privacidad. Cada versión se identifica con una fecha
+            y número de versión (actualmente {PRIVACY_VERSION}). Cualquier cambio sustancial será publicado en esta
+            misma página y, cuando corresponda, te lo notificaremos por los medios de contacto que nos hayas
+            proporcionado. Te recomendamos revisarlo periódicamente.
           </p>
         </Section>
       </div>

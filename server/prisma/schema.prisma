@@ -99,6 +99,8 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
+  marketingConsent  Boolean   @default(false) @map("marketing_consent")
+
   appointments Appointment[]
   cartItems    CartItem[]
   orders       Order[]
@@ -113,8 +115,35 @@ model User {
   payments           Payment[]
   albumPhotos        AlbumPhoto[]
   prayerRequests     PrayerRequest[]
+  consentRecords     ConsentRecord[]
 
   @@map("users")
+}
+
+// Evidencia de consentimiento (LFPDPPP): registro inmutable de cada aceptación,
+// con la versión del documento vigente, la finalidad y metadatos técnicos.
+enum ConsentType {
+  PRIVACY_TERMS      // Aviso de Privacidad + Términos y Condiciones (obligatorio)
+  MARKETING          // Comunicaciones comerciales (opcional, opt-in)
+}
+
+model ConsentRecord {
+  id           String      @id @default(uuid())
+  userId       String?     @map("user_id")
+  type         ConsentType
+  granted      Boolean     // true = otorgado, false = negado/revocado
+  documentVersion String   @map("document_version") // versión del aviso/términos vigente
+  source       String      // dónde se otorgó: "register", "booking", "checkout", "settings"
+  ip           String?
+  userAgent    String?     @map("user_agent")
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("consent_records")
 }
 
 model Appointment {

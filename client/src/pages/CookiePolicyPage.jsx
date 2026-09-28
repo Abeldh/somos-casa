@@ -1,7 +1,14 @@
-import { Cookie, Shield, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { Cookie, Shield, Settings, Check } from 'lucide-react';
+import { getConsent, acceptAll, acceptNecessaryOnly } from '../utils/cookieConsent';
 
 export default function CookiePolicyPage() {
-  const clearConsent = () => { localStorage.removeItem('cookie_consent'); window.location.reload(); };
+  const [consent, setConsent] = useState(() => getConsent());
+
+  const enableAnalytics = () => setConsent(acceptAll());
+  const disableAnalytics = () => setConsent(acceptNecessaryOnly());
+
+  const analyticsOn = !!(consent && consent.analytics);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -34,11 +41,45 @@ export default function CookiePolicyPage() {
         </Section>
 
         <Section icon={Settings} title="Gestionar preferencias">
-          <p>Puedes cambiar tu decisión sobre cookies en cualquier momento:</p>
-          <button onClick={clearConsent} className="mt-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
-            Restablecer preferencias de cookies
-          </button>
-          <p className="text-xs text-gray-500 mt-2">Esto mostrará el banner de cookies de nuevo en tu próxima visita.</p>
+          <p>Puedes activar o desactivar las cookies analíticas en cualquier momento. Las cookies necesarias no pueden desactivarse porque son imprescindibles para el funcionamiento del sitio.</p>
+
+          <div className="mt-4 space-y-3">
+            {/* Necesarias: siempre activas */}
+            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+              <div>
+                <p className="text-sm font-medium text-gray-800">Cookies necesarias</p>
+                <p className="text-xs text-gray-500">Sesión y seguridad. Siempre activas.</p>
+              </div>
+              <span className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1">
+                <Check className="w-3.5 h-3.5" /> Activas
+              </span>
+            </div>
+
+            {/* Analíticas: opt-in */}
+            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+              <div>
+                <p className="text-sm font-medium text-gray-800">Cookies analíticas (Google Analytics)</p>
+                <p className="text-xs text-gray-500">
+                  Estado actual: {analyticsOn ? 'Activadas' : 'Desactivadas'}
+                  {consent?.date && <span className="text-gray-400"> · Última decisión: {new Date(consent.date).toLocaleDateString('es-MX')}</span>}
+                </p>
+              </div>
+              {analyticsOn ? (
+                <button onClick={disableAnalytics} className="text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">
+                  Desactivar
+                </button>
+              ) : (
+                <button onClick={enableAnalytics} className="text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-lg transition-colors">
+                  Activar
+                </button>
+              )}
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-4">
+            Si desactivas las cookies analíticas, dejaremos de cargar Google Analytics en tus próximas visitas.
+            Tu preferencia se guarda con fecha y versión para respetar tu decisión.
+          </p>
         </Section>
       </div>
     </div>

@@ -1,11 +1,12 @@
 import { Heart, Mail, Phone, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Logo from '../ui/Logo';
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <Logo size={44} />
@@ -24,16 +25,16 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-4">Contacto</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary-400" />
+                <Mail className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <a href="mailto:somoscasatoluca@gmail.com" className="hover:text-primary-400 transition-colors break-all">somoscasatoluca@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary-400" />
+                <Phone className="w-4 h-4 text-primary-400 flex-shrink-0" />
                 <a href="https://wa.me/527224148552" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400 transition-colors">+52 722 414 8552</a>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary-400" />
-                <span>Toluca, Estado de México, MX</span>
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                <span>Aeropuerto Miguel Alemán 445, Nueva San Pedro, C.P. 50225, San Francisco Totoltepec, Estado de México, MX</span>
               </li>
             </ul>
           </div>
@@ -41,15 +42,24 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Navegación</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="/" className="hover:text-primary-400 transition-colors">Inicio</a></li>
-              <li><a href="/about" className="hover:text-primary-400 transition-colors">Nuestra Historia</a></li>
-              <li><a href="/booking" className="hover:text-primary-400 transition-colors">Agendar Consejería</a></li>
-              <li><a href="/store" className="hover:text-primary-400 transition-colors">Librería</a></li>
-              <li><a href="/login" className="hover:text-primary-400 transition-colors">Iniciar Sesión</a></li>
-              <li><a href="/privacy" className="hover:text-primary-400 transition-colors">Aviso de Privacidad</a></li>
-              <li><a href="/terms" className="hover:text-primary-400 transition-colors">Términos y Condiciones</a></li>
-              <li><a href="/cookies" className="hover:text-primary-400 transition-colors">Política de Cookies</a></li>
-              <li><a href="/legal" className="hover:text-primary-400 transition-colors">Aviso Legal</a></li>
+              <li><Link to="/" className="hover:text-primary-400 transition-colors">Inicio</Link></li>
+              <li><Link to="/about" className="hover:text-primary-400 transition-colors">Nuestra Historia</Link></li>
+              <li><Link to="/booking" className="hover:text-primary-400 transition-colors">Agendar Consejería</Link></li>
+              <li><Link to="/store" className="hover:text-primary-400 transition-colors">Librería</Link></li>
+              <li><Link to="/blog" className="hover:text-primary-400 transition-colors">Blog</Link></li>
+              <li><Link to="/login" className="hover:text-primary-400 transition-colors">Iniciar Sesión</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-white mb-4">Legal</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link to="/privacy" className="hover:text-primary-400 transition-colors">Aviso de Privacidad</Link></li>
+              <li><Link to="/derechos-arco" className="hover:text-primary-400 transition-colors">Derechos ARCO</Link></li>
+              <li><Link to="/terms" className="hover:text-primary-400 transition-colors">Términos y Condiciones</Link></li>
+              <li><Link to="/cancelaciones-reembolsos" className="hover:text-primary-400 transition-colors">Cancelaciones y Reembolsos</Link></li>
+              <li><Link to="/cookies" className="hover:text-primary-400 transition-colors">Política de Cookies</Link></li>
+              <li><Link to="/legal" className="hover:text-primary-400 transition-colors">Aviso Legal</Link></li>
             </ul>
           </div>
         </div>

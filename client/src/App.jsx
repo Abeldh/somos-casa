@@ -27,6 +27,8 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const LegalNoticePage = lazy(() => import('./pages/LegalNoticePage'));
 const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'));
+const ArcoRightsPage = lazy(() => import('./pages/ArcoRightsPage'));
+const CancellationPolicyPage = lazy(() => import('./pages/CancellationPolicyPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const BlogPage = lazy(() => import('./pages/BlogPage'));
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
@@ -76,6 +78,8 @@ export default function App() {
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/legal" element={<LegalNoticePage />} />
               <Route path="/cookies" element={<CookiePolicyPage />} />
+              <Route path="/derechos-arco" element={<ArcoRightsPage />} />
+              <Route path="/cancelaciones-reembolsos" element={<CancellationPolicyPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />

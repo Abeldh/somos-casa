@@ -36,4 +36,14 @@ export function trackEvent(name, params = {}) {
   window.gtag('event', name, params);
 }
 
+/**
+ * Desactiva Google Analytics en tiempo real (si el usuario retira el
+ * consentimiento). Usa la bandera oficial window['ga-disable-<ID>'] que
+ * gtag respeta para no enviar más datos aunque el script ya esté cargado.
+ */
+export function disableAnalytics() {
+  if (typeof window === 'undefined' || !GA_ID) return;
+  window[`ga-disable-${GA_ID}`] = true;
+}
+
 export const analyticsEnabled = !!GA_ID;

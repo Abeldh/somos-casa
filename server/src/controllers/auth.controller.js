@@ -35,8 +35,8 @@ function clearAuthCookies(res) {
 export const authController = {
   async register(req, res, next) {
     try {
-      const { firstName, lastName, email, phone, password } = req.body;
-      const result = await authService.register({ firstName, lastName, email, phone, password }, req);
+      const { firstName, lastName, email, phone, password, acceptPrivacyTerms, marketingConsent } = req.body;
+      const result = await authService.register({ firstName, lastName, email, phone, password, acceptPrivacyTerms, marketingConsent }, req);
       emailService.sendWelcome({ to: email, firstName });
 
       setAuthCookies(res, result);

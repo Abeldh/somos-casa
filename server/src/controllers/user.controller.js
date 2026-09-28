@@ -9,10 +9,11 @@ export const userController = {
   async toggleActive(req, res, next) { try { return successResponse(res, await userService.toggleActive(req.params.id), 'Estado actualizado'); } catch (e) { next(e); } },
   async createAdmin(req, res, next) {
     try {
-      const { firstName, lastName, email, password, phone } = req.body;
+      const { firstName, lastName, email, password, phone, role } = req.body;
       if (!firstName || !lastName || !email || !password) return res.status(400).json({ success: false, message: 'Nombre, apellido, email y contraseña son requeridos' });
       if (password.length < 8) return res.status(400).json({ success: false, message: 'La contraseña debe tener al menos 8 caracteres' });
-      return successResponse(res, await userService.createAdmin({ firstName, lastName, email, password, phone }), 'Administrador creado');
+      const result = await userService.createAdmin({ firstName, lastName, email, password, phone, role }, req);
+      return successResponse(res, result, result.user.role === 'ADMIN' ? 'Administrador creado' : 'Usuario creado');
     } catch (e) { next(e); }
   },
 };

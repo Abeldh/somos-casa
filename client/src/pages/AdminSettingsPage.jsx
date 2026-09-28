@@ -204,7 +204,7 @@ function CreateAdminSection() {
   const { success, error } = useToast();
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
-  const [adminForm, setAdminForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '' });
+  const [adminForm, setAdminForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '', role: 'CLIENT' });
   const [adminErrors, setAdminErrors] = useState({});
 
   const handleChange = (e) => {
@@ -251,10 +251,10 @@ function CreateAdminSection() {
     setLoading(true);
     try {
       await api.post('/users/create-admin', adminForm);
-      success('Administrador creado exitosamente');
-      setAdminForm({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '' });
+      success(adminForm.role === 'ADMIN' ? 'Administrador creado exitosamente' : 'Usuario creado exitosamente');
+      setAdminForm({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', phone: '', role: 'CLIENT' });
     } catch (err) {
-      error(err.message || 'Error al crear administrador');
+      error(err.message || 'Error al crear la cuenta');
     } finally {
       setLoading(false);
     }
@@ -264,11 +264,37 @@ function CreateAdminSection() {
     <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 mt-6">
       <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
         <UserPlus className="w-4 h-4 text-primary-600" />
-        Crear Administrador
+        Crear Usuario
       </h3>
-      <p className="text-sm text-gray-500 mb-4">Agrega un nuevo usuario con rol de administrador.</p>
+      <p className="text-sm text-gray-500 mb-4">Agrega una nueva cuenta y elige si será un cliente o un administrador.</p>
 
       <div className="space-y-4">
+        {/* Selector de tipo de cuenta */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de cuenta</label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setAdminForm((p) => ({ ...p, role: 'CLIENT' }))}
+              className={`px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${adminForm.role === 'CLIENT' ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            >
+              Cliente
+            </button>
+            <button
+              type="button"
+              onClick={() => setAdminForm((p) => ({ ...p, role: 'ADMIN' }))}
+              className={`px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${adminForm.role === 'ADMIN' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            >
+              Administrador
+            </button>
+          </div>
+          {adminForm.role === 'ADMIN' && (
+            <p className="text-xs text-amber-600 mt-2">
+              Los administradores tienen acceso completo al panel de gestión. Otórgalo solo a personas de confianza.
+            </p>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <Input label="Nombre" name="firstName" value={adminForm.firstName} onChange={handleChange} error={adminErrors.firstName} placeholder="Juan" />
           <Input label="Apellido" name="lastName" value={adminForm.lastName} onChange={handleChange} error={adminErrors.lastName} placeholder="Pérez" />
@@ -318,7 +344,7 @@ function CreateAdminSection() {
         />
         <Button type="submit" loading={loading} className="w-full flex items-center justify-center gap-2">
           <UserPlus className="w-4 h-4" />
-          Crear Administrador
+          {adminForm.role === 'ADMIN' ? 'Crear Administrador' : 'Crear Cliente'}
         </Button>
       </div>
     </form>

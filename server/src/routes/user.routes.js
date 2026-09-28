@@ -11,6 +11,7 @@ router.get('/:id', userController.getById);
 router.get('/:id/activity', userController.getActivity);
 router.patch('/:id/role', userController.updateRole);
 router.patch('/:id/toggle-active', userController.toggleActive);
+router.patch('/:id/reset-password', userController.resetPassword);
 router.post('/create-admin', userController.createAdmin);
 
 export default router;

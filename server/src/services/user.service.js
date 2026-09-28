@@ -1,5 +1,6 @@
 import prisma from '../config/database.js';
 import { hashPassword } from '../utils/hashPassword.js';
+import { revokeAllTokens } from './token.service.js';
 
 export const userService = {
   async getAll({ page = 1, limit = 10 } = {}) {
@@ -126,5 +127,27 @@ export const userService = {
       select: { id: true, email: true, firstName: true, lastName: true, role: true, createdAt: true },
     });
     return { user };
+  },
+
+  // Admin: restablecer la contraseña de cualquier usuario (p. ej. si el usuario la olvidó
+  // y no puede recuperarla por correo). Revoca las sesiones del usuario afectado para que
+  // la contraseña anterior deje de ser válida en todos sus dispositivos.
+  async resetPassword(userId, newPassword) {
+    if (!newPassword || newPassword.length < 8) {
+      const e = new Error('La contraseña debe tener al menos 8 caracteres');
+      e.statusCode = 422;
+      throw e;
+    }
+
+    const target = await prisma.user.findUnique({ where: { id: userId } });
+    if (!target) { const e = new Error('Usuario no encontrado'); e.statusCode = 404; throw e; }
+
+    const hashedPassword = await hashPassword(newPassword);
+    await prisma.user.update({ where: { id: userId }, data: { password: hashedPassword } });
+
+    // Forzar cierre de sesión en todos los dispositivos del usuario afectado
+    await revokeAllTokens(userId);
+
+    return { message: 'Contraseña restablecida', user: { id: target.id, email: target.email } };
   },
 };

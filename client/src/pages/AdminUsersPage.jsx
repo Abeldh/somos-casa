@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Users, Eye, Shield, ShieldOff, ChevronRight, Calendar, ShoppingBag, Clock, Activity, User, Mail, Phone } from 'lucide-react';
+import { Users, Eye, Shield, ShieldOff, ChevronRight, Calendar, ShoppingBag, Clock, Activity, User, Mail, Phone, Key } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
 import Spinner from '../components/ui/Spinner';
@@ -18,6 +19,10 @@ export default function AdminUsersPage() {
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [resetUser, setResetUser] = useState(null); // usuario al que se le restablece la contraseña
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [resetting, setResetting] = useState(false);
   const { success, error } = useToast();
 
   const fetchUsers = async () => {
@@ -48,6 +53,24 @@ export default function AdminUsersPage() {
   const toggleActive = async (id) => {
     try { await api.patch(`/users/${id}/toggle-active`); success('Estado actualizado'); fetchUsers(); }
     catch (e) { error(e.message); }
+  };
+
+  const openReset = (user) => {
+    setResetUser(user);
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const submitReset = async () => {
+    if (newPassword.length < 8) { error('La contraseña debe tener al menos 8 caracteres'); return; }
+    if (newPassword !== confirmPassword) { error('Las contraseñas no coinciden'); return; }
+    setResetting(true);
+    try {
+      await api.patch(`/users/${resetUser.id}/reset-password`, { newPassword });
+      success(`Contraseña restablecida para ${resetUser.firstName}. Comunícasela de forma segura.`);
+      setResetUser(null);
+    } catch (e) { error(e.message); }
+    finally { setResetting(false); }
   };
 
   const formatDate = (d) => new Date(d).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -103,6 +126,9 @@ export default function AdminUsersPage() {
               <div className="flex items-center gap-2">
                 <button onClick={() => viewActivity(u)} className="text-gray-400 hover:text-blue-600 transition-colors" title="Ver actividad">
                   <Eye className="w-4 h-4" />
+                </button>
+                <button onClick={() => openReset(u)} className="text-gray-400 hover:text-amber-600 transition-colors" title="Restablecer contraseña">
+                  <Key className="w-4 h-4" />
                 </button>
                 <button onClick={() => toggleActive(u.id)} className={`${u.isActive ? 'text-green-500 hover:text-red-500' : 'text-red-400 hover:text-green-500'} transition-colors`} title={u.isActive ? 'Desactivar' : 'Activar'}>
                   {u.isActive ? <Shield className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
@@ -212,6 +238,37 @@ export default function AdminUsersPage() {
             )}
           </div>
         ) : null}
+      </Modal>
+
+      {/* Modal: restablecer contraseña de un usuario */}
+      <Modal isOpen={!!resetUser} onClose={() => setResetUser(null)} title={`Restablecer contraseña de ${resetUser?.firstName || ''} ${resetUser?.lastName || ''}`}>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Define una nueva contraseña para <strong>{resetUser?.email}</strong>. Comunícasela de forma segura;
+            el usuario podrá cambiarla después desde su cuenta. Se cerrarán todas sus sesiones activas.
+          </p>
+          <Input
+            label="Nueva contraseña"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Mínimo 8 caracteres"
+          />
+          <Input
+            label="Confirmar nueva contraseña"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Repite la nueva contraseña"
+          />
+          <div className="flex gap-3">
+            <Button variant="ghost" onClick={() => setResetUser(null)} className="flex-1">Cancelar</Button>
+            <Button onClick={submitReset} loading={resetting} className="flex-1 flex items-center justify-center gap-2">
+              <Key className="w-4 h-4" />
+              Restablecer
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );
